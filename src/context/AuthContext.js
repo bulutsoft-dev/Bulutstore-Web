@@ -15,9 +15,7 @@ export const AuthProvider = ({ children }) => {
   // On mount or when token changes, sync user from localStorage
   useEffect(() => {
     (async () => {
-      console.log('AuthContext useEffect token:', token);
       const storedUser = localStorage.getItem('user');
-      console.log('AuthContext useEffect storedUser:', storedUser);
       if (token) {
         if (storedUser) {
           const parsedUser = JSON.parse(storedUser);
@@ -40,8 +38,6 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setLoading(false);
       }
-      console.log('AuthContext useEffect user:', user);
-      console.log('AuthContext useEffect loading:', loading);
     })();
   }, [token, localStorage.getItem('user')]);
 
@@ -50,14 +46,11 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       const data = await loginUser(credentials);
-      console.log('AuthContext login data:', data);
       if (data.token) {
         setToken(data.token);
-        localStorage.setItem('token', data.token);
       }
       if (data.user) {
         setUser(data.user);
-        localStorage.setItem('user', JSON.stringify(data.user));
       }
       return data;
     } catch (err) {
@@ -65,7 +58,6 @@ export const AuthProvider = ({ children }) => {
       return null;
     } finally {
       setLoading(false);
-      console.log('AuthContext login loading:', loading);
     }
   }, []);
 

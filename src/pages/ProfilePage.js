@@ -4,10 +4,7 @@ import { becomeDeveloper, updateUser, getUserById } from '../api/userApi';
 import {
     Box,
     Container,
-    Grid,
-    Paper,
     CircularProgress,
-    Fade,
     Alert
 } from '@mui/material';
 import ProfileSidebar from '../components/users/ProfileSidebar';
@@ -114,14 +111,20 @@ const ProfilePage = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
-            <Grid container spacing={4}>
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: { xs: '1fr', md: '1fr 2fr' },
+                    gap: 4
+                }}
+            >
                 {/* Sol Taraf - Profil Bilgileri */}
-                <Grid item xs={12} md={4}>
+                <Box>
                     <ProfileSidebar user={user} />
-                </Grid>
+                </Box>
 
                 {/* Sağ Taraf - İçerik */}
-                <Grid item xs={12} md={8}>
+                <Box>
                     {/* Profil Düzenleme */}
                     <ProfileEditForm
                         user={user}
@@ -150,8 +153,8 @@ const ProfilePage = () => {
                     {user.isDeveloper && (
                         <DeveloperStats />
                     )}
-                </Grid>
-            </Grid>
+                </Box>
+            </Box>
         </Container>
     );
 };
