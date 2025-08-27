@@ -7,6 +7,7 @@ import AppDetailPage from '../pages/AppDetailPage';
 import RegisterPage from '../pages/RegisterPage';
 import LoginPage from '../pages/LoginPage';
 import ProfilePage from '../pages/ProfilePage';
+import AdminPanelPage from '../pages/AdminPanelPage';
 
 const AppRoutes = () => (
   <Routes>
@@ -16,6 +17,7 @@ const AppRoutes = () => (
     <Route path="/register" element={<RegisterPage />} />
     <Route path="/login" element={<LoginPage />} />
     <Route path="/profile" element={<ProfilePage />} />
+    <Route path="/admin" element={<AdminPanelPage />} />
     <Route path="*" element={<NotFoundPage />} />
   </Routes>
 );
