@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../../api/userApi';
+import { useAuth } from '../../hooks/useAuth';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -13,10 +13,9 @@ import Link from '@mui/material/Link';
 import { Link as RouterLink } from 'react-router-dom';
 
 const LoginForm = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [form, setForm] = useState({ username: '', password: '' });
   const navigate = useNavigate();
+  const { login, loading, error } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,17 +23,9 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await loginUser(form);
-      // Varsayım: JWT veya kullanıcı bilgisi data.token veya data.user ile dönüyor
-      localStorage.setItem('user', JSON.stringify(data));
+    const data = await login(form);
+    if (data && data.token) {
       navigate('/');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -48,16 +39,17 @@ const LoginForm = () => {
           Login
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
+          {error && <Alert severity="error">{error}</Alert>}
           <TextField
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email"
-            name="email"
-            autoComplete="email"
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
             autoFocus
-            value={form.email}
+            value={form.username}
             onChange={handleChange}
           />
           <TextField
@@ -72,7 +64,6 @@ const LoginForm = () => {
             value={form.password}
             onChange={handleChange}
           />
-          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
           <Button
             type="submit"
             fullWidth
@@ -83,8 +74,6 @@ const LoginForm = () => {
           >
             {loading ? 'Logging in...' : 'Login'}
           </Button>
-        </Box>
-        <Box sx={{ textAlign: 'center', mt: 2 }}>
           <Link component={RouterLink} to="/register" variant="body2">
             Hesabınız yok mu? Kayıt Ol
           </Link>

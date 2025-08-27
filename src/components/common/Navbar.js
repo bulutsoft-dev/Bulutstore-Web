@@ -147,17 +147,13 @@ const Navbar = () => {
             <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/games">Oyunlar</MenuItem>
             <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/apps">Uygulamalar</MenuItem>
             <Divider />
-            {user ? (
-                <>
-                    <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/profile">Profil</MenuItem>
-                    <MenuItem onClick={() => { handleMobileMenuClose(); handleLogout(); }}>Çıkış Yap</MenuItem>
-                </>
-            ) : (
-                <>
-                    <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/login">Giriş Yap</MenuItem>
-                    <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/register">Kayıt Ol</MenuItem>
-                </>
-            )}
+            {user ? [
+                <MenuItem key="profile" onClick={handleMobileMenuClose} component={RouterLink} to="/profile">Profil</MenuItem>,
+                <MenuItem key="logout" onClick={() => { handleMobileMenuClose(); handleLogout(); }}>Çıkış Yap</MenuItem>
+            ] : [
+                <MenuItem key="login" onClick={handleMobileMenuClose} component={RouterLink} to="/login">Giriş Yap</MenuItem>,
+                <MenuItem key="register" onClick={handleMobileMenuClose} component={RouterLink} to="/register">Kayıt Ol</MenuItem>
+            ]}
         </Menu>
     );
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { createUser } from '../../api/userApi';
+import { useAuth } from '../../hooks/useAuth';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -13,10 +13,9 @@ import Link from '@mui/material/Link';
 
 const RegisterForm = () => {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const { register, loading, error } = useAuth();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,17 +23,10 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-    try {
-      await createUser(form);
+    const data = await register(form);
+    if (data && data.token) {
       setSuccess(true);
-      setTimeout(() => navigate('/login'), 1500); // 1.5 sn sonra login'e yönlendir
-    } catch (err) {
-      setError(err.response?.data?.message || 'Kayıt başarısız');
-    } finally {
-      setLoading(false);
+      setTimeout(() => navigate('/'), 1500);
     }
   };
 
@@ -48,6 +40,8 @@ const RegisterForm = () => {
           Kayıt Ol
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
+          {error && <Alert severity="error">{error}</Alert>}
+          {success && <Alert severity="success">Kayıt başarılı! Ana sayfaya yönlendiriliyorsunuz...</Alert>}
           <TextField
             margin="normal"
             required
@@ -82,8 +76,6 @@ const RegisterForm = () => {
             value={form.password}
             onChange={handleChange}
           />
-          {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-          {success && <Alert severity="success" sx={{ mt: 2 }}>Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...</Alert>}
           <Button
             type="submit"
             fullWidth
@@ -92,13 +84,11 @@ const RegisterForm = () => {
             sx={{ mt: 3, mb: 2 }}
             disabled={loading}
           >
-            {loading ? 'Kayıt olunuyor...' : 'Kayıt Ol'}
+            {loading ? 'Kayıt Olunuyor...' : 'Kayıt Ol'}
           </Button>
-          <Box sx={{ textAlign: 'center' }}>
-            <Link component={RouterLink} to="/login" variant="body2">
-              Zaten hesabınız var mı? Giriş Yap
-            </Link>
-          </Box>
+          <Link component={RouterLink} to="/login" variant="body2">
+            Zaten hesabınız var mı? Giriş Yap
+          </Link>
         </Box>
       </Box>
     </Box>

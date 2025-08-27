@@ -28,9 +28,9 @@ const Footer = () => {
             }}
         >
             <Container maxWidth="lg">
-                <Grid container spacing={{ xs: 3, md: 4 }}>
+                <Grid container spacing={{ xs: 3, md: 4 }} columns={12}>
                     {/* Şirket Bilgileri */}
-                    <Grid item xs={12} md={4}>
+                    <Grid xs={12} md={4}>
                         <Typography variant="h6" gutterBottom sx={{ color: '#4285F4', fontWeight: 'bold' }}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <StoreIcon sx={{ mr: 1, fontSize: 28 }} />
@@ -44,7 +44,7 @@ const Footer = () => {
                     </Grid>
 
                     {/* Hızlı Erişim Linkleri */}
-                    <Grid item xs={6} sm={3} md={2}>
+                    <Grid xs={6} sm={3} md={2}>
                         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Mağaza
                         </Typography>
@@ -63,7 +63,7 @@ const Footer = () => {
                     </Grid>
 
                     {/* Hesap İşlemleri */}
-                    <Grid item xs={6} sm={3} md={2}>
+                    <Grid xs={6} sm={3} md={2}>
                         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Hesap
                         </Typography>
@@ -79,7 +79,7 @@ const Footer = () => {
                     </Grid>
 
                     {/* Destek ve Yardım */}
-                    <Grid item xs={6} sm={3} md={2}>
+                    <Grid xs={6} sm={3} md={2}>
                         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Yardım
                         </Typography>
@@ -96,8 +96,8 @@ const Footer = () => {
                             Gizlilik Politikası
                         </Link>
                     </Grid>
-                    {/* Diğer Çözümlerimizm */}
-                    <Grid item xs={6} sm={3} md={2}>
+                    {/* Diğer Çözümlerimiz */}
+                    <Grid xs={6} sm={3} md={2}>
                         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Ürünlerimiz
                         </Typography>
@@ -110,7 +110,7 @@ const Footer = () => {
                     </Grid>
 
                     {/* İletişim */}
-                    <Grid item xs={6} sm={3} md={2}>
+                    <Grid xs={6} sm={3} md={2}>
                         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             İletişim
                         </Typography>
