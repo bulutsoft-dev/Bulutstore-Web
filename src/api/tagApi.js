@@ -1,8 +1,7 @@
 import axios from './axiosConfig';
 
-export const getAllTags = () => axios.get('/api/tags');
-export const getTagById = (id) => axios.get(`/api/tags/${id}`);
-export const createTag = (data) => axios.post('/api/tags', data);
-export const updateTag = (id, data) => axios.put(`/api/tags/${id}`, data);
-export const deleteTag = (id) => axios.delete(`/api/tags/${id}`);
-
+export const getAllTags = () => axios.get('/tags');
+export const getTagById = (id) => axios.get(`/tags/${id}`);
+export const createTag = (data) => axios.post('/tags', data);
+export const updateTag = (id, data) => axios.put(`/tags/${id}`, data);
+export const deleteTag = (id) => axios.delete(`/tags/${id}`);
