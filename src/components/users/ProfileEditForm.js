@@ -45,22 +45,25 @@ const ProfileEditForm = ({
             setLoading(false);
             return;
         }
-        // Şifre zorunlu
-        if (!form.password || form.password.trim() === "") {
-            setError('Profil güncellemeleri için mevcut şifrenizi girmeniz gerekmektedir.');
-            setLoading(false);
-            return;
-        }
-        // Tüm alanları gönder (role ve status zorunlu ise ekle)
+        // Şifre zorunlu değil, sadece doluysa gönder
+        // Şifre alanı boş bırakılırsa mevcut şifre korunur. Sadece yeni şifre girilirse güncellenir.
         const payload = {
             username: form.username,
             email: form.email,
             displayName: form.displayName,
             website: form.website,
-            password: form.password,
-            role: user.role, // zorunlu alan
-            status: user.status // eğer backend istiyorsa
+            role: user.role || 'user',
+            status: user.status || 'active',
+            created_at: user.created_at || user.createdAt || null,
+            updated_at: new Date().toISOString(),
+            developer_application_status: user.developer_application_status || null,
+            developer_application_date: user.developer_application_date || null
         };
+        if (form.password && form.password.trim() !== "") {
+            payload.password = form.password;
+        }
+        // Şifre alanı zorunlu değildir. Sadece doldurulursa güncellenir.
+        // Eğer şifre girilmezse mevcut şifre değişmez.
         console.log('[ProfileEditForm] updateUser payload:', payload);
         try {
             const updated = await updateUser(user.id, payload);
@@ -104,15 +107,14 @@ const ProfileEditForm = ({
                 <Alert severity="success" sx={{ mb: 2 }}>Profil başarıyla güncellendi.</Alert>
             )}
             <Stack spacing={2}>
-                {/* Editable fields */}
+                {/* Kullanıcı Adı: Sadece görüntülenir, düzenlenemez */}
                 <TextField
                     label="Kullanıcı Adı"
                     name="username"
                     value={form.username || ''}
-                    onChange={handleChange}
                     fullWidth
                     margin="normal"
-                    InputProps={{ readOnly: !editMode }}
+                    InputProps={{ readOnly: true }}
                 />
                 <TextField
                     label="E-posta"
@@ -123,24 +125,29 @@ const ProfileEditForm = ({
                     margin="normal"
                     InputProps={{ readOnly: !editMode }}
                 />
-                <TextField
-                    label="Görünen Ad"
-                    name="displayName"
-                    value={form.displayName || ''}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    InputProps={{ readOnly: !editMode }}
-                />
-                <TextField
-                    label="Web Sitesi"
-                    name="website"
-                    value={form.website || ''}
-                    onChange={handleChange}
-                    fullWidth
-                    margin="normal"
-                    InputProps={{ readOnly: !editMode }}
-                />
+                {/* Sadece geliştirici kullanıcılar için Görünen Ad ve Web Sitesi alanları */}
+                {user.isDeveloper && (
+                    <>
+                        <TextField
+                            label="Görünen Ad"
+                            name="displayName"
+                            value={form.displayName || ''}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                            InputProps={{ readOnly: !editMode }}
+                        />
+                        <TextField
+                            label="Web Sitesi"
+                            name="website"
+                            value={form.website || ''}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                            InputProps={{ readOnly: !editMode }}
+                        />
+                    </>
+                )}
                 <TextField
                     label="Durum"
                     value={user.isDeveloper ? 'Geliştirici' : 'Normal Kullanıcı'}
