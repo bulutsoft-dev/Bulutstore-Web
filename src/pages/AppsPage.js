@@ -3,7 +3,6 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
-import Typography from "@mui/material/Typography";
 import useCategories from '../hooks/useCategories';
 import useApps from '../hooks/useApps';
 import CategoryTabs from '../features/categories/CategoryTabs';

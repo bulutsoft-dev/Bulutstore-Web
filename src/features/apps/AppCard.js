@@ -6,9 +6,7 @@ import {
     Box,
     Avatar,
     Chip,
-    Tooltip,
-    useTheme,
-    useMediaQuery
+    Tooltip
 } from '@mui/material';
 import {
     Star as StarIcon,
@@ -24,8 +22,6 @@ import IconButton from '@mui/material/IconButton';
 
 const AppCard = ({ app, onShare }) => {
     const navigate = useNavigate();
-    const theme = useTheme();
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     // Yıldız derecelendirmesi oluşturma
     const renderStars = (rating = 0) => {
@@ -220,7 +216,7 @@ const AppCard = ({ app, onShare }) => {
                         color: '#888'
                     }}
                 >
-                    {app.description || 'Bu uygulama için açıklama bulunmamaktadır.'}
+                    {app.shortDescription || 'Bu uygulama için kısa açıklama bulunmamaktadır.'}
                 </Typography>
             </Box>
 
