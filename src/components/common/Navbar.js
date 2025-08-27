@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -63,8 +63,21 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Navbar = () => {
     const [profileAnchorEl, setProfileAnchorEl] = useState(null);
     const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState(null);
+    const [user, setUser] = useState(null);
     const isProfileMenuOpen = Boolean(profileAnchorEl);
     const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        setUser(storedUser ? JSON.parse(storedUser) : null);
+        // Dinamik güncelleme için storage event dinleyicisi
+        const handleStorage = () => {
+            const updatedUser = localStorage.getItem('user');
+            setUser(updatedUser ? JSON.parse(updatedUser) : null);
+        };
+        window.addEventListener('storage', handleStorage);
+        return () => window.removeEventListener('storage', handleStorage);
+    }, []);
 
     const handleProfileMenuOpen = (event) => {
         setProfileAnchorEl(event.currentTarget);
@@ -80,6 +93,12 @@ const Navbar = () => {
 
     const handleMobileMenuClose = () => {
         setMobileMenuAnchorEl(null);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        setUser(null);
+        window.location.href = '/';
     };
 
     const profileMenuId = 'primary-search-account-menu';
@@ -128,8 +147,17 @@ const Navbar = () => {
             <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/games">Oyunlar</MenuItem>
             <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/apps">Uygulamalar</MenuItem>
             <Divider />
-            <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/login">Giriş Yap</MenuItem>
-            <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/register">Kayıt Ol</MenuItem>
+            {user ? (
+                <>
+                    <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/profile">Profil</MenuItem>
+                    <MenuItem onClick={() => { handleMobileMenuClose(); handleLogout(); }}>Çıkış Yap</MenuItem>
+                </>
+            ) : (
+                <>
+                    <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/login">Giriş Yap</MenuItem>
+                    <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/register">Kayıt Ol</MenuItem>
+                </>
+            )}
         </Menu>
     );
 
@@ -240,37 +268,46 @@ const Navbar = () => {
                         </Search>
 
 
-                        {/* Giriş/Kayıt butonları */}
+                        {/* Giriş/Kayıt veya Profil/Çıkış butonları */}
                         <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
-                            <Button
-                                color="inherit"
-                                component={RouterLink}
-                                to="/login"
-                                sx={{
-                                    borderRadius: '4px',
-                                    mr: 1,
-                                    '&:hover': {
-                                        backgroundColor: 'rgba(66, 133, 244, 0.08)',
-                                        color: '#4285F4'
-                                    }
-                                }}
-                            >
-                                Giriş Yap
-                            </Button>
-                            <Button
-                                variant="contained"
-                                component={RouterLink}
-                                to="/register"
-                                sx={{
-                                    backgroundColor: '#4285F4',
-                                    borderRadius: '4px',
-                                    '&:hover': {
-                                        backgroundColor: '#3367d6'
-                                    }
-                                }}
-                            >
-                                Kayıt Ol
-                            </Button>
+                            {user ? (
+                                <>
+                                    <Button
+                                        color="inherit"
+                                        component={RouterLink}
+                                        to="/profile"
+                                        sx={{ borderRadius: '4px', mr: 1 }}
+                                    >
+                                        Profil
+                                    </Button>
+                                    <Button
+                                        color="inherit"
+                                        onClick={handleLogout}
+                                        sx={{ borderRadius: '4px' }}
+                                    >
+                                        Çıkış Yap
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button
+                                        color="inherit"
+                                        component={RouterLink}
+                                        to="/login"
+                                        sx={{ borderRadius: '4px', mr: 1 }}
+                                    >
+                                        Giriş Yap
+                                    </Button>
+                                    <Button
+                                        color="inherit"
+                                        component={RouterLink}
+                                        to="/register"
+                                        sx={{ borderRadius: '4px' }}
+                                    >
+                                        Kayıt Ol
+                                    </Button>
+                                </>
+                            )}
                         </Box>
 
                         {/* Mobilde gösterilecek arama ve profil ikonları */}
