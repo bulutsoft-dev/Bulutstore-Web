@@ -1,0 +1,144 @@
+bulutstore-web-client React Projesi İçin Mimari Analiz
+======================================================
+
+1. Klasör Yapısı (Detaylı)
+--------------------------
+
+src/
+  api/                # API istek fonksiyonları (her kaynak için ayrı dosya)
+    userApi.js        # Kullanıcı ile ilgili API işlemleri (CRUD)
+    tagApi.js         # Etiket ile ilgili API işlemleri (CRUD)
+    reviewApi.js      # Yorum ile ilgili API işlemleri (CRUD)
+    categoryApi.js    # Kategori ile ilgili API işlemleri (CRUD)
+    appApi.js         # Uygulama ile ilgili API işlemleri (CRUD)
+    appVersionApi.js  # Uygulama versiyonu ile ilgili API işlemleri (CRUD)
+    downloadHistoryApi.js # İndirme geçmişi ile ilgili API işlemleri (CRUD)
+    axiosConfig.js    # Ortak axios ayarları ve interceptors
+
+  components/         # Tekil, tekrar kullanılabilir UI bileşenleri
+    common/           # Ortak kullanılan buton, modal, input, navbar, footer gibi bileşenler
+      Button.js
+      Modal.js
+      Input.js
+      Navbar.js       # Navigasyon çubuğu (tüm sayfalarda üstte)
+      Footer.js       # Alt bilgi (tüm sayfalarda altta)
+    users/            # Kullanıcıya özel küçük bileşenler
+      UserCard.js
+      UserAvatar.js
+    tags/             # Etikete özel küçük bileşenler
+      TagBadge.js
+    ...
+
+  layouts/            # (İsteğe bağlı) Tüm sayfalar için ortak layout
+    MainLayout.js     # Navbar ve Footer'ı içeren ana layout (isteğe bağlı)
+
+  features/           # Her ana işlev için modüller (feature-based structure)
+    users/
+      UserList.js     # Kullanıcıları listeleyen bileşen
+      UserDetail.js   # Kullanıcı detayını gösteren bileşen
+      UserForm.js     # Kullanıcı ekleme/güncelleme formu
+      userSlice.js    # Redux slice veya context dosyası
+      userThunks.js   # Async işlemler (isteğe bağlı)
+      userSelectors.js# Selector fonksiyonları (isteğe bağlı)
+    tags/
+      TagList.js
+      TagDetail.js
+      TagForm.js
+      tagSlice.js
+      tagThunks.js
+      tagSelectors.js
+    reviews/
+      ReviewList.js
+      ReviewDetail.js
+      ReviewForm.js
+      reviewSlice.js
+      reviewThunks.js
+      reviewSelectors.js
+    categories/
+      CategoryList.js
+      CategoryDetail.js
+      CategoryForm.js
+      categorySlice.js
+      categoryThunks.js
+      categorySelectors.js
+    apps/
+      AppList.js
+      AppDetail.js
+      AppForm.js
+      appSlice.js
+      appThunks.js
+      appSelectors.js
+    appVersions/
+      AppVersionList.js
+      AppVersionDetail.js
+      AppVersionForm.js
+      appVersionSlice.js
+      appVersionThunks.js
+      appVersionSelectors.js
+    downloadHistories/
+      DownloadHistoryList.js
+      DownloadHistoryDetail.js
+      DownloadHistoryForm.js
+      downloadHistorySlice.js
+      downloadHistoryThunks.js
+      downloadHistorySelectors.js
+
+  pages/              # Sayfa düzeyinde bileşenler (route karşılığı)
+    UsersPage.js      # /users route'u için ana sayfa
+    TagsPage.js       # /tags route'u için ana sayfa
+    ReviewsPage.js    # /reviews route'u için ana sayfa
+    CategoriesPage.js # /categories route'u için ana sayfa
+    AppsPage.js       # /apps route'u için ana sayfa
+    AppVersionsPage.js# /app-versions route'u için ana sayfa
+    DownloadHistoriesPage.js # /download-histories route'u için ana sayfa
+    HomePage.js       # Ana giriş sayfası
+    NotFoundPage.js   # 404 sayfası
+    ...
+
+  hooks/              # Özel React hook'ları (örn: useUsers, useTags)
+    useUsers.js
+    useTags.js
+    useReviews.js
+    useCategories.js
+    useApps.js
+    useAppVersions.js
+    useDownloadHistories.js
+    useAuth.js        # Giriş/çıkış işlemleri için özel hook
+    ...
+
+  utils/              # Yardımcı fonksiyonlar ve sabitler
+    validators.js     # Form validasyon fonksiyonları
+    formatters.js     # Tarih, sayı, string formatlama fonksiyonları
+    constants.js      # Sabitler
+    helpers.js        # Küçük yardımcı fonksiyonlar
+    ...
+
+  store/              # Global state yönetimi (Redux, Context, vs.)
+    store.js          # Redux store veya context provider
+    rootReducer.js    # Tüm slice'ların birleşimi (Redux için)
+    ...
+
+  routes/             # Route tanımları ve korumalı route bileşenleri
+    AppRoutes.js      # Tüm route'ların tanımı
+    ProtectedRoute.js # Giriş gerektiren route'lar için
+
+  styles/             # Global ve modül bazlı stiller
+    main.css
+    variables.css
+    ...
+
+  assets/             # Statik dosyalar (görseller, ikonlar, vs.)
+    logo.png
+    icons/
+    ...
+
+  App.js              # Ana uygulama bileşeni (Navbar ve Footer burada veya MainLayout'ta kullanılır)
+  index.js            # Giriş noktası
+
+public/
+  index.html          # HTML şablonu
+  robots.txt
+  ...
+
+package.json          # Proje bağımlılıkları ve scriptler
+README.md             # Proje açıklaması
