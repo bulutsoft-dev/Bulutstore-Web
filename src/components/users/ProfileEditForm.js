@@ -28,6 +28,7 @@ const ProfileEditForm = ({
             email: user.email || '',
             displayName: user.displayName || '',
             website: user.website || '',
+            password: '' // Şifre alanı her zaman sıfırlanmalı
         });
     }, [user]);
 

@@ -35,8 +35,9 @@ export const loginUser = async (credentials) => {
   return response.data;
 };
 
-export const applyForDeveloper = async () => {
-  const response = await axiosInstance.post('/users/apply-developer');
+export const applyForDeveloper = async (data) => {
+  // Ensure only applicationText is sent
+  const response = await axiosInstance.post('/users/apply-developer', { applicationText: data.applicationText });
   return response.data;
 };
 
@@ -62,5 +63,10 @@ export const becomeDeveloper = async (data) => {
 
 export const getCurrentUser = async () => {
   const response = await axiosInstance.get('/users/me');
+  return response.data;
+};
+
+export const getOwnDeveloperApplication = async () => {
+  const response = await axiosInstance.get('/users/developer-application/me');
   return response.data;
 };

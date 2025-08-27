@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
-import { becomeDeveloper, updateUser, getUserById } from '../api/userApi';
+import { becomeDeveloper, updateUser, getCurrentUser, applyForDeveloper } from '../api/userApi';
 import {
     Box,
     Container,
@@ -32,13 +32,15 @@ const ProfilePage = () => {
         const fetchUser = async () => {
             setFetching(true);
             try {
-                const latestUser = await getUserById(user._id || user.id);
+                const latestUser = await getCurrentUser();
                 setUser(latestUser);
                 setProfileData({
-                    name: latestUser.name || '',
+                    name: latestUser.name || latestUser.displayName || '',
                     bio: latestUser.bio || '',
                     skills: latestUser.skills || []
                 });
+            } catch (err) {
+                setProfileUpdateError('Kullanıcı bilgileri alınamadı. Lütfen tekrar deneyin.');
             } finally {
                 setFetching(false);
             }
@@ -80,11 +82,28 @@ const ProfilePage = () => {
         }
     };
 
+    const handleDeveloperApplicationSubmit = async (e) => {
+        e.preventDefault();
+        setApplying(true);
+        setError(null);
+        setSuccess(false);
+        try {
+            await applyForDeveloper({ description: form.description });
+            setSuccess(true);
+        } catch (err) {
+            setError('Başvuru gönderilemedi. Lütfen tekrar deneyin.');
+        } finally {
+            setApplying(false);
+        }
+    };
+
     const handleSaveProfile = async () => {
         setProfileUpdateSuccess(false);
         setProfileUpdateError(null);
+        if (!user || !(user._id || user.id)) return;
         try {
-            const updatedUser = await updateUser(user._id || user.id, {
+            const userId = user._id || user.id;
+            const updatedUser = await updateUser(userId, {
                 name: profileData.name,
                 bio: profileData.bio,
                 skills: profileData.skills
@@ -97,7 +116,7 @@ const ProfilePage = () => {
             });
             setProfileUpdateSuccess(true);
             // Refetch latest user data
-            const latestUser = await getUserById(user._id || user.id);
+            const latestUser = await getCurrentUser();
             setUser(latestUser);
             setProfileData({
                 name: latestUser.name || '',
@@ -110,7 +129,7 @@ const ProfilePage = () => {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Container maxWidth="md">
             <Box
                 sx={{
                     display: 'grid',
@@ -137,17 +156,23 @@ const ProfilePage = () => {
                         handleProfileChange={handleProfileChange}
                         handleSaveProfile={handleSaveProfile}
                     />
-                    {/* Geliştirici başvuru formu */}
+                    {/* Geliştirici başvuru formu veya başvuru durumu mesajı */}
                     {!user.isDeveloper && (
-                        <DeveloperApplicationForm
-                            form={form}
-                            handleChange={handleChange}
-                            handleSubmit={handleSubmit}
-                            applying={applying}
-                            error={error}
-                            success={success}
-                            show={!user.isDeveloper}
-                        />
+                        user.developer_application_status || user.developer_application_date ? (
+                            <Alert severity="info" sx={{ mb: 2 }}>
+                                Başvuru zaten yaptınız.
+                            </Alert>
+                        ) : (
+                            <DeveloperApplicationForm
+                                form={form}
+                                handleChange={handleChange}
+                                handleSubmit={handleDeveloperApplicationSubmit}
+                                applying={applying}
+                                error={error}
+                                success={success}
+                                show={true}
+                            />
+                        )
                     )}
                     {/* Geliştirici istatistikleri (sadece geliştiriciler için) */}
                     {user.isDeveloper && (

@@ -14,11 +14,11 @@ export const AuthProvider = ({ children }) => {
 
   // On mount or when token changes, sync user from localStorage
   useEffect(() => {
+    const storedUserValue = localStorage.getItem('user');
     (async () => {
-      const storedUser = localStorage.getItem('user');
       if (token) {
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
+        if (storedUserValue) {
+          const parsedUser = JSON.parse(storedUserValue);
           setUser(parsedUser);
           setLoading(false);
         } else {
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     })();
-  }, [token, localStorage.getItem('user')]);
+  }, [token]);
 
   const login = useCallback(async (credentials) => {
     setLoading(true);
@@ -48,9 +48,11 @@ export const AuthProvider = ({ children }) => {
       const data = await loginUser(credentials);
       if (data.token) {
         setToken(data.token);
+        localStorage.setItem('token', data.token);
       }
       if (data.user) {
         setUser(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
       }
       return data;
     } catch (err) {
