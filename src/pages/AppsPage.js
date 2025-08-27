@@ -16,9 +16,6 @@ const AppsPage = () => {
 
   return (
     <Box sx={{ width: '100%', py: 0, mt: 0 }}>
-      <Typography variant="h6" sx={{ mb: 1, fontWeight: 600, color: '#1976d2', mt: 0, fontSize: 20 }}>
-        Uygulamalar
-      </Typography>
       <CategoryTabs
         categories={categories}
         loading={catLoading}

@@ -77,27 +77,28 @@ const AppCard = ({ app, onShare }) => {
     return (
         <Card
             sx={{
-                width: isSmallScreen ? '100%' : 240,
-                minWidth: 200,
-                maxWidth: 260,
+                width: 240,
+                minWidth: 240,
+                maxWidth: 240,
                 display: 'flex',
                 flexDirection: 'column',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                borderRadius: 3,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                borderRadius: 4,
                 p: 0,
                 background: '#fff',
-                border: '1px solid #f0f0f0',
-                transition: 'all 0.25s ease',
+                border: '1px solid #eee',
+                transition: 'all 0.2s cubic-bezier(.4,0,.2,1)',
                 cursor: 'pointer',
                 overflow: 'hidden',
                 '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 12px 20px rgba(0,0,0,0.12)',
+                    transform: 'translateY(-2px) scale(1.01)',
+                    boxShadow: '0 6px 24px rgba(0,0,0,0.10)',
+                    borderColor: '#d0d0d0',
                 },
             }}
             onClick={() => navigate(`/apps/${app.id}`)}
         >
-            <Box sx={{ p: 2, pb: 1.5, position: 'relative' }}>
+            <Box sx={{ p: 2, pb: 1.5, position: 'relative', background: '#fff' }}>
                 {/* Paylaş butonu sağ üst köşe, sade icon olarak */}
                 <Tooltip title="Paylaş">
                   <IconButton
@@ -107,12 +108,15 @@ const AppCard = ({ app, onShare }) => {
                       top: 8,
                       right: 8,
                       zIndex: 2,
-                      color: '#636363',
-                      background: 'none',
-                      border: 'none',
+                      color: '#888',
+                      background: '#fff',
+                      border: '1px solid #eee',
                       p: 0.5,
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
                       '&:hover': {
-                        background: 'rgba(25, 118, 210, 0.08)'
+                        background: '#f5f5f5',
+                        color: '#222',
+                        borderColor: '#d0d0d0'
                       }
                     }}
                   >
@@ -127,11 +131,12 @@ const AppCard = ({ app, onShare }) => {
                         sx={{
                             width: 52,
                             height: 52,
-                            bgcolor: '#f8f9fa',
-                            border: '1px solid #e9ecef',
+                            bgcolor: '#f5f5f5',
+                            border: '1px solid #eee',
                             fontSize: 20,
                             fontWeight: 600,
-                            mr: 1.5
+                            mr: 1.5,
+                            color: '#888'
                         }}
                     >
                         {(!app.iconUrl && !app.image) ? app.name?.[0]?.toUpperCase() : null}
@@ -141,13 +146,14 @@ const AppCard = ({ app, onShare }) => {
                         <Typography
                             variant="subtitle1"
                             sx={{
-                                fontWeight: 600,
+                                fontWeight: 700,
                                 fontSize: 15,
                                 lineHeight: 1.3,
                                 mb: 0.2,
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
-                                textOverflow: 'ellipsis'
+                                textOverflow: 'ellipsis',
+                                color: '#222'
                             }}
                         >
                             {app.name}
@@ -162,7 +168,8 @@ const AppCard = ({ app, onShare }) => {
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                display: 'block'
+                                display: 'block',
+                                color: '#888'
                             }}
                         >
                             {app.developer || app.developerName || 'Geliştirici Bilinmiyor'}
@@ -171,7 +178,7 @@ const AppCard = ({ app, onShare }) => {
                         <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
                                 {renderStars(app.rating)}
-                                <Typography variant="body2" sx={{ fontWeight: 500, fontSize: 11, ml: 0.5, color: '#666' }}>
+                                <Typography variant="body2" sx={{ fontWeight: 500, fontSize: 11, ml: 0.5, color: '#888' }}>
                                     {app.rating ? app.rating.toFixed(1) : '0.0'}
                                 </Typography>
                             </Box>
@@ -181,12 +188,14 @@ const AppCard = ({ app, onShare }) => {
                                     label="Premium"
                                     size="small"
                                     sx={{
-                                        bgcolor: 'rgba(255, 193, 7, 0.15)',
-                                        color: '#E6B800',
+                                        bgcolor: '#f5f5f5',
+                                        color: '#888',
                                         fontWeight: '600',
                                         fontSize: '10px',
                                         height: '18px',
-                                        ml: 'auto'
+                                        ml: 'auto',
+                                        borderRadius: 1,
+                                        border: '1px solid #eee'
                                     }}
                                 />
                             )}
@@ -207,7 +216,8 @@ const AppCard = ({ app, onShare }) => {
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
-                        mb: 1.5
+                        mb: 1.5,
+                        color: '#888'
                     }}
                 >
                     {app.description || 'Bu uygulama için açıklama bulunmamaktadır.'}
@@ -217,8 +227,8 @@ const AppCard = ({ app, onShare }) => {
             {/* Alt Bilgi ve İstatistikler */}
             <Box
                 sx={{
-                    bgcolor: '#f9f9f9',
-                    borderTop: '1px solid #f0f0f0',
+                    bgcolor: '#fafbfc',
+                    borderTop: '1px solid #eee',
                     p: 1.5,
                     pt: 1
                 }}
@@ -228,8 +238,8 @@ const AppCard = ({ app, onShare }) => {
                         {app.category && (
                             <Tooltip title={app.category}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mr: 1.5 }}>
-                                    <CategoryIcon sx={{ fontSize: 14, color: '#6c757d', mr: 0.5 }} />
-                                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>
+                                    <CategoryIcon sx={{ fontSize: 14, color: '#b0b0b0', mr: 0.5 }} />
+                                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10, color: '#b0b0b0' }}>
                                         {app.category.length > 10 ? `${app.category.substring(0, 10)}...` : app.category}
                                     </Typography>
                                 </Box>
@@ -239,8 +249,8 @@ const AppCard = ({ app, onShare }) => {
                         {app.updatedAt && (
                             <Tooltip title={`Güncelleme: ${new Date(app.updatedAt).toLocaleDateString('tr-TR')}`}>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <CalendarMonthIcon sx={{ fontSize: 14, color: '#6c757d', mr: 0.5 }} />
-                                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10 }}>
+                                    <CalendarMonthIcon sx={{ fontSize: 14, color: '#b0b0b0', mr: 0.5 }} />
+                                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10, color: '#b0b0b0' }}>
                                         {formatDate(app.updatedAt)}
                                     </Typography>
                                 </Box>
@@ -254,9 +264,14 @@ const AppCard = ({ app, onShare }) => {
                                 navigate(`/apps/${app.id}`);
                             }}
                             sx={{
-                                color: '#1976d2',
+                                color: '#888',
                                 p: 0.5,
-                                ml: 1
+                                ml: 1,
+                                background: '#f5f5f5',
+                                '&:hover': {
+                                    background: '#eee',
+                                    color: '#222'
+                                }
                             }}
                             size="small"
                         >
@@ -269,14 +284,13 @@ const AppCard = ({ app, onShare }) => {
                     {app.downloads && (
                         <Tooltip title="İndirme sayısı">
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <DownloadIcon sx={{ fontSize: 14, color: '#6c757d', mr: 0.5 }} />
-                                <Typography variant="caption" color="text.secondary" sx={{ fontSize: 11, fontWeight: 500 }}>
+                                <DownloadIcon sx={{ fontSize: 14, color: '#b0b0b0', mr: 0.5 }} />
+                                <Typography variant="caption" color="text.secondary" sx={{ fontSize: 11, fontWeight: 500, color: '#b0b0b0' }}>
                                     {formatDownloads(app.downloads)}
                                 </Typography>
                             </Box>
                         </Tooltip>
                     )}
-                    {/* Detaylar ve paylaş butonları kaldırıldı */}
                 </Box>
             </Box>
         </Card>
