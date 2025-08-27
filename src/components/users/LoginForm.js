@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuthContext } from '../../context/AuthContext';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -15,7 +15,7 @@ import { Link as RouterLink } from 'react-router-dom';
 const LoginForm = () => {
   const [form, setForm] = useState({ username: '', password: '' });
   const navigate = useNavigate();
-  const { login, loading, error } = useAuth();
+  const { login, loading, error } = useAuthContext();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

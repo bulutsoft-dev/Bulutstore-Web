@@ -111,7 +111,7 @@ const Navbar = () => {
             <MenuItem onClick={handleProfileMenuClose} component={RouterLink} to="/profile">Profil</MenuItem>
             <MenuItem onClick={handleProfileMenuClose} component={RouterLink} to="/account">Hesabım</MenuItem>
             <Divider />
-            <MenuItem onClick={handleProfileMenuClose}>Çıkış Yap</MenuItem>
+            <MenuItem onClick={handleLogout}>Çıkış Yap</MenuItem>
         </Menu>
     );
 
