@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { loginUser, registerUser } from '../api/userApi';
+import { loginUser, registerUser, getCurrentUser } from '../api/userApi';
 
 const AuthContext = createContext();
 
@@ -9,26 +9,48 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
   const [token, setToken] = useState(() => localStorage.getItem('token'));
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // On mount or when token changes, sync user from localStorage
   useEffect(() => {
-    if (token) {
+    (async () => {
+      console.log('AuthContext useEffect token:', token);
       const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+      console.log('AuthContext useEffect storedUser:', storedUser);
+      if (token) {
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          setLoading(false);
+        } else {
+          // Token var ama user yoksa API'den çek
+          try {
+            const apiUser = await getCurrentUser();
+            setUser(apiUser);
+            localStorage.setItem('user', JSON.stringify(apiUser));
+          } catch (err) {
+            setUser(null);
+            localStorage.removeItem('user');
+          } finally {
+            setLoading(false);
+          }
+        }
+      } else {
+        setUser(null);
+        setLoading(false);
       }
-    } else {
-      setUser(null);
-    }
-  }, [token]);
+      console.log('AuthContext useEffect user:', user);
+      console.log('AuthContext useEffect loading:', loading);
+    })();
+  }, [token, localStorage.getItem('user')]);
 
   const login = useCallback(async (credentials) => {
     setLoading(true);
     setError(null);
     try {
       const data = await loginUser(credentials);
+      console.log('AuthContext login data:', data);
       if (data.token) {
         setToken(data.token);
         localStorage.setItem('token', data.token);
@@ -43,6 +65,7 @@ export const AuthProvider = ({ children }) => {
       return null;
     } finally {
       setLoading(false);
+      console.log('AuthContext login loading:', loading);
     }
   }, []);
 
@@ -78,7 +101,7 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, error, login, register, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, setUser, token, loading, error, login, register, logout, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

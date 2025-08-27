@@ -54,3 +54,13 @@ export const getDeveloperApplications = async () => {
   const response = await axiosInstance.get('/users/developer-applications');
   return response.data;
 };
+
+export const becomeDeveloper = async (data) => {
+  const response = await axiosInstance.post('/users/become-developer', data);
+  return response.data;
+};
+
+export const getCurrentUser = async () => {
+  const response = await axiosInstance.get('/users/me');
+  return response.data;
+};
