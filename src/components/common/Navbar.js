@@ -10,7 +10,6 @@ import { styled, alpha } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
 import StoreIcon from '@mui/icons-material/Store';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import ShoppingCart from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -240,10 +239,6 @@ const Navbar = () => {
                             />
                         </Search>
 
-                        {/* Kullanıcı İşlemleri */}
-                        <IconButton color="inherit" sx={{ mr: 1, display: { xs: 'none', md: 'flex' } }}>
-                            <ShoppingCart />
-                        </IconButton>
 
                         {/* Giriş/Kayıt butonları */}
                         <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
