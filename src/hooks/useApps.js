@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAppsByCategory } from '../api/appApi';
+import { getAllApps, getAppsByCategory } from '../api/appApi';
 
 export default function useApps(categoryId) {
   const [apps, setApps] = useState([]);
@@ -7,8 +7,18 @@ export default function useApps(categoryId) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!categoryId) {
-      setApps([]);
+    if (!categoryId || categoryId === 'all') {
+      setLoading(true);
+      setError(null);
+      getAllApps()
+        .then(res => {
+          setApps(res.data);
+          setLoading(false);
+        })
+        .catch(() => {
+          setError('Uygulamalar yüklenemedi.');
+          setLoading(false);
+        });
       return;
     }
     setLoading(true);
@@ -26,4 +36,3 @@ export default function useApps(categoryId) {
 
   return { apps, loading, error };
 }
-

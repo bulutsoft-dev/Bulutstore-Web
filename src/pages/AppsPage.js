@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -11,14 +11,8 @@ import AppCard from '../features/apps/AppCard';
 
 const AppsPage = () => {
   const { categories, loading: catLoading, error: catError } = useCategories();
-  const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('all');
   const { apps, loading: appsLoading, error: appsError } = useApps(selectedCategoryId);
-
-  useEffect(() => {
-    if (categories.length > 0) {
-      setSelectedCategoryId(categories[0].id);
-    }
-  }, [categories]);
 
   return (
     <Box sx={{ width: '100%', py: 0, mt: 0 }}>
