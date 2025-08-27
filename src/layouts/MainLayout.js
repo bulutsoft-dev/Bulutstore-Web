@@ -11,9 +11,15 @@ import Footer from '../components/common/Footer';
  */
 const MainLayout = ({ children }) => {
   return (
-    <Box display="flex" flexDirection="column" minHeight="100vh">
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateRows: 'auto 1fr auto',
+        height: '100dvh', // Mobil uyumlu tam ekran yükseklik
+      }}
+    >
       <Navbar />
-      <Container sx={{ flex: 1, py: 3 }}>
+      <Container sx={{ py: 1 }}>
         {children}
       </Container>
       <Footer />
@@ -22,4 +28,3 @@ const MainLayout = ({ children }) => {
 };
 
 export default MainLayout;
-
