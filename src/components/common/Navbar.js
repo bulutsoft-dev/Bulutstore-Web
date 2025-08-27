@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,6 +15,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import MenuIcon from '@mui/icons-material/Menu'; // Yeni import
+import { useAuthContext } from '../../context/AuthContext';
 
 // Arama çubuğu için stil
 const Search = styled('div')(({ theme }) => ({
@@ -63,21 +64,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Navbar = () => {
     const [profileAnchorEl, setProfileAnchorEl] = useState(null);
     const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState(null);
-    const [user, setUser] = useState(null);
     const isProfileMenuOpen = Boolean(profileAnchorEl);
     const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
-
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        setUser(storedUser ? JSON.parse(storedUser) : null);
-        // Dinamik güncelleme için storage event dinleyicisi
-        const handleStorage = () => {
-            const updatedUser = localStorage.getItem('user');
-            setUser(updatedUser ? JSON.parse(updatedUser) : null);
-        };
-        window.addEventListener('storage', handleStorage);
-        return () => window.removeEventListener('storage', handleStorage);
-    }, []);
+    const { user, isAuthenticated, logout } = useAuthContext();
 
     const handleProfileMenuOpen = (event) => {
         setProfileAnchorEl(event.currentTarget);
@@ -96,9 +85,8 @@ const Navbar = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('user');
-        setUser(null);
-        window.location.href = '/';
+        logout();
+        handleProfileMenuClose();
     };
 
     const profileMenuId = 'primary-search-account-menu';
@@ -266,7 +254,7 @@ const Navbar = () => {
 
                         {/* Giriş/Kayıt veya Profil/Çıkış butonları */}
                         <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
-                            {user ? (
+                            {isAuthenticated ? (
                                 <>
                                     <Button
                                         color="inherit"
