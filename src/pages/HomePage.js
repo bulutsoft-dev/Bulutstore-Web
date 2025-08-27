@@ -2,8 +2,8 @@ import React from 'react';
 
 const HomePage = () => (
   <div>
-    <h1>Welcome to BulutStore</h1>
-    <p>This is the home page.</p>
+    <h1>Welcome to the Home Page</h1>
+    <p>This is the main landing page of the application.</p>
   </div>
 );
 
