@@ -3,19 +3,15 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Box, CircularProgress
 } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 function MyAppsTable({
   apps,
-  categories,
-  onEdit,
   onDelete,
   deleting,
   selectedApp
 }) {
-  const getCategoryName = (categoryId) => {
-    const cat = categories.find(c => c.id === categoryId || c._id === categoryId);
-    return cat ? cat.name : '-';
-  };
+  const navigate = useNavigate();
 
   return (
     <TableContainer component={Paper}>
@@ -48,14 +44,14 @@ function MyAppsTable({
               </TableCell>
               <TableCell>{app.name}</TableCell>
               <TableCell>{app.description || '-'}</TableCell>
-              <TableCell>{getCategoryName(app.category || app.categoryId)}</TableCell>
-              <TableCell>{app.version || '-'}</TableCell>
+              <TableCell>{app.category?.name || '-'}</TableCell>
+              <TableCell>{app.versionName || '-'}</TableCell>
               <TableCell>{app.status || 'Bilinmiyor'}</TableCell>
               <TableCell>{app.downloadsCount ?? app.downloadCount ?? '-'}</TableCell>
               <TableCell>{typeof app.avgRating === 'number' ? app.avgRating.toFixed(2) : (app.averageRating ? app.averageRating.toFixed(2) : '-')}</TableCell>
               <TableCell>{app.createdAt ? new Date(app.createdAt).toLocaleDateString('tr-TR') : '-'}</TableCell>
               <TableCell align="right">
-                <IconButton color="primary" onClick={() => onEdit(app)}><EditIcon /></IconButton>
+                <IconButton color="primary" onClick={() => navigate(`/apps/edit/${app.id || app._id}`)}><EditIcon /></IconButton>
                 <IconButton color="error" onClick={() => onDelete(app)} disabled={deleting && selectedApp && (selectedApp.id || selectedApp._id) === (app.id || app._id)}>
                   {deleting && selectedApp && (selectedApp.id || selectedApp._id) === (app.id || app._id) ? <CircularProgress size={20} /> : <DeleteIcon />}
                 </IconButton>
@@ -69,4 +65,3 @@ function MyAppsTable({
 }
 
 export default MyAppsTable;
-

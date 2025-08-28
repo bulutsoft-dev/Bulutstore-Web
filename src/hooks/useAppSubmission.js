@@ -9,12 +9,13 @@ export default function useAppSubmission(user) {
     name: '',
     shortDescription: '',
     description: '',
-    version: '',
+    versionName: '',
     iconUrl: '',
     screenshotUrls: [],
     fileUrl: '',
-    categoryId: '',
-    tagIds: [],
+    category: null, // category object
+    tags: [], // array of tag objects
+    developer: null,
     developerWebsite: '',
     developerDisplayName: '',
   });
@@ -42,6 +43,10 @@ export default function useAppSubmission(user) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
+  const handleTagsChange = (event) => {
+    const { value } = event.target;
+    setForm((prev) => ({ ...prev, tags: value }));
+  };
   const handleAddScreenshot = () => {
     if (screenshotInput.trim()) {
       setForm((prev) => ({ ...prev, screenshotUrls: [...prev.screenshotUrls, screenshotInput.trim()] }));
@@ -50,10 +55,6 @@ export default function useAppSubmission(user) {
   };
   const handleRemoveScreenshot = (idx) => {
     setForm((prev) => ({ ...prev, screenshotUrls: prev.screenshotUrls.filter((_, i) => i !== idx) }));
-  };
-  const handleTagsChange = (event) => {
-    const { value } = event.target;
-    setForm((prev) => ({ ...prev, tagIds: typeof value === 'string' ? value.split(',') : value }));
   };
   const isDuplicateCategory = categories.some(cat => cat.name.trim().toLowerCase() === newCategory.trim().toLowerCase());
   const isDuplicateTag = tags.some(tag => tag.name.trim().toLowerCase() === newTag.trim().toLowerCase());
@@ -64,7 +65,7 @@ export default function useAppSubmission(user) {
     try {
       const res = await createTag({ name: newTag.trim() });
       setTags((prev) => [...prev, res.data]);
-      setForm((prev) => ({ ...prev, tagIds: [...prev.tagIds, res.data.id || res.data._id] }));
+      setForm((prev) => ({ ...prev, tags: [...prev.tags, res.data] }));
       setNewTag('');
     } catch (err) {
       if (err?.response?.status === 409) {
@@ -83,7 +84,7 @@ export default function useAppSubmission(user) {
     try {
       const res = await createCategory({ name: newCategory.trim() });
       setCategories((prev) => [...prev, res.data]);
-      setForm((prev) => ({ ...prev, categoryId: res.data.id || res.data._id }));
+      setForm((prev) => ({ ...prev, category: res.data }));
       setNewCategory('');
     } catch (err) {
       if (err?.response?.status === 409) {
@@ -97,13 +98,13 @@ export default function useAppSubmission(user) {
   };
   const validateStep = () => {
     if (activeStep === 0) {
-      return form.name && form.shortDescription && form.description && form.version;
+      return form.name && form.shortDescription && form.description && form.versionName;
     }
     if (activeStep === 1) {
       return form.iconUrl && form.fileUrl;
     }
     if (activeStep === 2) {
-      return form.categoryId && form.tagIds.length > 0;
+      return form.category && form.tags.length > 0;
     }
     return true;
   };
@@ -115,20 +116,18 @@ export default function useAppSubmission(user) {
         name: form.name,
         description: form.description,
         shortDescription: form.shortDescription,
-        categoryId: form.categoryId,
+        categoryId: Number(form.category.id),
         status: 'PENDING',
-        tagIds: form.tagIds,
+        tagIds: form.tags.map(tag => Number(tag.id)),
         iconUrl: form.iconUrl,
         screenshotUrls: form.screenshotUrls,
-        developerId: user?.id,
-        developerWebsite: form.developerWebsite,
-        developerDisplayName: form.developerDisplayName,
+        fileUrl: form.fileUrl,
       };
       await createApp(payload);
       setSuccess(true);
       setActiveStep(0);
       setForm({
-        name: '', shortDescription: '', description: '', version: '', iconUrl: '', screenshotUrls: [], fileUrl: '', categoryId: '', tagIds: [], developerWebsite: '', developerDisplayName: '',
+        name: '', shortDescription: '', description: '', versionName: '', iconUrl: '', screenshotUrls: [], fileUrl: '', category: null, tags: [], developer: null, developerWebsite: '', developerDisplayName: '',
       });
     } catch (err) {
       setError('Uygulama gönderilemedi.');
@@ -141,6 +140,7 @@ export default function useAppSubmission(user) {
     setActiveStep,
     form,
     setForm,
+    setLoading,
     screenshotInput,
     setScreenshotInput,
     loading,
@@ -170,4 +170,3 @@ export default function useAppSubmission(user) {
     isDuplicateTag,
   };
 }
-

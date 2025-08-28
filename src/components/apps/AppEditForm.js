@@ -9,10 +9,10 @@ const steps = [
   'Uygulama Bilgisi',
   'Medya & Dosyalar',
   'Etiket & Kategori',
-  'Gözden Geçir & Gönder'
+  'Gözden Geçir & Güncelle'
 ];
 
-function AppSubmissionForm({
+function AppEditForm({
   activeStep,
   form,
   screenshotInput,
@@ -37,7 +37,6 @@ function AppSubmissionForm({
   handleTagsChange,
   handleAddTag,
   handleAddCategory,
-  validateStep,
   handleSubmit,
   setScreenshotInput,
   isDuplicateCategory,
@@ -51,9 +50,7 @@ function AppSubmissionForm({
             <TextField fullWidth label="Uygulama Adı" name="name" value={form.name} onChange={handleChange} margin="normal" required />
             <TextField fullWidth label="Kısa Açıklama" name="shortDescription" value={form.shortDescription} onChange={handleChange} margin="normal" required />
             <TextField fullWidth label="Açıklama" name="description" value={form.description} onChange={handleChange} margin="normal" multiline minRows={3} required />
-            <TextField fullWidth label="Sürüm" name="version" value={form.version} onChange={handleChange} margin="normal" required />
-            <TextField fullWidth label="Geliştirici Görünen Adı" name="developerDisplayName" value={form.developerDisplayName} onChange={handleChange} margin="normal" />
-            <TextField fullWidth label="Geliştirici Web Sitesi" name="developerWebsite" value={form.developerWebsite} onChange={handleChange} margin="normal" />
+            <TextField fullWidth label="Sürüm" name="versionName" value={form.versionName} onChange={handleChange} margin="normal" required />
           </Box>
         );
       case 1:
@@ -81,15 +78,16 @@ function AppSubmissionForm({
             <FormControl fullWidth margin="normal">
               <InputLabel>Kategori</InputLabel>
               <Select
-                name="categoryId"
-                value={form.categoryId}
-                onChange={handleChange}
+                name="category"
+                value={form.category || ''}
+                onChange={e => handleChange({ target: { name: 'category', value: categories.find(cat => (cat.id === e.target.value.id || cat._id === e.target.value.id)) } })}
                 input={<OutlinedInput label="Kategori" />}
                 required
                 variant="outlined"
+                renderValue={selected => selected?.name || ''}
               >
                 {categories.map((cat) => (
-                  <MenuItem key={cat.id || cat._id} value={cat.id || cat._id}>{cat.name}</MenuItem>
+                  <MenuItem key={cat.id || cat._id} value={cat}>{cat.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -103,22 +101,21 @@ function AppSubmissionForm({
               <InputLabel>Etiketler</InputLabel>
               <Select
                 multiple
-                name="tagIds"
-                value={form.tagIds}
-                onChange={handleTagsChange}
+                name="tags"
+                value={form.tags}
+                onChange={e => handleTagsChange(e)}
                 input={<OutlinedInput label="Etiketler" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((id) => {
-                      const tag = tags.find(t => t.id === id || t._id === id);
-                      return <Chip key={id} label={tag?.name || id} />;
-                    })}
+                    {selected.map((tag) => (
+                      <Chip key={tag.id || tag._id} label={tag.name} />
+                    ))}
                   </Box>
                 )}
                 variant="outlined"
               >
                 {tags.map((tag) => (
-                  <MenuItem key={tag.id || tag._id} value={tag.id || tag._id}>{tag.name}</MenuItem>
+                  <MenuItem key={tag.id || tag._id} value={tag}>{tag.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -138,14 +135,12 @@ function AppSubmissionForm({
               <Typography><b>Ad:</b> {form.name}</Typography>
               <Typography><b>Kısa Açıklama:</b> {form.shortDescription}</Typography>
               <Typography><b>Açıklama:</b> {form.description}</Typography>
-              <Typography><b>Sürüm:</b> {form.version}</Typography>
+              <Typography><b>Sürüm:</b> {form.versionName}</Typography>
               <Typography><b>İkon URL:</b> {form.iconUrl}</Typography>
               <Typography><b>Dosya URL:</b> {form.fileUrl}</Typography>
               <Typography><b>Ekran Görüntüleri:</b> {form.screenshotUrls.join(', ')}</Typography>
-              <Typography><b>Kategori:</b> {categories.find(c => c.id === form.categoryId || c._id === form.categoryId)?.name}</Typography>
-              <Typography><b>Etiketler:</b> {form.tagIds.map(id => tags.find(t => t.id === id || t._id === id)?.name).join(', ')}</Typography>
-              <Typography><b>Geliştirici Görünen Adı:</b> {form.developerDisplayName}</Typography>
-              <Typography><b>Geliştirici Web Sitesi:</b> {form.developerWebsite}</Typography>
+              <Typography><b>Kategori:</b> {form.category?.name}</Typography>
+              <Typography><b>Etiketler:</b> {form.tags.map(tag => tag.name).join(', ')}</Typography>
             </Box>
           </Box>
         );
@@ -157,7 +152,7 @@ function AppSubmissionForm({
   return (
     <Box>
       <Box mt={4} mb={2}>
-        <Typography variant="h4" align="center">Uygulama Ekle</Typography>
+        <Typography variant="h4" align="center">Uygulamayı Düzenle</Typography>
       </Box>
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label) => (
@@ -169,14 +164,14 @@ function AppSubmissionForm({
       <Box mt={3}>
         {getStepContent(activeStep)}
         {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-        {success && <Alert severity="success" sx={{ mt: 2 }}>Uygulama başarıyla gönderildi!</Alert>}
+        {success && <Alert severity="success" sx={{ mt: 2 }}>Uygulama başarıyla güncellendi!</Alert>}
         <Box mt={2} display="flex" justifyContent="space-between">
           <Button disabled={activeStep === 0} onClick={handleBack}>Geri</Button>
           {activeStep < steps.length - 1 && (
-            <Button variant="contained" onClick={handleNext} disabled={!validateStep()}>İleri</Button>
+            <Button variant="contained" onClick={handleNext}>İleri</Button>
           )}
           {activeStep === steps.length - 1 && (
-            <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>{loading ? 'Gönderiliyor...' : 'Gönder'}</Button>
+            <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>{loading ? 'Güncelleniyor...' : 'Güncelle'}</Button>
           )}
         </Box>
       </Box>
@@ -184,4 +179,4 @@ function AppSubmissionForm({
   );
 }
 
-export default AppSubmissionForm;
+export default AppEditForm;

@@ -49,12 +49,12 @@ export const useApplyForDeveloper = () => {
   const [error, setError] = React.useState(null);
   const [success, setSuccess] = React.useState(false);
 
-  const apply = useCallback(async () => {
+  const apply = useCallback(async (applicationText) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
     try {
-      await applyForDeveloper();
+      await applyForDeveloper(applicationText);
       setSuccess(true);
     } catch (err) {
       setError(err);

@@ -49,9 +49,9 @@ const DeveloperRequestsTable = ({ applications, onApprove, onReject, actionLoadi
               return (
                 <TableRow key={id}>
                   <TableCell>{id}</TableCell>
-                  <TableCell>{app.username || '-'}</TableCell>
-                  <TableCell>{app.email || '-'}</TableCell>
-                  <TableCell>{app.developerApplicationText || '-'}</TableCell>
+                  <TableCell>{app.developer ? app.developer.username : '-'}</TableCell>
+                  <TableCell>{app.developer ? app.developer.email : '-'}</TableCell>
+                  <TableCell>{app.applicationText || '-'}</TableCell>
                   <TableCell>{getStatusChip(app.status)}</TableCell>
                   <TableCell>{app.createdAt ? new Date(app.createdAt).toLocaleString() : '-'}</TableCell>
                   <TableCell>

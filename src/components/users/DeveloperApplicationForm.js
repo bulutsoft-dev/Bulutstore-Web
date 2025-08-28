@@ -35,7 +35,7 @@ const DeveloperApplicationForm = ({ show }) => {
         setError(null);
         setSuccess(false);
         try {
-            await applyForDeveloper(form);
+            await applyForDeveloper(form.applicationText);
             setSuccess(true);
         } catch (err) {
             setError('Başvuru gönderilemedi.');

@@ -44,7 +44,7 @@ const AppDetailPage = () => {
           <Typography variant="h3" sx={{ fontWeight: 800, mb: 0.5, fontSize: { xs: 26, sm: 34, md: 40 } }}>{app.name}</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500, fontSize: 18 }}>
-              {app.developerDisplayName || app.developer || app.developerName || 'Geliştirici Bilinmiyor'}
+              {app.developerDisplayName || (typeof app.developer === 'object' && app.developer !== null ? (app.developer.displayName || app.developer.username) : app.developer) || app.developerName || 'Geliştirici Bilinmiyor'}
             </Typography>
             {app.developerWebsite && (
               <a href={app.developerWebsite} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', marginLeft: 8 }}>
@@ -53,7 +53,7 @@ const AppDetailPage = () => {
             )}
           </Box>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, mb: 1 }}>
-            {app.category && <Chip label={app.category} size="small" sx={{ fontWeight: 600, fontSize: 13 }} />}
+            {app.category && <Chip label={app.category?.name} size="small" sx={{ fontWeight: 600, fontSize: 13 }} />}
             {app.status && <Chip label={app.status} size="small" sx={{ fontWeight: 600, fontSize: 13 }} />}
             {app.isPremium && <Chip label="Premium" size="small" color="warning" sx={{ fontWeight: 600, fontSize: 13 }} />}
           </Box>

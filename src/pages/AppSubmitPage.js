@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { useAuthContext } from '../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
-import AppSubmissionForm from '../components/apps/AppSubmissionForm';
+import AppAddForm from '../components/apps/AppAddForm';
 import useAppSubmission from '../hooks/useAppSubmission';
 
 const AppSubmitPage = () => {
@@ -45,7 +45,7 @@ const AppSubmitPage = () => {
       {localAlert && (
         <Alert severity="warning" onClose={() => setLocalAlert(null)} sx={{ mb: 2 }}>{localAlert}</Alert>
       )}
-      <AppSubmissionForm {...appSubmission} />
+      <AppAddForm {...appSubmission} />
     </Container>
   );
 };

@@ -168,7 +168,7 @@ const AppCard = ({ app, onShare }) => {
                                 color: '#888'
                             }}
                         >
-                            {app.developer || app.developerName || 'Geliştirici Bilinmiyor'}
+                            {(typeof app.developer === 'object' && app.developer !== null) ? (app.developer.displayName || app.developer.username || 'Geliştirici Bilinmiyor') : (app.developer || app.developerName || 'Geliştirici Bilinmiyor')}
                         </Typography>
 
                         <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
@@ -232,11 +232,11 @@ const AppCard = ({ app, onShare }) => {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         {app.category && (
-                            <Tooltip title={app.category}>
+                            <Tooltip title={typeof app.category === 'object' && app.category !== null ? app.category.name : app.category}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mr: 1.5 }}>
                                     <CategoryIcon sx={{ fontSize: 14, color: '#b0b0b0', mr: 0.5 }} />
                                     <Typography variant="caption" color="text.secondary" sx={{ fontSize: 10, color: '#b0b0b0' }}>
-                                        {app.category.length > 10 ? `${app.category.substring(0, 10)}...` : app.category}
+                                        {typeof app.category === 'object' && app.category !== null ? (app.category.name?.length > 10 ? `${app.category.name.substring(0, 10)}...` : app.category.name) : (app.category.length > 10 ? `${app.category.substring(0, 10)}...` : app.category)}
                                     </Typography>
                                 </Box>
                             </Tooltip>
@@ -288,6 +288,24 @@ const AppCard = ({ app, onShare }) => {
                         </Tooltip>
                     )}
                 </Box>
+
+                {/* Kategori Bilgisi */}
+                {/* Removed duplicate category rendering here. If you want to show version info, move it elsewhere. */}
+                {app.versionName && (
+                  <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      Sürüm: {app.versionName}
+                    </Typography>
+                  </Box>
+                )}
+                {/* Tags rendering */}
+                {Array.isArray(app.tags) && app.tags.length > 0 && (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 1 }}>
+                    {app.tags.map(tag => (
+                      <Chip key={tag.id} label={`#${tag.name}`} size="small" variant="outlined" sx={{ fontSize: 10, height: 18 }} />
+                    ))}
+                  </Box>
+                )}
             </Box>
         </Card>
     );

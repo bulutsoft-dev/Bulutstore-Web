@@ -132,7 +132,6 @@ const Navbar = () => {
             onClose={handleMobileMenuClose}
         >
             <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/">Anasayfa</MenuItem>
-            <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/games">Oyunlar</MenuItem>
             <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/apps">Uygulamalar</MenuItem>
             {user && String(user.role).toUpperCase() === 'ADMIN' && (
                 <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/admin">Admin Panel</MenuItem>
@@ -205,20 +204,7 @@ const Navbar = () => {
                         >
                             Anasayfa
                         </Button>
-                        <Button
-                            color="inherit"
-                            component={RouterLink}
-                            to="/games"
-                            sx={{
-                                borderRadius: '4px',
-                                '&:hover': {
-                                    backgroundColor: 'rgba(66, 133, 244, 0.08)',
-                                    color: '#4285F4'
-                                }
-                            }}
-                        >
-                            Oyunlar
-                        </Button>
+
                         <Button
                             color="inherit"
                             component={RouterLink}
