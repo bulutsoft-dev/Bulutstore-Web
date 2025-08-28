@@ -6,10 +6,10 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const steps = [
-  'App Info',
-  'Media & Files',
-  'Tags & Category',
-  'Review & Submit'
+  'Uygulama Bilgisi',
+  'Medya & Dosyalar',
+  'Etiket & Kategori',
+  'Gözden Geçir & Gönder'
 ];
 
 function AppSubmissionForm({
@@ -48,23 +48,23 @@ function AppSubmissionForm({
       case 0:
         return (
           <Box>
-            <TextField fullWidth label="App Name" name="name" value={form.name} onChange={handleChange} margin="normal" required />
-            <TextField fullWidth label="Short Description" name="shortDescription" value={form.shortDescription} onChange={handleChange} margin="normal" required />
-            <TextField fullWidth label="Description" name="description" value={form.description} onChange={handleChange} margin="normal" multiline minRows={3} required />
-            <TextField fullWidth label="Version" name="version" value={form.version} onChange={handleChange} margin="normal" required />
-            <TextField fullWidth label="Developer Display Name" name="developerDisplayName" value={form.developerDisplayName} onChange={handleChange} margin="normal" />
-            <TextField fullWidth label="Developer Website" name="developerWebsite" value={form.developerWebsite} onChange={handleChange} margin="normal" />
+            <TextField fullWidth label="Uygulama Adı" name="name" value={form.name} onChange={handleChange} margin="normal" required />
+            <TextField fullWidth label="Kısa Açıklama" name="shortDescription" value={form.shortDescription} onChange={handleChange} margin="normal" required />
+            <TextField fullWidth label="Açıklama" name="description" value={form.description} onChange={handleChange} margin="normal" multiline minRows={3} required />
+            <TextField fullWidth label="Sürüm" name="version" value={form.version} onChange={handleChange} margin="normal" required />
+            <TextField fullWidth label="Geliştirici Görünen Adı" name="developerDisplayName" value={form.developerDisplayName} onChange={handleChange} margin="normal" />
+            <TextField fullWidth label="Geliştirici Web Sitesi" name="developerWebsite" value={form.developerWebsite} onChange={handleChange} margin="normal" />
           </Box>
         );
       case 1:
         return (
           <Box>
-            <TextField fullWidth label="App Icon URL" name="iconUrl" value={form.iconUrl} onChange={handleChange} margin="normal" required />
-            <TextField fullWidth label="App File URL" name="fileUrl" value={form.fileUrl} onChange={handleChange} margin="normal" required />
+            <TextField fullWidth label="Uygulama İkonu URL" name="iconUrl" value={form.iconUrl} onChange={handleChange} margin="normal" required />
+            <TextField fullWidth label="Uygulama Dosyası URL" name="fileUrl" value={form.fileUrl} onChange={handleChange} margin="normal" required />
             <Box mt={2} mb={1}>
-              <Typography variant="subtitle1">Screenshot URLs</Typography>
+              <Typography variant="subtitle1">Ekran Görüntüsü URL'leri</Typography>
               <Box display="flex" gap={1}>
-                <TextField label="Screenshot URL" value={screenshotInput} onChange={e => setScreenshotInput(e.target.value)} size="small" />
+                <TextField label="Ekran Görüntüsü URL" value={screenshotInput} onChange={e => setScreenshotInput(e.target.value)} size="small" />
                 <IconButton color="primary" onClick={handleAddScreenshot} disabled={!screenshotInput.trim()}><AddIcon /></IconButton>
               </Box>
               <Box mt={1} display="flex" flexWrap="wrap" gap={1}>
@@ -133,19 +133,19 @@ function AppSubmissionForm({
       case 3:
         return (
           <Box>
-            <Typography variant="h6">Review Your App Submission</Typography>
+            <Typography variant="h6">Başvurunu Gözden Geçir</Typography>
             <Box mt={2}>
-              <Typography><b>Name:</b> {form.name}</Typography>
-              <Typography><b>Short Description:</b> {form.shortDescription}</Typography>
-              <Typography><b>Description:</b> {form.description}</Typography>
-              <Typography><b>Version:</b> {form.version}</Typography>
-              <Typography><b>Icon URL:</b> {form.iconUrl}</Typography>
-              <Typography><b>File URL:</b> {form.fileUrl}</Typography>
-              <Typography><b>Screenshots:</b> {form.screenshotUrls.join(', ')}</Typography>
-              <Typography><b>Category:</b> {categories.find(c => c.id === form.categoryId || c._id === form.categoryId)?.name}</Typography>
-              <Typography><b>Tags:</b> {form.tagIds.map(id => tags.find(t => t.id === id || t._id === id)?.name).join(', ')}</Typography>
-              <Typography><b>Developer Display Name:</b> {form.developerDisplayName}</Typography>
-              <Typography><b>Developer Website:</b> {form.developerWebsite}</Typography>
+              <Typography><b>Ad:</b> {form.name}</Typography>
+              <Typography><b>Kısa Açıklama:</b> {form.shortDescription}</Typography>
+              <Typography><b>Açıklama:</b> {form.description}</Typography>
+              <Typography><b>Sürüm:</b> {form.version}</Typography>
+              <Typography><b>İkon URL:</b> {form.iconUrl}</Typography>
+              <Typography><b>Dosya URL:</b> {form.fileUrl}</Typography>
+              <Typography><b>Ekran Görüntüleri:</b> {form.screenshotUrls.join(', ')}</Typography>
+              <Typography><b>Kategori:</b> {categories.find(c => c.id === form.categoryId || c._id === form.categoryId)?.name}</Typography>
+              <Typography><b>Etiketler:</b> {form.tagIds.map(id => tags.find(t => t.id === id || t._id === id)?.name).join(', ')}</Typography>
+              <Typography><b>Geliştirici Görünen Adı:</b> {form.developerDisplayName}</Typography>
+              <Typography><b>Geliştirici Web Sitesi:</b> {form.developerWebsite}</Typography>
             </Box>
           </Box>
         );
@@ -157,7 +157,7 @@ function AppSubmissionForm({
   return (
     <Box>
       <Box mt={4} mb={2}>
-        <Typography variant="h4" align="center">App Submission</Typography>
+        <Typography variant="h4" align="center">Uygulama Ekle</Typography>
       </Box>
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label) => (
@@ -171,12 +171,12 @@ function AppSubmissionForm({
         {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
         {success && <Alert severity="success" sx={{ mt: 2 }}>Uygulama başarıyla gönderildi!</Alert>}
         <Box mt={2} display="flex" justifyContent="space-between">
-          <Button disabled={activeStep === 0} onClick={handleBack}>Back</Button>
+          <Button disabled={activeStep === 0} onClick={handleBack}>Geri</Button>
           {activeStep < steps.length - 1 && (
-            <Button variant="contained" onClick={handleNext} disabled={!validateStep()}>Next</Button>
+            <Button variant="contained" onClick={handleNext} disabled={!validateStep()}>İleri</Button>
           )}
           {activeStep === steps.length - 1 && (
-            <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>{loading ? 'Submitting...' : 'Submit'}</Button>
+            <Button variant="contained" color="primary" onClick={handleSubmit} disabled={loading}>{loading ? 'Gönderiliyor...' : 'Gönder'}</Button>
           )}
         </Box>
       </Box>
@@ -185,4 +185,3 @@ function AppSubmissionForm({
 }
 
 export default AppSubmissionForm;
-

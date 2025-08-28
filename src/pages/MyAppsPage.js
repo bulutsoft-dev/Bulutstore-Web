@@ -87,6 +87,10 @@ const MyAppsPage = () => {
     if (error) {
         return <Alert severity="error">{error}</Alert>;
     }
+    if (!user) {
+        navigate('/login');
+        return null;
+    }
     return (
         <Container maxWidth="lg">
             {/* Show alert if redirected or local */}

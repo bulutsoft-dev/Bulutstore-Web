@@ -17,18 +17,27 @@ const AppSubmitPage = () => {
   const location = useLocation();
   const [localAlert, setLocalAlert] = useState(location.state?.alert || null);
 
-  // Helper: check if user is developer
-  const isDeveloper = user && (user.role === 'developer' || (Array.isArray(user.roles) && user.roles.includes('developer')));
-
-  // Use custom hook for all form logic
+  // Always call hooks first!
   const appSubmission = useAppSubmission(user);
 
+  // Helper: check if user is developer (case-insensitive)
+  const isDeveloper = user && (
+    (typeof user.role === 'string' && user.role.toLowerCase() === 'developer') ||
+    (Array.isArray(user.roles) && user.roles.map(r => r.toLowerCase()).includes('developer'))
+  );
+
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     if (!isDeveloper) {
       navigate('/profile', { state: { alert: 'Uygulama eklemek için geliştirici olmalısınız.' } });
     }
   }, [user, isDeveloper, navigate]);
+
+  // If not logged in or not developer, don't render the form
+  if (!user || !isDeveloper) return null;
 
   return (
     <Container maxWidth="md">
@@ -36,9 +45,6 @@ const AppSubmitPage = () => {
       {localAlert && (
         <Alert severity="warning" onClose={() => setLocalAlert(null)} sx={{ mb: 2 }}>{localAlert}</Alert>
       )}
-      <Box mt={4} mb={2}>
-        <Typography variant="h4" align="center">App Submission</Typography>
-      </Box>
       <AppSubmissionForm {...appSubmission} />
     </Container>
   );
