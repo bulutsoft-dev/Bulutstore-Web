@@ -26,7 +26,7 @@ const RegisterForm = () => {
     const data = await register(form);
     if (data && data.token) {
       setSuccess(true);
-      setTimeout(() => navigate('/'), 1500);
+      setTimeout(() => navigate('/login'), 1500);
     }
   };
 
@@ -41,7 +41,7 @@ const RegisterForm = () => {
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
           {error && <Alert severity="error">{error}</Alert>}
-          {success && <Alert severity="success">Kayıt başarılı! Ana sayfaya yönlendiriliyorsunuz...</Alert>}
+          {success && <Alert severity="success">Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...</Alert>}
           <TextField
             margin="normal"
             required

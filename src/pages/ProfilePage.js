@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../context/AuthContext';
 import { updateUser, getCurrentUser, applyForDeveloper } from '../api/userApi';
 import {
@@ -14,6 +15,7 @@ import DeveloperStats from '../components/users/DeveloperStats';
 
 const ProfilePage = () => {
     const { user, setUser, loading } = useAuthContext();
+    const navigate = useNavigate();
     const [applying, setApplying] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
@@ -48,6 +50,12 @@ const ProfilePage = () => {
         fetchUser();
         // eslint-disable-next-line
     }, []);
+
+    React.useEffect(() => {
+        if (!user && !loading) {
+            navigate('/');
+        }
+    }, [user, loading, navigate]);
 
     if (fetching || !user) {
         return (

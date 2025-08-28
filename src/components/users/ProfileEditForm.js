@@ -142,32 +142,34 @@ const ProfileEditForm = ({
                     margin="normal"
                     InputProps={{ readOnly: !editMode }}
                 />
-                {/* Sadece geliştirici kullanıcılar için Görünen Ad ve Web Sitesi alanları */}
-                {user.isDeveloper && (
-                    <>
-                        <TextField
-                            label="Görünen Ad"
-                            name="displayName"
-                            value={form.displayName || ''}
-                            onChange={handleChange}
-                            fullWidth
-                            margin="normal"
-                            InputProps={{ readOnly: !editMode }}
-                        />
-                        <TextField
-                            label="Web Sitesi"
-                            name="website"
-                            value={form.website || ''}
-                            onChange={handleChange}
-                            fullWidth
-                            margin="normal"
-                            InputProps={{ readOnly: !editMode }}
-                        />
-                    </>
-                )}
+                <TextField
+                    label="Görünen Ad"
+                    name="displayName"
+                    value={form.displayName || ''}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    InputProps={{ readOnly: !editMode }}
+                />
+                <TextField
+                    label="Web Sitesi"
+                    name="website"
+                    value={form.website || ''}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                    InputProps={{ readOnly: !editMode }}
+                />
                 <TextField
                     label="Durum"
-                    value={user.isDeveloper ? 'Geliştirici' : 'Kullanıcı'}
+                    value={user.role === 'DEVELOPER' ? 'Geliştirici' : 'Kullanıcı'}
+                    fullWidth
+                    margin="normal"
+                    InputProps={{ readOnly: true }}
+                />
+                <TextField
+                    label="Hesap Durumu"
+                    value={user.status === 'ACTIVE' ? 'Aktif' : 'Pasif'}
                     fullWidth
                     margin="normal"
                     InputProps={{ readOnly: true }}
