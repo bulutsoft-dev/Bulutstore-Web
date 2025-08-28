@@ -6,13 +6,11 @@ import {
     Box,
     Container,
     CircularProgress,
-    Alert,
-    Button
+    Alert
 } from '@mui/material';
 import ProfileSidebar from '../components/users/ProfileSidebar';
 import ProfileEditForm from '../components/users/ProfileEditForm';
 import DeveloperApplicationForm from '../components/users/DeveloperApplicationForm';
-import DeveloperStats from '../components/users/DeveloperStats';
 
 const ProfilePage = () => {
     const { user, setUser, loading } = useAuthContext();
@@ -162,9 +160,6 @@ const ProfilePage = () => {
                                 show={true}
                             />
                         )
-                    )}
-                    {user.isDeveloper && (
-                        <DeveloperStats />
                     )}
                 </Box>
             </Box>

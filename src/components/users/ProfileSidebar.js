@@ -43,6 +43,21 @@ const ProfileSidebar = ({ user }) => (
                 </Button>
             </Box>
         )}
+        {/* Uygulamalarım button - only visible to non-developers */}
+        {!user.isDeveloper && (
+            <Box sx={{ mb: 2, width: '100%', textAlign: 'center' }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    fullWidth
+                    href="/my-apps"
+                    sx={{ fontWeight: 'bold', fontSize: 16 }}
+                >
+                    Uygulamalarım
+                </Button>
+            </Box>
+        )}
         <Stack spacing={1.5} alignItems="flex-start">
             <Box display="flex" alignItems="center">
                 <Email color="action" sx={{ mr: 1 }} />
