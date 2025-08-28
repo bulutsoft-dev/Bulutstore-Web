@@ -11,6 +11,7 @@ const ProfileEditForm = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+    const [passwordError, setPasswordError] = useState('');
     // Local state for editable fields
     const [form, setForm] = useState({
         username: user.username || '',
@@ -33,20 +34,35 @@ const ProfileEditForm = ({
     }, [user]);
 
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: value });
+        if (name === 'password') {
+            // Only validate if user is entering a new password
+            if (value && value.length < 6) {
+                setPasswordError('Şifre en az 6 karakter olmalı.');
+            } else {
+                setPasswordError('');
+            }
+        }
     };
 
     const handleSaveProfile = async () => {
         setLoading(true);
         setError('');
         setSuccess(false);
+        setPasswordError('');
         // Zorunlu alanlar boşsa kaydetme
         if (!form.username || !form.email) {
             setError('Kullanıcı adı ve e-posta boş olamaz.');
             setLoading(false);
             return;
         }
-        // Şifre zorunlu değil, sadece doluysa gönder
+        // Password validation: only if user entered a new password
+        if (form.password && form.password.length < 6) {
+            setPasswordError('Şifre en az 6 karakter olmalı.');
+            setLoading(false);
+            return;
+        }
         // Şifre alanı boş bırakılırsa mevcut şifre korunur. Sadece yeni şifre girilirse güncellenir.
         const payload = {
             username: form.username,
@@ -181,7 +197,8 @@ const ProfileEditForm = ({
                             </Button>
                         )
                     }}
-                    helperText="Şifreyi değiştirmek istemiyorsan boş bırak."
+                    helperText={passwordError ? passwordError : 'Şifreyi değiştirmek istemiyorsan boş bırak.'}
+                    error={!!passwordError}
                 />
                 {/* Action buttons at the bottom */}
                 <Box display="flex" justifyContent="flex-end" gap={1} mt={2}>

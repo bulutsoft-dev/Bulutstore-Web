@@ -47,9 +47,9 @@ const DeveloperRequestsTable = ({ applications, onApprove, onReject, actionLoadi
                   <TableCell>{id}</TableCell>
                   <TableCell>{app.username || '-'}</TableCell>
                   <TableCell>{app.email || '-'}</TableCell>
-                  <TableCell>{app.applicationText || '-'}</TableCell>
+                  <TableCell>{app.developerApplicationText || app.applicationText || '-'}</TableCell>
                   <TableCell>{app.status || '-'}</TableCell>
-                  <TableCell>{app.date ? new Date(app.date).toLocaleString() : '-'}</TableCell>
+                  <TableCell>{app.createdAt ? new Date(app.createdAt).toLocaleString() : '-'}</TableCell>
                   <TableCell>
                     {isActionable ? (
                       <Stack direction="row" spacing={1}>
