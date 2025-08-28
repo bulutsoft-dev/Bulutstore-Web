@@ -53,9 +53,9 @@ const AppCardHeader = ({ app }) => (
       </Typography>
       <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
-          <StarRating rating={app.rating} size={14} />
+          <StarRating rating={app.avgRating} size={14} />
           <Typography variant="body2" sx={{ fontWeight: 500, fontSize: 11, ml: 0.5, color: '#888' }}>
-            {app.rating ? app.rating.toFixed(1) : '0.0'}
+            {typeof app.avgRating === 'number' ? app.avgRating.toFixed(1) : '0.0'}
           </Typography>
         </Box>
         {app.isPremium && (
@@ -80,4 +80,3 @@ const AppCardHeader = ({ app }) => (
 );
 
 export default AppCardHeader;
-

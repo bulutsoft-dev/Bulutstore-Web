@@ -20,22 +20,6 @@ const AppsPage = () => {
 
   return (
     <Box sx={{ width: '100%', py: 0, mt: 0 }}>
-      {/* Uygulama Ekle button for developers - visible at top of AppsPage */}
-      {/*
-      {user && (user.role === 'DEVELOPER' || user.role === 'ADMIN') && (
-        <Box sx={{ mb: 2, p: 2, backgroundColor: 'red', color: 'white', borderRadius: 2, textAlign: 'center' }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            size="large"
-            onClick={() => navigate('/apps/submit')}
-            sx={{ fontWeight: 'bold', fontSize: 18 }}
-          >
-            Uygulama Ekle (APPS PAGE)
-          </Button>
-        </Box>
-      )}
-      */}
       <CategoryTabs
         categories={categories}
         loading={catLoading}
