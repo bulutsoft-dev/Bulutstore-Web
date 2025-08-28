@@ -213,10 +213,12 @@ const AppCard = ({ app, onShare }) => {
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         mb: 1.5,
-                        color: '#888'
+                        color: '#888',
+                        maxWidth: '100%',
+                        whiteSpace: 'normal',
                     }}
                 >
-                    {app.shortDescription || 'Bu uygulama için kısa açıklama bulunmamaktadır.'}
+                    {app.shortDescription || (app.description && app.description.length > 60 ? app.description.substring(0, 60) + '...' : app.description || 'Bu uygulama için kısa açıklama bulunmamaktadır.')}
                 </Typography>
             </Box>
 

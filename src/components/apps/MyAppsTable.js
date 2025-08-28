@@ -27,6 +27,8 @@ function MyAppsTable({
             <TableCell>İndirme</TableCell>
             <TableCell>Puan</TableCell>
             <TableCell>Oluşturulma</TableCell>
+            <TableCell>Geliştirici</TableCell>
+            <TableCell>Etiketler</TableCell>
             <TableCell align="right">İşlemler</TableCell>
           </TableRow>
         </TableHead>
@@ -43,13 +45,15 @@ function MyAppsTable({
                 )}
               </TableCell>
               <TableCell>{app.name}</TableCell>
-              <TableCell>{app.description || '-'}</TableCell>
+              <TableCell>{app.description ? (app.description.length > 60 ? app.description.substring(0, 60) + '...' : app.description) : '-'}</TableCell>
               <TableCell>{app.category?.name || '-'}</TableCell>
               <TableCell>{app.versionName || '-'}</TableCell>
               <TableCell>{app.status || 'Bilinmiyor'}</TableCell>
               <TableCell>{app.downloadsCount ?? app.downloadCount ?? '-'}</TableCell>
               <TableCell>{typeof app.avgRating === 'number' ? app.avgRating.toFixed(2) : (app.averageRating ? app.averageRating.toFixed(2) : '-')}</TableCell>
               <TableCell>{app.createdAt ? new Date(app.createdAt).toLocaleDateString('tr-TR') : '-'}</TableCell>
+              <TableCell>{app.developer?.displayName || app.developer?.username || '-'}</TableCell>
+              <TableCell>{Array.isArray(app.tags) && app.tags.length > 0 ? app.tags.map(tag => tag.name).join(', ') : '-'}</TableCell>
               <TableCell align="right">
                 <IconButton color="primary" onClick={() => navigate(`/apps/edit/${app.id || app._id}`)}><EditIcon /></IconButton>
                 <IconButton color="error" onClick={() => onDelete(app)} disabled={deleting && selectedApp && (selectedApp.id || selectedApp._id) === (app.id || app._id)}>
