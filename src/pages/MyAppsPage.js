@@ -7,6 +7,7 @@ import useMyApps from '../hooks/useMyApps';
 import useCategories from '../hooks/useCategories';
 import MyAppsTable from '../components/apps/MyAppsTable';
 import DeleteDialog from '../components/common/DeleteDialog';
+import { useNotification } from '../context/NotificationContext';
 
 const MyAppsPage = () => {
     const { user } = useAuthContext();
@@ -25,6 +26,7 @@ const MyAppsPage = () => {
         setError
     } = useMyApps(user);
     const { categories } = useCategories();
+    const { notify } = useNotification();
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [localAlert, setLocalAlert] = useState(location.state?.alert || null);
 
@@ -39,12 +41,13 @@ const MyAppsPage = () => {
     useEffect(() => {
         if (!user) return;
         if (!isDeveloper) {
-            navigate('/profile', { state: { alert: 'Geliştirici olmadan bu sayfaya erişemezsiniz.' } });
+            notify('Developer değilsiniz, bu sayfaya erişemezsiniz.', 'warning');
+            navigate('/profile');
         } else {
             fetchApps();
         }
         // eslint-disable-next-line
-    }, [user, isDeveloper, navigate, fetchApps]);
+    }, [user, isDeveloper, navigate, fetchApps, notify]);
 
     const handleDeleteClick = (app) => {
         setSelectedApp(app);
@@ -96,9 +99,11 @@ const MyAppsPage = () => {
                     <Button variant="outlined" color="secondary" onClick={handleRefresh} disabled={refreshing || loading}>
                         {refreshing ? <CircularProgress size={20} /> : 'Yenile'}
                     </Button>
-                    <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAdd} disabled={!isDeveloper}>
-                        Uygulama Ekle
-                    </Button>
+                    {isDeveloper && (
+                        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAdd}>
+                            Uygulama Ekle
+                        </Button>
+                    )}
                 </Box>
             </Box>
             {apps.length === 0 ? (
