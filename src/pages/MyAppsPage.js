@@ -29,7 +29,12 @@ const MyAppsPage = () => {
     const [localAlert, setLocalAlert] = useState(location.state?.alert || null);
 
     // Helper: check if user is developer
-    const isDeveloper = user && (user.role === 'developer' || (Array.isArray(user.roles) && user.roles.includes('developer')));
+    const isDeveloper = user && (
+      (typeof user.role === 'string' && user.role.toLowerCase() === 'developer') ||
+      (Array.isArray(user.roles) && user.roles.map(r => r.toLowerCase()).includes('developer'))
+    );
+
+    console.log('user:', user);
 
     useEffect(() => {
         if (!user) return;
@@ -39,7 +44,7 @@ const MyAppsPage = () => {
             fetchApps();
         }
         // eslint-disable-next-line
-    }, [user]);
+    }, [user, isDeveloper, navigate, fetchApps]);
 
     const handleDeleteClick = (app) => {
         setSelectedApp(app);
