@@ -49,7 +49,17 @@ function AppAddForm({
         return (
           <Box>
             <TextField fullWidth label="Uygulama Adı" name="name" value={form.name} onChange={handleChange} margin="normal" required />
-            <TextField fullWidth label="Kısa Açıklama" name="shortDescription" value={form.shortDescription} onChange={handleChange} margin="normal" required />
+            <TextField
+              fullWidth
+              label="Kısa Açıklama"
+              name="shortDescription"
+              value={form.shortDescription}
+              onChange={handleChange}
+              margin="normal"
+              required
+              inputProps={{ maxLength: 100 }}
+              helperText={`${form.shortDescription.length}/100 karakter`}
+            />
             <TextField fullWidth label="Açıklama" name="description" value={form.description} onChange={handleChange} margin="normal" multiline minRows={3} required />
             <TextField fullWidth label="Sürüm" name="version" value={form.version} onChange={handleChange} margin="normal" required />
           </Box>

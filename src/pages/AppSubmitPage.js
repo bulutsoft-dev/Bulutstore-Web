@@ -39,6 +39,13 @@ const AppSubmitPage = () => {
   // If not logged in or not developer, don't render the form
   if (!user || !isDeveloper) return null;
 
+  // Redirect to home page after successful submission
+  useEffect(() => {
+    if (appSubmission.success) {
+      navigate('/', { state: { alert: 'Uygulamanız başarıyla gönderildi!' } });
+    }
+  }, [appSubmission.success, navigate]);
+
   return (
     <Container maxWidth="md">
       {/* Show alert if redirected or local */}
