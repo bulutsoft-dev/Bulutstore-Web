@@ -9,12 +9,12 @@ export default function useAppSubmission(user) {
     name: '',
     shortDescription: '',
     description: '',
-    versionName: '',
+    version: '',
     iconUrl: '',
     screenshotUrls: [],
     fileUrl: '',
-    category: null, // category object
-    tags: [], // array of tag objects
+    category: null,
+    tagIds: [], // sadece tagIds tutulacak
     developer: null,
     developerWebsite: '',
     developerDisplayName: '',
@@ -45,7 +45,7 @@ export default function useAppSubmission(user) {
   };
   const handleTagsChange = (event) => {
     const { value } = event.target;
-    setForm((prev) => ({ ...prev, tags: value }));
+    setForm((prev) => ({ ...prev, tagIds: Array.isArray(value) ? value : [] }));
   };
   const handleAddScreenshot = () => {
     if (screenshotInput.trim()) {
@@ -65,7 +65,7 @@ export default function useAppSubmission(user) {
     try {
       const res = await createTag({ name: newTag.trim() });
       setTags((prev) => [...prev, res.data]);
-      setForm((prev) => ({ ...prev, tags: [...prev.tags, res.data] }));
+      setForm((prev) => ({ ...prev, tagIds: [...prev.tagIds, res.data.id] }));
       setNewTag('');
     } catch (err) {
       if (err?.response?.status === 409) {
@@ -98,13 +98,13 @@ export default function useAppSubmission(user) {
   };
   const validateStep = () => {
     if (activeStep === 0) {
-      return form.name && form.shortDescription && form.description && form.versionName;
+      return form.name && form.shortDescription && form.description && form.version; // versionName değil version
     }
     if (activeStep === 1) {
       return form.iconUrl && form.fileUrl;
     }
     if (activeStep === 2) {
-      return form.category && form.tags.length > 0;
+      return form.category && form.tagIds.length > 0;
     }
     return true;
   };
@@ -116,20 +116,23 @@ export default function useAppSubmission(user) {
         name: form.name,
         description: form.description,
         shortDescription: form.shortDescription,
+        version: form.version,
         categoryId: Number(form.category.id),
         status: 'PENDING',
-        tagIds: form.tags.map(tag => Number(tag.id)),
+        tagIds: form.tagIds,
         iconUrl: form.iconUrl,
         screenshotUrls: form.screenshotUrls,
         fileUrl: form.fileUrl,
       };
+      console.log('DEBUG | App Submission Payload:', payload);
       await createApp(payload);
       setSuccess(true);
       setActiveStep(0);
       setForm({
-        name: '', shortDescription: '', description: '', versionName: '', iconUrl: '', screenshotUrls: [], fileUrl: '', category: null, tags: [], developer: null, developerWebsite: '', developerDisplayName: '',
+        name: '', shortDescription: '', description: '', version: '', iconUrl: '', screenshotUrls: [], fileUrl: '', category: null, tagIds: [], developer: null, developerWebsite: '', developerDisplayName: '',
       });
     } catch (err) {
+      console.log('DEBUG | App Submission Error:', err);
       setError('Uygulama gönderilemedi.');
     } finally {
       setLoading(false);

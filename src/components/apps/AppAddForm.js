@@ -51,7 +51,7 @@ function AppAddForm({
             <TextField fullWidth label="Uygulama Adı" name="name" value={form.name} onChange={handleChange} margin="normal" required />
             <TextField fullWidth label="Kısa Açıklama" name="shortDescription" value={form.shortDescription} onChange={handleChange} margin="normal" required />
             <TextField fullWidth label="Açıklama" name="description" value={form.description} onChange={handleChange} margin="normal" multiline minRows={3} required />
-            <TextField fullWidth label="Sürüm" name="versionName" value={form.versionName} onChange={handleChange} margin="normal" required />
+            <TextField fullWidth label="Sürüm" name="version" value={form.version} onChange={handleChange} margin="normal" required />
           </Box>
         );
       case 1:
@@ -80,8 +80,12 @@ function AppAddForm({
               <InputLabel>Kategori</InputLabel>
               <Select
                 name="categoryId"
-                value={form.categoryId}
-                onChange={handleChange}
+                value={form.category ? form.category.id : ''}
+                onChange={e => {
+                  const selectedId = e.target.value;
+                  const selectedCategory = categories.find(cat => (cat.id || cat._id) === selectedId || String(cat.id || cat._id) === String(selectedId));
+                  handleChange({ target: { name: 'category', value: selectedCategory || null } });
+                }}
                 input={<OutlinedInput label="Kategori" />}
                 required
                 variant="outlined"
@@ -102,7 +106,7 @@ function AppAddForm({
               <Select
                 multiple
                 name="tagIds"
-                value={form.tagIds}
+                value={form.tagIds || []}
                 onChange={handleTagsChange}
                 input={<OutlinedInput label="Etiketler" />}
                 renderValue={(selected) => (
@@ -152,13 +156,13 @@ function AppAddForm({
 
   function validateStep() {
     if (activeStep === 0) {
-      return form.name && form.shortDescription && form.description && form.versionName;
+      return form.name && form.shortDescription && form.description && form.version;
     }
     if (activeStep === 1) {
       return form.iconUrl && form.fileUrl;
     }
     if (activeStep === 2) {
-      return form.categoryId && form.tagIds && form.tagIds.length > 0;
+      return form.category && form.tagIds && form.tagIds.length > 0;
     }
     return true;
   }

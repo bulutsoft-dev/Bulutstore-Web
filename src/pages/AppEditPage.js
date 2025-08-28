@@ -26,12 +26,12 @@ export default function AppEditPage() {
           name: app.name || '',
           shortDescription: app.shortDescription || '',
           description: app.description || '',
-          versionName: app.versionName || '',
+          version: app.version || app.versionName || '',
           iconUrl: app.iconUrl || '',
           screenshotUrls: app.screenshotUrls || [],
           fileUrl: app.fileUrl || '',
-          category: app.category || null, // category object
-          tags: app.tags || [], // array of tag objects
+          categoryId: app.category?.id || '',
+          tagIds: Array.isArray(app.tags) ? app.tags.map(t => t.id) : [],
           developer: app.developer || null, // developer object if needed
           developerWebsite: app.developer?.website || '',
           developerDisplayName: app.developer?.displayName || '',

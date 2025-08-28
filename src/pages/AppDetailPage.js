@@ -12,24 +12,47 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import Button from '@mui/material/Button';
 import useApp from '../hooks/useApp';
 
+console.log('DEBUG | AppDetailPage loaded');
+
 const AppDetailPage = () => {
   const { id } = useParams();
   const { app, loading, error } = useApp(id);
+
+  // Debug: State values
+  console.log('DEBUG | loading:', loading);
+  console.log('DEBUG | error:', error);
+  console.log('DEBUG | app:', app);
+  console.log('DEBUG | id:', id);
 
   // Cache screenshots only on first load for each app id
   const [cachedScreenshots, setCachedScreenshots] = React.useState([]);
   const prevAppId = React.useRef();
 
   React.useEffect(() => {
+    console.log('DEBUG | useEffect triggered | app:', app, '| id:', id, '| prevAppId:', prevAppId.current);
     if (app && id !== prevAppId.current) {
       setCachedScreenshots(Array.isArray(app.screenshotUrls) ? app.screenshotUrls : []);
       prevAppId.current = id;
+      console.log('DEBUG | setCachedScreenshots:', Array.isArray(app.screenshotUrls) ? app.screenshotUrls : []);
     }
   }, [app, id]);
 
-  if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>;
-  if (error) return <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>;
-  if (!app) return null;
+  console.log('DEBUG | cachedScreenshots:', cachedScreenshots);
+
+  if (loading) {
+    console.log('DEBUG | Render loading spinner');
+    return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>;
+  }
+  if (error) {
+    console.log('DEBUG | Render error:', error);
+    return <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>;
+  }
+  if (!app) {
+    console.log('DEBUG | Render null (no app)');
+    return null;
+  }
+
+  console.log('DEBUG | Render main app detail page');
 
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>

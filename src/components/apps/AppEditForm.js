@@ -50,7 +50,7 @@ function AppEditForm({
             <TextField fullWidth label="Uygulama Adı" name="name" value={form.name} onChange={handleChange} margin="normal" required />
             <TextField fullWidth label="Kısa Açıklama" name="shortDescription" value={form.shortDescription} onChange={handleChange} margin="normal" required />
             <TextField fullWidth label="Açıklama" name="description" value={form.description} onChange={handleChange} margin="normal" multiline minRows={3} required />
-            <TextField fullWidth label="Sürüm" name="versionName" value={form.versionName} onChange={handleChange} margin="normal" required />
+            <TextField fullWidth label="Sürüm" name="version" value={form.version} onChange={handleChange} margin="normal" required />
           </Box>
         );
       case 1:
@@ -78,16 +78,15 @@ function AppEditForm({
             <FormControl fullWidth margin="normal">
               <InputLabel>Kategori</InputLabel>
               <Select
-                name="category"
-                value={form.category || ''}
-                onChange={e => handleChange({ target: { name: 'category', value: categories.find(cat => (cat.id === e.target.value.id || cat._id === e.target.value.id)) } })}
+                name="categoryId"
+                value={form.categoryId}
+                onChange={handleChange}
                 input={<OutlinedInput label="Kategori" />}
                 required
                 variant="outlined"
-                renderValue={selected => selected?.name || ''}
               >
                 {categories.map((cat) => (
-                  <MenuItem key={cat.id || cat._id} value={cat}>{cat.name}</MenuItem>
+                  <MenuItem key={cat.id || cat._id} value={cat.id || cat._id}>{cat.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -101,21 +100,22 @@ function AppEditForm({
               <InputLabel>Etiketler</InputLabel>
               <Select
                 multiple
-                name="tags"
-                value={form.tags}
-                onChange={e => handleTagsChange(e)}
+                name="tagIds"
+                value={form.tagIds || []}
+                onChange={handleTagsChange}
                 input={<OutlinedInput label="Etiketler" />}
                 renderValue={(selected) => (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {selected.map((tag) => (
-                      <Chip key={tag.id || tag._id} label={tag.name} />
-                    ))}
+                    {selected.map((id) => {
+                      const tag = tags.find(t => t.id === id || t._id === id);
+                      return <Chip key={id} label={tag?.name || id} />;
+                    })}
                   </Box>
                 )}
                 variant="outlined"
               >
                 {tags.map((tag) => (
-                  <MenuItem key={tag.id || tag._id} value={tag}>{tag.name}</MenuItem>
+                  <MenuItem key={tag.id || tag._id} value={tag.id || tag._id}>{tag.name}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -135,12 +135,12 @@ function AppEditForm({
               <Typography><b>Ad:</b> {form.name}</Typography>
               <Typography><b>Kısa Açıklama:</b> {form.shortDescription}</Typography>
               <Typography><b>Açıklama:</b> {form.description}</Typography>
-              <Typography><b>Sürüm:</b> {form.versionName}</Typography>
+              <Typography><b>Sürüm:</b> {form.version}</Typography>
               <Typography><b>İkon URL:</b> {form.iconUrl}</Typography>
               <Typography><b>Dosya URL:</b> {form.fileUrl}</Typography>
               <Typography><b>Ekran Görüntüleri:</b> {form.screenshotUrls.join(', ')}</Typography>
-              <Typography><b>Kategori:</b> {form.category?.name}</Typography>
-              <Typography><b>Etiketler:</b> {form.tags.map(tag => tag.name).join(', ')}</Typography>
+              <Typography><b>Kategori:</b> {categories.find(c => c.id === form.categoryId || c._id === form.categoryId)?.name}</Typography>
+              <Typography><b>Etiketler:</b> {form.tagIds.map(id => tags.find(t => t.id === id || t._id === id)?.name).join(', ')}</Typography>
             </Box>
           </Box>
         );
