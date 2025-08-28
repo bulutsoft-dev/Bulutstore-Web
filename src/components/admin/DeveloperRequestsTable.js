@@ -15,6 +15,18 @@ import {
 } from '@mui/material';
 
 const DeveloperRequestsTable = ({ applications, onApprove, onReject, actionLoading, actionError }) => {
+  const getStatusChip = (status) => {
+    switch (String(status).toUpperCase()) {
+      case 'APPROVED':
+        return <Chip label="Onaylandı" color="success" size="small" />;
+      case 'REJECTED':
+        return <Chip label="Reddedildi" color="error" size="small" />;
+      case 'PENDING':
+      default:
+        return <Chip label="Bekliyor" color="warning" size="small" />;
+    }
+  };
+
   return (
     <TableContainer component={Paper} sx={{ mt: 2 }}>
       <Table>
@@ -32,26 +44,18 @@ const DeveloperRequestsTable = ({ applications, onApprove, onReject, actionLoadi
         <TableBody>
           {applications && applications.length > 0 ? (
             applications.map((app) => {
-              const id = app.userId || app.id || app._id;
-              // Show actions if not approved or rejected
+              const id = app.id;
               const status = String(app.status).toLowerCase();
-              const isActionable = status !== 'approved' && status !== 'rejected';
-              let statusLabel = null;
-              if (status === 'approved') {
-                statusLabel = <Chip label="Approved" color="success" size="small" />;
-              } else if (status === 'rejected') {
-                statusLabel = <Chip label="Rejected" color="error" size="small" />;
-              }
               return (
                 <TableRow key={id}>
                   <TableCell>{id}</TableCell>
                   <TableCell>{app.username || '-'}</TableCell>
                   <TableCell>{app.email || '-'}</TableCell>
-                  <TableCell>{app.developerApplicationText || app.applicationText || '-'}</TableCell>
-                  <TableCell>{app.status || '-'}</TableCell>
+                  <TableCell>{app.developerApplicationText || '-'}</TableCell>
+                  <TableCell>{getStatusChip(app.status)}</TableCell>
                   <TableCell>{app.createdAt ? new Date(app.createdAt).toLocaleString() : '-'}</TableCell>
                   <TableCell>
-                    {isActionable ? (
+                    {status === 'pending' ? (
                       <Stack direction="row" spacing={1}>
                         <Button
                           size="small"
@@ -60,7 +64,7 @@ const DeveloperRequestsTable = ({ applications, onApprove, onReject, actionLoadi
                           disabled={actionLoading[id]}
                           onClick={() => onApprove(id)}
                         >
-                          {actionLoading[id] ? <CircularProgress size={18} color="inherit" /> : 'Approve'}
+                          {actionLoading[id] ? <CircularProgress size={18} color="inherit" /> : 'Onayla'}
                         </Button>
                         <Button
                           size="small"
@@ -69,10 +73,12 @@ const DeveloperRequestsTable = ({ applications, onApprove, onReject, actionLoadi
                           disabled={actionLoading[id]}
                           onClick={() => onReject(id)}
                         >
-                          {actionLoading[id] ? <CircularProgress size={18} color="inherit" /> : 'Reject'}
+                          {actionLoading[id] ? <CircularProgress size={18} color="inherit" /> : 'Reddet'}
                         </Button>
                       </Stack>
-                    ) : statusLabel}
+                    ) : (
+                      getStatusChip(app.status)
+                    )}
                     {actionError[id] && (
                       <Typography color="error" variant="caption">{actionError[id]}</Typography>
                     )}
