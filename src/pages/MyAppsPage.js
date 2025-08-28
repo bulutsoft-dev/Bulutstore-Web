@@ -36,8 +36,6 @@ const MyAppsPage = () => {
       (Array.isArray(user.roles) && user.roles.map(r => r.toLowerCase()).includes('developer'))
     );
 
-    console.log('user:', user);
-
     useEffect(() => {
         if (!user) return;
         if (!isDeveloper) {

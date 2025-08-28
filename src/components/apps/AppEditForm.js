@@ -151,7 +151,6 @@ function AppEditForm({
 
   return (
     <Box>
-      {console.log('[DEBUG] AppEditForm render, loading:', loading)}
       <Box mt={4} mb={2}>
         <Typography variant="h4" align="center">Uygulamayı Düzenle</Typography>
       </Box>
