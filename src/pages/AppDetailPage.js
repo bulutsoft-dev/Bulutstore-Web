@@ -1,16 +1,13 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
-import Avatar from '@mui/material/Avatar';
-import Chip from '@mui/material/Chip';
-import StarIcon from '@mui/icons-material/Star';
-import DownloadIcon from '@mui/icons-material/Download';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import Button from '@mui/material/Button';
 import useApp from '../hooks/useApp';
+import AppHeader from '../components/apps/AppHeader';
+import AppScreenshots from '../components/apps/AppScreenshots';
+import AppDescription from '../components/apps/AppDescription';
+import AppTags from '../components/apps/AppTags';
 
 console.log('DEBUG | AppDetailPage loaded');
 
@@ -50,136 +47,10 @@ const AppDetailPage = () => {
 
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
-      {/* Header Section - Google Play Style */}
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { xs: 'flex-start', md: 'flex-start' }, gap: 4, mb: 4 }}>
-        {/* App Icon */}
-        <Avatar src={app.iconUrl || app.image || ''} alt={app.name} sx={{ width: 120, height: 120, bgcolor: '#f5f5f5', fontSize: 48, color: '#888', boxShadow: 2, border: '2px solid #eee' }}>
-          {(!app.iconUrl && !app.image) ? app.name?.[0]?.toUpperCase() : null}
-        </Avatar>
-        {/* Main Info */}
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Typography variant="h3" sx={{ fontWeight: 800, mb: 0.5, fontSize: { xs: 26, sm: 34, md: 40 } }}>{app.name}</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500, fontSize: 18 }}>
-              {app.developer?.displayName || app.developer?.username || app.developerDisplayName || app.developerName || 'Geliştirici Bilinmiyor'}
-            </Typography>
-            {app.developer?.website && (
-              <a href={app.developer.website} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', marginLeft: 8 }}>
-                <Chip label="Web Sitesi" size="small" color="primary" />
-              </a>
-            )}
-          </Box>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, mb: 1 }}>
-            {app.category && <Chip label={app.category?.name} size="small" sx={{ fontWeight: 600, fontSize: 13 }} />}
-            {app.status && <Chip label={app.status} size="small" sx={{ fontWeight: 600, fontSize: 13 }} />}
-            {app.isPremium && <Chip label="Premium" size="small" color="warning" sx={{ fontWeight: 600, fontSize: 13 }} />}
-            {app.version && <Chip label={`v${app.version}`} size="small" sx={{ fontWeight: 600, fontSize: 13 }} />}
-          </Box>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 3, mb: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <StarIcon sx={{ color: '#FFB400', fontSize: 22 }} />
-              <Typography variant="body1" sx={{ fontWeight: 600 }}>{app.avgRating ? app.avgRating.toFixed(1) : '0.0'}</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <DownloadIcon sx={{ color: '#1976d2', fontSize: 20 }} />
-              <Typography variant="body2" color="text.secondary">{app.downloadsCount || 0}</Typography>
-            </Box>
-            {app.updatedAt && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <CalendarMonthIcon sx={{ color: '#1976d2', fontSize: 20 }} />
-                <Typography variant="body2" color="text.secondary">Güncelleme: {new Date(app.updatedAt).toLocaleDateString('tr-TR')}</Typography>
-              </Box>
-            )}
-          </Box>
-        </Box>
-        {/* Install/Action Area */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: { xs: 'flex-start', md: 'center' }, gap: 2, minWidth: 160 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            startIcon={<DownloadIcon />}
-            href={app.fileUrl || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            disabled={!app.fileUrl}
-            sx={{ fontWeight: 700, fontSize: 18, px: 4, py: 1.5, borderRadius: 2, boxShadow: 2 }}
-          >
-            İndir
-          </Button>
-        </Box>
-      </Box>
-      {/* Screenshots Section - Google Play Style */}
-      {cachedScreenshots.length > 0 && (
-        <Box sx={{ mb: 5 }}>
-          <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#1976d2' }}>Ekran Görüntüleri</Typography>
-          <Box sx={{ display: 'flex', gap: 2, overflowX: 'auto', pb: 1 }}>
-            {cachedScreenshots.map((url, idx) => (
-              <Box key={idx} sx={{
-                flex: '0 0 auto',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                // Remove all box, border, shadow, radius, padding, position
-              }}>
-                <img
-                  src={url}
-                  alt={`Screenshot ${idx + 1}`}
-                  style={{
-                    maxHeight: 380,
-                    maxWidth: '100%',
-                    width: 'auto',
-                    height: 'auto',
-                    objectFit: 'contain',
-                    border: 'none',
-                    borderRadius: 0,
-                    background: 'transparent',
-                    boxShadow: 'none',
-                    padding: 0,
-                    margin: 0
-                  }}
-                  onError={e => {
-                    if (e.target.src !== window.location.origin + '/no-image.png' && !e.target.src.endsWith('/no-image.png')) {
-                      e.target.onerror = null;
-                      e.target.src = '/no-image.png';
-                    }
-                  }}
-                />
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      )}
-      {/* Short Description - prominent */}
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, color: '#1976d2' }}>
-        Kısa Açıklama
-      </Typography>
-      <Typography variant="body1" sx={{ mb: 4, fontSize: 20, fontWeight: 500, color: '#222' }}>
-        {app.shortDescription || 'Bu uygulama için kısa açıklama bulunmamaktadır.'}
-      </Typography>
-      {/* Full Description */}
-      <Typography variant="h5" sx={{ fontWeight: 700, mb: 1, color: '#1976d2' }}>
-        Detaylı Açıklama
-      </Typography>
-      <Typography variant="body1" color="text.secondary" sx={{ mb: 4, fontSize: 17 }}>
-        {app.description || 'Bu uygulama için detaylı açıklama bulunmamaktadır.'}
-      </Typography>
-      {/* Tags Section */}
-      {(Array.isArray(app.tags) && app.tags.length > 0) ? (
-        <Box sx={{ mt: 3, mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1976d2', mr: 1 }}>Etiketler:</Typography>
-          {app.tags.map((tag) => (
-            <Chip key={tag.id} label={`#${tag.name}`} size="small" variant="outlined" />
-          ))}
-        </Box>
-      ) : (Array.isArray(app.tagIds) && app.tagIds.length > 0 && (
-        <Box sx={{ mt: 3, mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1976d2', mr: 1 }}>Etiketler:</Typography>
-          {app.tagIds.map((tagId, idx) => (
-            <Chip key={tagId || idx} label={`#${tagId}`} size="small" variant="outlined" />
-          ))}
-        </Box>
-      ))}
+      <AppHeader app={app} />
+      <AppScreenshots screenshots={cachedScreenshots} />
+      <AppDescription shortDescription={app.shortDescription} description={app.description} />
+      <AppTags tags={app.tags} tagIds={app.tagIds} />
     </Box>
   );
 };
