@@ -113,6 +113,12 @@ const AppDetailPage = () => {
     navigate('/login');
   };
 
+  // Ortalama rating'i review'lardan hesapla
+  const averageRating =
+    reviews.length > 0
+      ? reviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0) / reviews.length
+      : 0;
+
   if (loading) {
     return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>;
   }
@@ -125,7 +131,7 @@ const AppDetailPage = () => {
 
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
-      <AppHeader app={app} />
+      <AppHeader app={{ ...app, avgRating: averageRating }} />
       <AppScreenshots screenshots={cachedScreenshots} />
       <AppDescription shortDescription={app.shortDescription} description={app.description} />
       <AppTags tags={app.tags} tagIds={app.tagIds} />
