@@ -37,10 +37,10 @@ function AppEditForm({
   handleTagsChange,
   handleAddTag,
   handleAddCategory,
-  handleSubmit,
   setScreenshotInput,
   isDuplicateCategory,
-  isDuplicateTag
+  isDuplicateTag,
+  handleSubmit // Use handleSubmit from parent
 }) {
   const getStepContent = (step) => {
     switch (step) {
@@ -79,7 +79,7 @@ function AppEditForm({
               <InputLabel>Kategori</InputLabel>
               <Select
                 name="categoryId"
-                value={form.categoryId}
+                value={form.categoryId || ''}
                 onChange={handleChange}
                 input={<OutlinedInput label="Kategori" />}
                 required
@@ -151,6 +151,7 @@ function AppEditForm({
 
   return (
     <Box>
+      {console.log('[DEBUG] AppEditForm render, loading:', loading)}
       <Box mt={4} mb={2}>
         <Typography variant="h4" align="center">Uygulamayı Düzenle</Typography>
       </Box>

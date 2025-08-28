@@ -47,7 +47,7 @@ const MyAppsPage = () => {
             fetchApps();
         }
         // eslint-disable-next-line
-    }, [user, isDeveloper, navigate, fetchApps, notify]);
+    }, [user, isDeveloper, navigate, fetchApps, notify, location.key]);
 
     const handleDeleteClick = (app) => {
         setSelectedApp(app);

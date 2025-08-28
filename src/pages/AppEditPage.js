@@ -46,16 +46,36 @@ export default function AppEditPage() {
   }, [id]);
 
   const handleSubmit = async () => {
+    console.log('[DEBUG] handleSubmit called');
     appSubmission.setLoading(true);
     setEditError('');
     setEditSuccess(false);
     try {
-      await updateApp(id, appSubmission.form);
+      // Build payload to match backend spec
+      const form = appSubmission.form;
+      const payload = {
+        name: form.name,
+        description: form.description,
+        shortDescription: form.shortDescription,
+        version: form.version,
+        versionName: form.version, // versionName de gönder
+        iconUrl: form.iconUrl,
+        screenshotUrls: form.screenshotUrls,
+        fileUrl: form.fileUrl,
+        categoryId: Number(form.categoryId),
+        status: 'PENDING',
+        tagIds: (form.tagIds || []).map(Number)
+      };
+      console.log('[DEBUG] updateApp about to be called', id, JSON.stringify(payload, null, 2));
+      const response = await updateApp(id, payload);
+      console.log('[DEBUG] updateApp response:', JSON.stringify(response.data, null, 2));
       setEditSuccess(true);
       setTimeout(() => navigate('/my-apps'), 1500);
     } catch (e) {
+      console.log('[DEBUG] updateApp error:', e);
       setEditError('Güncelleme başarısız.');
     } finally {
+      console.log('[DEBUG] handleSubmit finally, setting loading false');
       appSubmission.setLoading(false);
     }
   };

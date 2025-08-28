@@ -144,7 +144,7 @@ function AppAddForm({
               <Typography><b>İkon URL:</b> {form.iconUrl}</Typography>
               <Typography><b>Dosya URL:</b> {form.fileUrl}</Typography>
               <Typography><b>Ekran Görüntüleri:</b> {form.screenshotUrls.join(', ')}</Typography>
-              <Typography><b>Kategori:</b> {categories.find(c => c.id === form.categoryId || c._id === form.categoryId)?.name}</Typography>
+              <Typography><b>Kategori:</b> {form.category?.name}</Typography>
               <Typography><b>Etiketler:</b> {form.tagIds.map(id => tags.find(t => t.id === id || t._id === id)?.name).join(', ')}</Typography>
             </Box>
           </Box>
