@@ -21,6 +21,7 @@ const AppsPage = () => {
   return (
     <Box sx={{ width: '100%', py: 0, mt: 0 }}>
       {/* Uygulama Ekle button for developers - visible at top of AppsPage */}
+      {/*
       {user && (user.role === 'DEVELOPER' || user.role === 'ADMIN') && (
         <Box sx={{ mb: 2, p: 2, backgroundColor: 'red', color: 'white', borderRadius: 2, textAlign: 'center' }}>
           <Button
@@ -34,6 +35,7 @@ const AppsPage = () => {
           </Button>
         </Box>
       )}
+      */}
       <CategoryTabs
         categories={categories}
         loading={catLoading}

@@ -8,7 +8,7 @@ import RegisterPage from '../pages/RegisterPage';
 import LoginPage from '../pages/LoginPage';
 import ProfilePage from '../pages/ProfilePage';
 import AdminPanelPage from '../pages/AdminPanelPage';
-import AppSubmissionForm from '../components/apps/AppSubmissionForm';
+import AppSubmitPage from '../pages/AppSubmitPage';
 
 const AppRoutes = () => (
   <Routes>
@@ -19,7 +19,7 @@ const AppRoutes = () => (
     <Route path="/login" element={<LoginPage />} />
     <Route path="/profile" element={<ProfilePage />} />
     <Route path="/admin" element={<AdminPanelPage />} />
-    <Route path="/apps/submit" element={<AppSubmissionForm />} />
+    <Route path="/apps/submit" element={<AppSubmitPage />} />
     <Route path="*" element={<NotFoundPage />} />
   </Routes>
 );
