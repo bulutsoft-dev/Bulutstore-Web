@@ -6,7 +6,8 @@ import {
     Box,
     Container,
     CircularProgress,
-    Alert
+    Alert,
+    Button
 } from '@mui/material';
 import ProfileSidebar from '../components/users/ProfileSidebar';
 import ProfileEditForm from '../components/users/ProfileEditForm';
@@ -118,6 +119,8 @@ const ProfilePage = () => {
             setProfileUpdateError(err.message || 'Profil güncellenemedi. Lütfen tekrar deneyin.');
         }
     };
+
+    console.log('ProfilePage user:', user); // DEBUG: Log user object
 
     return (
         <Container maxWidth="md">

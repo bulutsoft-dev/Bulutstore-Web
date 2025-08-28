@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Box, Chip, Divider, Stack, Typography, Link as MuiLink } from '@mui/material';
+import { Avatar, Box, Chip, Divider, Stack, Typography, Link as MuiLink, Button } from '@mui/material';
 import { CheckCircle, Person, Email, Work, Description, Link as LinkIcon, Cancel } from '@mui/icons-material';
 
 const ProfileSidebar = ({ user }) => (
@@ -28,6 +28,21 @@ const ProfileSidebar = ({ user }) => (
             sx={{ mb: 2 }}
         />
         <Divider sx={{ my: 2 }} />
+        {/* Uygulama Ekle button - only visible to developers */}
+        {user.role === 'DEVELOPER' && (
+            <Box sx={{ mb: 2, width: '100%', textAlign: 'center' }}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    fullWidth
+                    href="/apps/submit"
+                    sx={{ fontWeight: 'bold', fontSize: 16 }}
+                >
+                    Uygulama Ekle
+                </Button>
+            </Box>
+        )}
         <Stack spacing={1.5} alignItems="flex-start">
             <Box display="flex" alignItems="center">
                 <Email color="action" sx={{ mr: 1 }} />
