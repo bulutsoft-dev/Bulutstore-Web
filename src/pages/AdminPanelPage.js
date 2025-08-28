@@ -9,6 +9,7 @@ import DeveloperRequestsTable from '../components/admin/DeveloperRequestsTable';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { approveDeveloper, rejectDeveloper } from '../api/userApi';
+import PendingAppsTable from '../components/admin/PendingAppsTable';
 
 const AdminPanelPage = () => {
   const { user, loading: authLoading } = useAuthContext();
@@ -59,7 +60,10 @@ const AdminPanelPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>Admin Panel - Developer Requests</Typography>
+      <Typography variant="h4" gutterBottom>Admin Panel</Typography>
+      <Typography variant="h6" sx={{ mt: 3 }}>Onay Bekleyen Uygulamalar</Typography>
+      <PendingAppsTable />
+      <Typography variant="h6" sx={{ mt: 5 }}>Geliştirici Başvuruları</Typography>
       {loading && <CircularProgress sx={{ display: 'block', mx: 'auto', my: 4 }} />}
       {error && <Typography color="error">Error: {error.message || error.toString()}</Typography>}
       <DeveloperRequestsTable

@@ -8,3 +8,6 @@ export const deleteApp = (id) => axios.delete(`/apps/${id}`);
 export const searchAppsByName = (name) => axios.get(`/apps/search?name=${encodeURIComponent(name)}`);
 export const getAppsByDeveloper = (developerId) => axios.get(`/apps/developer/${developerId}`);
 export const getAppsByCategory = (categoryId) => axios.get(`/apps/category/${categoryId}`);
+export const getAllAppsAdmin = () => axios.get('/apps');
+export const approveApp = (id) => axios.post(`/apps/${id}/approve`);
+export const rejectApp = (id) => axios.post(`/apps/${id}/reject`);
