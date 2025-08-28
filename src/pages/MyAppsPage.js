@@ -1,34 +1,63 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
-import { Box, Container, Typography, CircularProgress, Alert } from '@mui/material';
-import AppCard from '../features/apps/AppCard';
-import axiosInstance from '../api/axiosConfig';
+import { Box, Container, Typography, CircularProgress, Alert, Button } from '@mui/material';
+import { Add as AddIcon } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import useMyApps from '../hooks/useMyApps';
+import useCategories from '../hooks/useCategories';
+import MyAppsTable from '../components/apps/MyAppsTable';
+import DeleteDialog from '../components/common/DeleteDialog';
 
 const MyAppsPage = () => {
     const { user } = useAuthContext();
-    const [apps, setApps] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const {
+        apps,
+        loading,
+        error,
+        refreshing,
+        deleting,
+        selectedApp,
+        setSelectedApp,
+        fetchApps,
+        handleDeleteApp,
+        setError
+    } = useMyApps(user);
+    const { categories } = useCategories();
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
     useEffect(() => {
-        const fetchApps = async () => {
-            if (!user || !(user.id || user._id)) {
-                setError('Kullanıcı bulunamadı.');
-                setLoading(false);
-                return;
-            }
-            try {
-                const developerId = user.id || user._id;
-                const response = await axiosInstance.get(`/apps/developer/${developerId}`);
-                setApps(response.data);
-            } catch (err) {
-                setError('Uygulamalar alınamadı.');
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchApps();
+        // eslint-disable-next-line
     }, [user]);
+
+    const handleDeleteClick = (app) => {
+        setSelectedApp(app);
+        setDeleteDialogOpen(true);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!selectedApp) return;
+        await handleDeleteApp(selectedApp);
+        setDeleteDialogOpen(false);
+    };
+
+    const handleDeleteCancel = () => {
+        setDeleteDialogOpen(false);
+        setSelectedApp(null);
+    };
+
+    const handleEdit = (app) => {
+        navigate(`/apps/submit?id=${app.id || app._id}`);
+    };
+
+    const handleAdd = () => {
+        navigate('/apps/submit');
+    };
+
+    const handleRefresh = () => {
+        fetchApps();
+    };
 
     if (loading) {
         return <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh"><CircularProgress /></Box>;
@@ -37,20 +66,39 @@ const MyAppsPage = () => {
         return <Alert severity="error">{error}</Alert>;
     }
     return (
-        <Container maxWidth="md">
-            <Typography variant="h4" fontWeight={700} mb={3}>Uygulamalarım</Typography>
+        <Container maxWidth="lg">
+            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                <Typography variant="h4" fontWeight={700}>Uygulamalarım</Typography>
+                <Box display="flex" gap={2}>
+                    <Button variant="outlined" color="secondary" onClick={handleRefresh} disabled={refreshing || loading}>
+                        {refreshing ? <CircularProgress size={20} /> : 'Yenile'}
+                    </Button>
+                    <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAdd}>
+                        Uygulama Ekle
+                    </Button>
+                </Box>
+            </Box>
             {apps.length === 0 ? (
                 <Alert severity="info">Henüz bir uygulamanız yok.</Alert>
             ) : (
-                <Box display="grid" gridTemplateColumns={{ xs: '1fr', md: '1fr 1fr' }} gap={3}>
-                    {apps.map(app => (
-                        <AppCard key={app.id || app._id} app={app} />
-                    ))}
-                </Box>
+                <MyAppsTable
+                    apps={apps}
+                    categories={categories}
+                    onEdit={handleEdit}
+                    onDelete={handleDeleteClick}
+                    deleting={deleting}
+                    selectedApp={selectedApp}
+                />
             )}
+            <DeleteDialog
+                open={deleteDialogOpen}
+                onClose={handleDeleteCancel}
+                onConfirm={handleDeleteConfirm}
+                loading={deleting}
+                appName={selectedApp?.name}
+            />
         </Container>
     );
 };
 
 export default MyAppsPage;
-
