@@ -23,6 +23,7 @@ import { getAllCategories, createCategory } from '../api/categoryApi';
 import { getAllTags, createTag } from '../api/tagApi';
 import { createApp } from '../api/appApi';
 import { useAuthContext } from '../context/AuthContext';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const steps = [
   'App Info',
@@ -33,6 +34,9 @@ const steps = [
 
 const AppSubmitPage = () => {
   const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [localAlert, setLocalAlert] = useState(location.state?.alert || null);
   const [activeStep, setActiveStep] = useState(0);
   const [form, setForm] = useState({
     name: '',
@@ -53,10 +57,6 @@ const AppSubmitPage = () => {
   const [error, setError] = useState('');
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
-  const [catLoading, setCatLoading] = useState(true);
-  const [tagLoading, setTagLoading] = useState(true);
-  const [catError, setCatError] = useState('');
-  const [tagError, setTagError] = useState('');
   const [newTag, setNewTag] = useState('');
   const [addingTag, setAddingTag] = useState(false);
   const [addTagError, setAddTagError] = useState('');
@@ -64,18 +64,19 @@ const AppSubmitPage = () => {
   const [addingCategory, setAddingCategory] = useState(false);
   const [addCategoryError, setAddCategoryError] = useState('');
 
+  // Helper: check if user is developer
+  const isDeveloper = user && (user.role === 'developer' || (Array.isArray(user.roles) && user.roles.includes('developer')));
+
   useEffect(() => {
-    setCatLoading(true);
+    if (!user) return;
+    if (!isDeveloper) {
+      navigate('/profile', { state: { alert: 'Uygulama eklemek için geliştirici olmalısınız.' } });
+    }
     getAllCategories()
-      .then(res => setCategories(res.data))
-      .catch(() => setCatError('Kategoriler yüklenemedi.'))
-      .finally(() => setCatLoading(false));
-    setTagLoading(true);
+      .then(res => setCategories(res.data));
     getAllTags()
-      .then(res => setTags(res.data))
-      .catch(() => setTagError('Etiketler yüklenemedi.'))
-      .finally(() => setTagLoading(false));
-  }, []);
+      .then(res => setTags(res.data));
+  }, [user, isDeveloper, navigate]);
 
   // Step navigation
   const handleNext = () => setActiveStep((prev) => prev + 1);
@@ -307,7 +308,11 @@ const AppSubmitPage = () => {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
+      {/* Show alert if redirected or local */}
+      {localAlert && (
+        <Alert severity="warning" onClose={() => setLocalAlert(null)} sx={{ mb: 2 }}>{localAlert}</Alert>
+      )}
       <Box mt={4} mb={2}>
         <Typography variant="h4" align="center">App Submission</Typography>
       </Box>
