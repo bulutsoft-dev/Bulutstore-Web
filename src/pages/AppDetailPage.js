@@ -138,7 +138,7 @@ const AppDetailPage = () => {
 
       {/* Reviews Section */}
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>Reviews</Typography>
+        <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>Yorumlar</Typography>
         {reviews.length === 0 && (
           <Typography color="text.secondary" sx={{ mb: 2 }}>No reviews yet.</Typography>
         )}
