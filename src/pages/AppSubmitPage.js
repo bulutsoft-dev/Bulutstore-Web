@@ -36,9 +36,6 @@ const AppSubmitPage = () => {
     }
   }, [user, isDeveloper, navigate]);
 
-  // If not logged in or not developer, don't render the form
-  if (!user || !isDeveloper) return null;
-
   // Redirect to home page after successful submission
   useEffect(() => {
     if (appSubmission.success) {
@@ -46,13 +43,16 @@ const AppSubmitPage = () => {
     }
   }, [appSubmission.success, navigate]);
 
+  // Don't render the form if not logged in or not developer
+  const canRenderForm = user && isDeveloper;
+
   return (
     <Container maxWidth="md">
       {/* Show alert if redirected or local */}
       {localAlert && (
         <Alert severity="warning" onClose={() => setLocalAlert(null)} sx={{ mb: 2 }}>{localAlert}</Alert>
       )}
-      <AppAddForm {...appSubmission} />
+      {canRenderForm && <AppAddForm {...appSubmission} />}
     </Container>
   );
 };

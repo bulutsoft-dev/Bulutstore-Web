@@ -18,12 +18,6 @@ const AppDetailPage = () => {
   const { id } = useParams();
   const { app, loading, error } = useApp(id);
 
-  // Debug: State values
-  console.log('DEBUG | loading:', loading);
-  console.log('DEBUG | error:', error);
-  console.log('DEBUG | app:', app);
-  console.log('DEBUG | id:', id);
-
   // Cache screenshots only on first load for each app id
   const [cachedScreenshots, setCachedScreenshots] = React.useState([]);
   const prevAppId = React.useRef();
@@ -67,10 +61,10 @@ const AppDetailPage = () => {
           <Typography variant="h3" sx={{ fontWeight: 800, mb: 0.5, fontSize: { xs: 26, sm: 34, md: 40 } }}>{app.name}</Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
             <Typography variant="subtitle1" color="text.secondary" sx={{ fontWeight: 500, fontSize: 18 }}>
-              {app.developerDisplayName || (typeof app.developer === 'object' && app.developer !== null ? (app.developer.displayName || app.developer.username) : app.developer) || app.developerName || 'Geliştirici Bilinmiyor'}
+              {app.developer?.displayName || app.developer?.username || app.developerDisplayName || app.developerName || 'Geliştirici Bilinmiyor'}
             </Typography>
-            {app.developerWebsite && (
-              <a href={app.developerWebsite} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', marginLeft: 8 }}>
+            {app.developer?.website && (
+              <a href={app.developer.website} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none', marginLeft: 8 }}>
                 <Chip label="Web Sitesi" size="small" color="primary" />
               </a>
             )}
@@ -79,20 +73,17 @@ const AppDetailPage = () => {
             {app.category && <Chip label={app.category?.name} size="small" sx={{ fontWeight: 600, fontSize: 13 }} />}
             {app.status && <Chip label={app.status} size="small" sx={{ fontWeight: 600, fontSize: 13 }} />}
             {app.isPremium && <Chip label="Premium" size="small" color="warning" sx={{ fontWeight: 600, fontSize: 13 }} />}
+            {app.version && <Chip label={`v${app.version}`} size="small" sx={{ fontWeight: 600, fontSize: 13 }} />}
           </Box>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 3, mb: 1 }}>
-            {app.avgRating && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <StarIcon sx={{ color: '#FFB400', fontSize: 22 }} />
-                <Typography variant="body1" sx={{ fontWeight: 600 }}>{app.avgRating.toFixed(1)}</Typography>
-              </Box>
-            )}
-            {app.downloadsCount && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <DownloadIcon sx={{ color: '#1976d2', fontSize: 20 }} />
-                <Typography variant="body2" color="text.secondary">{app.downloadsCount}</Typography>
-              </Box>
-            )}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <StarIcon sx={{ color: '#FFB400', fontSize: 22 }} />
+              <Typography variant="body1" sx={{ fontWeight: 600 }}>{app.avgRating ? app.avgRating.toFixed(1) : '0.0'}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <DownloadIcon sx={{ color: '#1976d2', fontSize: 20 }} />
+              <Typography variant="body2" color="text.secondary">{app.downloadsCount || 0}</Typography>
+            </Box>
             {app.updatedAt && (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 <CalendarMonthIcon sx={{ color: '#1976d2', fontSize: 20 }} />
@@ -108,10 +99,10 @@ const AppDetailPage = () => {
             color="primary"
             size="large"
             startIcon={<DownloadIcon />}
-            href={app.downloadUrl || '#'}
+            href={app.fileUrl || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            disabled={!app.downloadUrl}
+            disabled={!app.fileUrl}
             sx={{ fontWeight: 700, fontSize: 18, px: 4, py: 1.5, borderRadius: 2, boxShadow: 2 }}
           >
             İndir
@@ -129,15 +120,7 @@ const AppDetailPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                bgcolor: '#fafbfc',
-                border: '1px solid #eee',
-                borderRadius: 3,
-                boxShadow: 2,
-                minWidth: 180,
-                maxWidth: 320,
-                height: 400,
-                p: 1,
-                position: 'relative',
+                // Remove all box, border, shadow, radius, padding, position
               }}>
                 <img
                   src={url}
@@ -148,9 +131,12 @@ const AppDetailPage = () => {
                     width: 'auto',
                     height: 'auto',
                     objectFit: 'contain',
-                    borderRadius: 8,
-                    background: '#fff',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+                    border: 'none',
+                    borderRadius: 0,
+                    background: 'transparent',
+                    boxShadow: 'none',
+                    padding: 0,
+                    margin: 0
                   }}
                   onError={e => {
                     if (e.target.src !== window.location.origin + '/no-image.png' && !e.target.src.endsWith('/no-image.png')) {
@@ -179,14 +165,21 @@ const AppDetailPage = () => {
         {app.description || 'Bu uygulama için detaylı açıklama bulunmamaktadır.'}
       </Typography>
       {/* Tags Section */}
-      {Array.isArray(app.tagIds) && app.tagIds.length > 0 && (
+      {(Array.isArray(app.tags) && app.tags.length > 0) ? (
+        <Box sx={{ mt: 3, mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1976d2', mr: 1 }}>Etiketler:</Typography>
+          {app.tags.map((tag) => (
+            <Chip key={tag.id} label={`#${tag.name}`} size="small" variant="outlined" />
+          ))}
+        </Box>
+      ) : (Array.isArray(app.tagIds) && app.tagIds.length > 0 && (
         <Box sx={{ mt: 3, mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
           <Typography variant="subtitle1" sx={{ fontWeight: 600, color: '#1976d2', mr: 1 }}>Etiketler:</Typography>
           {app.tagIds.map((tagId, idx) => (
             <Chip key={tagId || idx} label={`#${tagId}`} size="small" variant="outlined" />
           ))}
         </Box>
-      )}
+      ))}
     </Box>
   );
 };
