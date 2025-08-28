@@ -12,7 +12,6 @@ import AppTags from '../components/apps/AppTags';
 import { useAuthContext } from '../context/AuthContext';
 import { getAllReviews, createReview, updateReview, deleteReview } from '../api/reviewApi';
 import ReviewList from '../components/comment/ReviewList';
-import ReviewForm from '../components/comment/ReviewForm';
 import useApp from '../hooks/useApp';
 
 const AppDetailPage = () => {
@@ -50,8 +49,7 @@ const AppDetailPage = () => {
       .catch(() => setReviews([]));
   }, [id]);
 
-  const handleReviewSubmit = async (e, rating) => {
-    e.preventDefault();
+  const handleReviewSubmit = async ({ comment, rating }) => {
     setReviewLoading(true);
     setReviewError(null);
     if (!user?.id) {
@@ -61,16 +59,15 @@ const AppDetailPage = () => {
     }
     try {
       await createReview({
-        appId: Number(id), // appId artık integer olarak gönderiliyor
+        appId: Number(id),
         userId: user.id,
         rating,
-        comment: reviewText
+        comment
       });
       // Yorum eklendikten sonra güncel listeyi API'den çek
       const res = await getAllReviews();
       const filtered = Array.isArray(res.data) ? res.data.filter(r => r.appId === Number(id)) : [];
       setReviews(filtered);
-      setReviewText('');
     } catch (err) {
       if (err.response && err.response.status === 409) {
         setReviewError('Bu uygulamaya zaten yorum yaptınız.');
@@ -116,9 +113,6 @@ const AppDetailPage = () => {
     }
   };
 
-  // Kullanıcı bu uygulamaya zaten yorum yaptı mı?
-  const userAlreadyReviewed = user && reviews.some(r => r.username === user.username);
-
   // Giriş yapma isteği fonksiyonu
   const handleLoginRequest = () => {
     navigate('/login');
@@ -154,21 +148,14 @@ const AppDetailPage = () => {
           onDelete={handleDeleteReview}
           onEdit={handleEditReview}
           onLoginRequest={handleLoginRequest}
+          onSubmitNewReview={handleReviewSubmit} // Pass the submit handler
         />
         {reviews.length > 0 && <Divider sx={{ my: 3 }} />}
-        {/* Review Form for logged-in users */}
+        {/* Remove the page-level ReviewForm and userAlreadyReviewed logic */}
         {authLoading ? (
           <Typography color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
             Loading user info...
           </Typography>
-        ) : user && !userAlreadyReviewed ? (
-          <ReviewForm
-            reviewText={reviewText}
-            setReviewText={setReviewText}
-            reviewLoading={reviewLoading}
-            reviewError={reviewError}
-            onSubmit={handleReviewSubmit}
-          />
         ) : null}
       </Box>
     </Box>

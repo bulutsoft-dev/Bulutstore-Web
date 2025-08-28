@@ -13,7 +13,6 @@ import Button from '@mui/material/Button';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import ReplyIcon from '@mui/icons-material/Reply';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Chip from '@mui/material/Chip';
 
 const ReviewList = ({ reviews, currentUser, onDelete, onEdit, onLoginRequest, onSubmitNewReview }) => {
@@ -291,13 +290,21 @@ const ReviewList = ({ reviews, currentUser, onDelete, onEdit, onLoginRequest, on
 
                         {/* Düzenleme ve silme butonları */}
                         {isOwn && editId !== review.id && (
-                            <IconButton
-                                size="small"
-                                sx={{ position: 'absolute', top: 8, right: 8 }}
-                                onClick={() => startEdit(review)}
-                            >
-                                <MoreVertIcon fontSize="small" />
-                            </IconButton>
+                            <Box sx={{ position: 'absolute', top: 8, right: 8, display: 'flex', gap: 1 }}>
+                                <IconButton
+                                    size="small"
+                                    onClick={() => startEdit(review)}
+                                >
+                                    <EditIcon fontSize="small" />
+                                </IconButton>
+                                <IconButton
+                                    size="small"
+                                    color="error"
+                                    onClick={() => onDelete(review.id)}
+                                >
+                                    <DeleteIcon fontSize="small" />
+                                </IconButton>
+                            </Box>
                         )}
                     </Card>
                 );
