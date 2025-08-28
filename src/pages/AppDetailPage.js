@@ -10,7 +10,7 @@ import AppScreenshots from '../components/apps/AppScreenshots';
 import AppDescription from '../components/apps/AppDescription';
 import AppTags from '../components/apps/AppTags';
 import { useAuthContext } from '../context/AuthContext';
-import { getAllReviews, createReview } from '../api/reviewApi';
+import { getAllReviews, createReview, updateReview, deleteReview } from '../api/reviewApi';
 import ReviewList from '../components/comment/ReviewList';
 import ReviewForm from '../components/comment/ReviewForm';
 import useApp from '../hooks/useApp';
@@ -53,24 +53,70 @@ const AppDetailPage = () => {
     e.preventDefault();
     setReviewLoading(true);
     setReviewError(null);
+    if (!user?.id) {
+      setReviewError('Yorum göndermek için giriş yapmalısınız.');
+      setReviewLoading(false);
+      return;
+    }
     try {
-      const res = await createReview({
-        appId: id,
-        userId: user?.id,
+      await createReview({
+        appId: Number(id), // appId artık integer olarak gönderiliyor
+        userId: user.id,
         rating,
         comment: reviewText
       });
-      setReviews(prev => [...prev, res.data]);
+      // Yorum eklendikten sonra güncel listeyi API'den çek
+      const res = await getAllReviews();
+      const filtered = Array.isArray(res.data) ? res.data.filter(r => r.appId === Number(id)) : [];
+      setReviews(filtered);
       setReviewText('');
     } catch (err) {
-      setReviewError(err.response?.data?.message || err.message);
+      if (err.response && err.response.status === 409) {
+        setReviewError('Bu uygulamaya zaten yorum yaptınız.');
+      } else {
+        setReviewError(err.response?.data?.message || err.message);
+      }
     } finally {
       setReviewLoading(false);
     }
   };
 
+  // Review silme
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await deleteReview(reviewId);
+      setReviews(prev => prev.filter(r => r.id !== reviewId));
+    } catch (err) {
+      setReviewError('Failed to delete review.');
+    }
+  };
+
+  // Review düzenleme
+  const handleEditReview = async (reviewId, data) => {
+    try {
+      const payload = {
+        appId: Number(id),
+        userId: user && user.id ? user.id : null,
+        rating: data.rating,
+        comment: data.comment
+      };
+      console.log('DEBUG | Edit review payload:', payload);
+      await updateReview(reviewId, payload);
+      // Edit sonrası güncel listeyi API'den çek
+      const res = await getAllReviews();
+      const filtered = Array.isArray(res.data) ? res.data.filter(r => r.appId === Number(id)) : [];
+      setReviews(filtered);
+    } catch (err) {
+      if (err.response && err.response.status === 409) {
+        setReviewError('Bu uygulamaya zaten bir yorumunuz var. (Aynı yorumu güncelleyemezsiniz.)');
+      } else {
+        setReviewError('Failed to update review.');
+      }
+    }
+  };
+
   // Kullanıcı bu uygulamaya zaten yorum yaptı mı?
-  const userAlreadyReviewed = user && reviews.some(r => r.userId === user.id);
+  const userAlreadyReviewed = user && reviews.some(r => r.username === user.username);
 
   if (loading) {
     return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>;
@@ -96,32 +142,27 @@ const AppDetailPage = () => {
         {reviews.length === 0 && (
           <Typography color="text.secondary" sx={{ mb: 2 }}>No reviews yet.</Typography>
         )}
-        <ReviewList reviews={reviews} />
+        <ReviewList
+          reviews={reviews}
+          currentUser={user}
+          onDelete={handleDeleteReview}
+          onEdit={handleEditReview}
+        />
         {reviews.length > 0 && <Divider sx={{ my: 3 }} />}
         {/* Review Form for logged-in users */}
         {authLoading ? (
           <Typography color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
             Loading user info...
           </Typography>
-        ) : user ? (
-          userAlreadyReviewed ? (
-            <Alert severity="info" sx={{ mt: 3, textAlign: 'center' }}>
-              You have already reviewed this app.
-            </Alert>
-          ) : (
-            <ReviewForm
-              reviewText={reviewText}
-              setReviewText={setReviewText}
-              reviewLoading={reviewLoading}
-              reviewError={reviewError}
-              onSubmit={handleReviewSubmit}
-            />
-          )
-        ) : (
-          <Typography color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
-            You must be logged in to write a review.
-          </Typography>
-        )}
+        ) : user && !userAlreadyReviewed ? (
+          <ReviewForm
+            reviewText={reviewText}
+            setReviewText={setReviewText}
+            reviewLoading={reviewLoading}
+            reviewError={reviewError}
+            onSubmit={handleReviewSubmit}
+          />
+        ) : null}
       </Box>
     </Box>
   );

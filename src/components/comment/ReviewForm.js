@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Rating from '@mui/material/Rating';
 
-const ReviewForm = ({ reviewText, setReviewText, reviewLoading, reviewError, onSubmit }) => {
+const ReviewForm = ({ reviewText, setReviewText, reviewLoading, reviewError, onSubmit, currentUser }) => {
   const [rating, setRating] = React.useState(0);
   const [showRatingError, setShowRatingError] = React.useState(false);
 
@@ -21,12 +21,29 @@ const ReviewForm = ({ reviewText, setReviewText, reviewLoading, reviewError, onS
     onSubmit(e, rating);
   };
 
+  const isLoggedIn = Boolean(currentUser);
+
   return (
-    <Paper elevation={0} sx={{ background: '#fff', p: 2, mt: 3 }}>
-      <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-        Write a review
-      </Typography>
-      <Box component="form" onSubmit={handleSubmit}>
+    <Paper elevation={0} sx={{ background: '#fff', p: 2, mt: 3, position: 'relative' }}>
+      {!isLoggedIn && (
+        <Typography
+          variant="subtitle2"
+          color="error"
+          sx={{ mb: 2, zIndex: 2, position: 'relative', textAlign: 'center' }}
+        >
+          Yorum yapmak için giriş yapın
+        </Typography>
+      )}
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          filter: !isLoggedIn ? 'blur(3px)' : 'none',
+          pointerEvents: !isLoggedIn ? 'none' : 'auto',
+          userSelect: !isLoggedIn ? 'none' : 'auto',
+          position: 'relative',
+        }}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
           <Rating
             name="star-rating"
@@ -66,6 +83,21 @@ const ReviewForm = ({ reviewText, setReviewText, reviewLoading, reviewError, onS
           {reviewLoading ? 'Submitting...' : 'Submit'}
         </Button>
       </Box>
+      {/* Overlay to block interaction and show message if not logged in */}
+      {!isLoggedIn && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            bgcolor: 'rgba(255,255,255,0.5)',
+            zIndex: 1,
+            borderRadius: 1,
+          }}
+        />
+      )}
     </Paper>
   );
 };
