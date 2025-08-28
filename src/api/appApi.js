@@ -1,6 +1,6 @@
 import axios from './axiosConfig';
 
-export const getAllApps = () => axios.get('/apps');
+export const getAllApps = () => axios.get('/apps/approved');
 export const getAppById = (id) => axios.get(`/apps/${id}`);
 export const createApp = (data) => axios.post('/apps', data);
 export const updateApp = (id, data) => axios.put(`/apps/${id}`, data);

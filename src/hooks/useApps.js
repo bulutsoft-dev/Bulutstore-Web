@@ -25,7 +25,9 @@ export default function useApps(categoryId) {
     setError(null);
     getAppsByCategory(categoryId)
       .then(res => {
-        setApps(res.data);
+        // Only include approved apps
+        const approvedApps = res.data.filter(app => app.status === 'APPROVED');
+        setApps(approvedApps);
         setLoading(false);
       })
       .catch(() => {
