@@ -16,10 +16,15 @@ import ReplyIcon from '@mui/icons-material/Reply';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Chip from '@mui/material/Chip';
 
-const ReviewList = ({ reviews, currentUser, onDelete, onEdit }) => {
+const ReviewList = ({ reviews, currentUser, onDelete, onEdit, onLoginRequest, onSubmitNewReview }) => {
     const [editId, setEditId] = React.useState(null);
     const [editText, setEditText] = React.useState('');
     const [editRating, setEditRating] = React.useState(0);
+    const [newReviewText, setNewReviewText] = React.useState('');
+    const [newReviewRating, setNewReviewRating] = React.useState(0);
+
+    // Kullanıcının daha önce yorum yapıp yapmadığını kontrol et
+    const hasUserReviewed = currentUser && reviews.some(review => review.username === currentUser.username);
 
     // Kendi yorumunu en üste al
     let sortedReviews = reviews;
@@ -34,21 +39,122 @@ const ReviewList = ({ reviews, currentUser, onDelete, onEdit }) => {
         setEditText(review.comment);
         setEditRating(review.rating);
     };
+
     const cancelEdit = () => {
         setEditId(null);
         setEditText('');
         setEditRating(0);
     };
+
     const submitEdit = (id) => {
         onEdit(id, { comment: editText, rating: editRating });
         cancelEdit();
     };
 
+    const submitNewReview = () => {
+        if (onSubmitNewReview) {
+            onSubmitNewReview({
+                comment: newReviewText,
+                rating: newReviewRating
+            });
+            setNewReviewText('');
+            setNewReviewRating(0);
+        }
+    };
+
     return (
-        <Stack spacing={2}>
+        <Stack spacing={3}>
+            {/* Yeni Yorum Bölümü - Sadece giriş yapmış ve henüz yorum yapmamış kullanıcılar için */}
+            {currentUser && !hasUserReviewed && (
+                <Card
+                    variant="outlined"
+                    sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        position: 'relative',
+                        overflow: 'hidden'
+                    }}
+                >
+                    <Typography variant="h6" gutterBottom>
+                        Yorumunuz
+                    </Typography>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                        <Rating
+                            value={newReviewRating}
+                            onChange={(_, value) => setNewReviewRating(value)}
+                            size="large"
+                            sx={{ mr: 1 }}
+                        />
+                        <Typography variant="body2" color="text.secondary">
+                            Derecelendirin
+                        </Typography>
+                    </Box>
+
+                    <TextField
+                        value={newReviewText}
+                        onChange={(e) => setNewReviewText(e.target.value)}
+                        fullWidth
+                        multiline
+                        rows={4}
+                        placeholder="Deneyiminizi paylaşın..."
+                        variant="outlined"
+                        sx={{ mb: 2 }}
+                    />
+
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                            variant="contained"
+                            onClick={submitNewReview}
+                            disabled={newReviewText.trim() === '' || newReviewRating === 0}
+                        >
+                            Yorumu Gönder
+                        </Button>
+                    </Box>
+                </Card>
+            )}
+
+            {/* Giriş yapmamış kullanıcılar için yorum yapma teşviki */}
+            {!currentUser && (
+                <Card
+                    variant="outlined"
+                    sx={{
+                        p: 2,
+                        borderRadius: 2,
+                        position: 'relative',
+                        overflow: 'hidden',
+                        backgroundColor: '#f5f5f5'
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'column',
+                            gap: 2,
+                            textAlign: 'center'
+                        }}
+                    >
+                        <Typography variant="h6" color="text.secondary">
+                            Deneyiminizi paylaşmak ister misiniz?
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            onClick={onLoginRequest}
+                            sx={{ borderRadius: 2 }}
+                            size="large"
+                        >
+                            Giriş Yap ve Yorum Yap
+                        </Button>
+                    </Box>
+                </Card>
+            )}
+
+            {/* Mevcut Yorumlar Listesi */}
             {sortedReviews.map((review, idx) => {
                 const isOwn = currentUser && review.username === currentUser.username;
-                const isHelpful = Math.random() > 0.5; // Rastgele "faydalı" durumu (gerçek uygulamada API'den gelmeli)
+                const isHelpful = Math.random() > 0.5; // Rastgele "faydalı" durumu
 
                 return (
                     <Card
@@ -166,10 +272,17 @@ const ReviewList = ({ reviews, currentUser, onDelete, onEdit }) => {
                                     <Typography variant="caption" color="text.secondary" sx={{ mr: 1 }}>
                                         Bu yorum faydalı oldu mu?
                                     </Typography>
-                                    <IconButton size="small" sx={{ color: isHelpful ? 'primary.main' : 'inherit' }}>
+                                    <IconButton
+                                        size="small"
+                                        sx={{ color: isHelpful ? 'primary.main' : 'inherit' }}
+                                        disabled={!currentUser}
+                                    >
                                         <ThumbUpAltOutlinedIcon fontSize="small" />
                                     </IconButton>
-                                    <IconButton size="small">
+                                    <IconButton
+                                        size="small"
+                                        disabled={!currentUser}
+                                    >
                                         <ThumbDownAltOutlinedIcon fontSize="small" />
                                     </IconButton>
                                 </Box>
@@ -181,10 +294,7 @@ const ReviewList = ({ reviews, currentUser, onDelete, onEdit }) => {
                             <IconButton
                                 size="small"
                                 sx={{ position: 'absolute', top: 8, right: 8 }}
-                                onClick={(e) => {
-                                    // Burada bir menü açılabilir, şimdilik doğrudan düzenlemeye yönlendiriyoruz
-                                    startEdit(review);
-                                }}
+                                onClick={() => startEdit(review)}
                             >
                                 <MoreVertIcon fontSize="small" />
                             </IconButton>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
@@ -17,6 +17,7 @@ import useApp from '../hooks/useApp';
 
 const AppDetailPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { app, loading, error } = useApp(id);
   const { user, loading: authLoading } = useAuthContext();
 
@@ -118,6 +119,11 @@ const AppDetailPage = () => {
   // Kullanıcı bu uygulamaya zaten yorum yaptı mı?
   const userAlreadyReviewed = user && reviews.some(r => r.username === user.username);
 
+  // Giriş yapma isteği fonksiyonu
+  const handleLoginRequest = () => {
+    navigate('/login');
+  };
+
   if (loading) {
     return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>;
   }
@@ -147,6 +153,7 @@ const AppDetailPage = () => {
           currentUser={user}
           onDelete={handleDeleteReview}
           onEdit={handleEditReview}
+          onLoginRequest={handleLoginRequest}
         />
         {reviews.length > 0 && <Divider sx={{ my: 3 }} />}
         {/* Review Form for logged-in users */}
