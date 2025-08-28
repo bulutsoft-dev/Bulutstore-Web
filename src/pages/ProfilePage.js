@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
-import { becomeDeveloper, updateUser, getCurrentUser, applyForDeveloper } from '../api/userApi';
+import { updateUser, getCurrentUser, applyForDeveloper } from '../api/userApi';
 import {
     Box,
     Container,
@@ -19,9 +19,9 @@ const ProfilePage = () => {
     const [error, setError] = useState(null);
     const [form, setForm] = useState({ description: '' });
     const [profileData, setProfileData] = useState({
-        name: user?.name || '',
-        bio: user?.bio || '',
-        skills: user?.skills || []
+        username: user?.username || '',
+        displayName: user?.displayName || '',
+        website: user?.website || ''
     });
     const [profileUpdateSuccess, setProfileUpdateSuccess] = useState(false);
     const [profileUpdateError, setProfileUpdateError] = useState(null);
@@ -35,9 +35,9 @@ const ProfilePage = () => {
                 const latestUser = await getCurrentUser();
                 setUser(latestUser);
                 setProfileData({
-                    name: latestUser.name || latestUser.displayName || '',
-                    bio: latestUser.bio || '',
-                    skills: latestUser.skills || []
+                    username: latestUser.username || '',
+                    displayName: latestUser.displayName || '',
+                    website: latestUser.website || ''
                 });
             } catch (err) {
                 setProfileUpdateError('Kullanıcı bilgileri alınamadı. Lütfen tekrar deneyin.');
@@ -65,23 +65,6 @@ const ProfilePage = () => {
         setProfileData({ ...profileData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setApplying(true);
-        setError(null);
-        try {
-            const updatedUser = await becomeDeveloper(form);
-            setUser(updatedUser);
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-            setSuccess(true);
-            setForm({ description: '' });
-        } catch (err) {
-            setError(err.message || 'Başvuru başarısız. Lütfen daha sonra tekrar deneyin.');
-        } finally {
-            setApplying(false);
-        }
-    };
-
     const handleDeveloperApplicationSubmit = async (e) => {
         e.preventDefault();
         setApplying(true);
@@ -104,24 +87,24 @@ const ProfilePage = () => {
         try {
             const userId = user._id || user.id;
             const updatedUser = await updateUser(userId, {
-                name: profileData.name,
-                bio: profileData.bio,
-                skills: profileData.skills
+                username: profileData.username,
+                displayName: profileData.displayName,
+                website: profileData.website
             });
             setUser(updatedUser);
             setProfileData({
-                name: updatedUser.name || '',
-                bio: updatedUser.bio || '',
-                skills: updatedUser.skills || []
+                username: updatedUser.username || '',
+                displayName: updatedUser.displayName || '',
+                website: updatedUser.website || ''
             });
             setProfileUpdateSuccess(true);
             // Refetch latest user data
             const latestUser = await getCurrentUser();
             setUser(latestUser);
             setProfileData({
-                name: latestUser.name || '',
-                bio: latestUser.bio || '',
-                skills: latestUser.skills || []
+                username: latestUser.username || '',
+                displayName: latestUser.displayName || '',
+                website: latestUser.website || ''
             });
         } catch (err) {
             setProfileUpdateError(err.message || 'Profil güncellenemedi. Lütfen tekrar deneyin.');
@@ -137,14 +120,10 @@ const ProfilePage = () => {
                     gap: 4
                 }}
             >
-                {/* Sol Taraf - Profil Bilgileri */}
                 <Box>
                     <ProfileSidebar user={user} />
                 </Box>
-
-                {/* Sağ Taraf - İçerik */}
                 <Box>
-                    {/* Profil Düzenleme */}
                     <ProfileEditForm
                         user={user}
                         profileData={profileData}
@@ -156,7 +135,6 @@ const ProfilePage = () => {
                         handleProfileChange={handleProfileChange}
                         handleSaveProfile={handleSaveProfile}
                     />
-                    {/* Geliştirici başvuru formu veya başvuru durumu mesajı */}
                     {!user.isDeveloper && (
                         user.developer_application_status || user.developer_application_date ? (
                             <Alert severity="info" sx={{ mb: 2 }}>
@@ -174,7 +152,6 @@ const ProfilePage = () => {
                             />
                         )
                     )}
-                    {/* Geliştirici istatistikleri (sadece geliştiriciler için) */}
                     {user.isDeveloper && (
                         <DeveloperStats />
                     )}

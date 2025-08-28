@@ -151,7 +151,7 @@ const ProfileEditForm = ({
                 )}
                 <TextField
                     label="Durum"
-                    value={user.isDeveloper ? 'Geliştirici' : 'Normal Kullanıcı'}
+                    value={user.isDeveloper ? 'Geliştirici' : 'Kullanıcı'}
                     fullWidth
                     margin="normal"
                     InputProps={{ readOnly: true }}
