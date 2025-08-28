@@ -32,18 +32,14 @@ const AppDetailPage = () => {
   }, [app, id]);
 
   const [reviews, setReviews] = React.useState([]);
-  const [reviewText, setReviewText] = React.useState('');
   const [reviewLoading, setReviewLoading] = React.useState(false);
   const [reviewError, setReviewError] = React.useState(null);
 
   React.useEffect(() => {
     getAllReviews()
       .then(res => {
-        // Debug log for id and appId
-        console.log('DEBUG | useParams id:', id, '| reviews:', res.data);
         // Filter reviews for this app
         const filtered = Array.isArray(res.data) ? res.data.filter(r => r.appId === Number(id)) : [];
-        console.log('DEBUG | Filtered reviews:', filtered);
         setReviews(filtered);
       })
       .catch(() => setReviews([]));
@@ -98,7 +94,6 @@ const AppDetailPage = () => {
         rating: data.rating,
         comment: data.comment
       };
-      console.log('DEBUG | Edit review payload:', payload);
       await updateReview(reviewId, payload);
       // Edit sonrası güncel listeyi API'den çek
       const res = await getAllReviews();
@@ -128,7 +123,6 @@ const AppDetailPage = () => {
     return null;
   }
 
-
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
       <AppHeader app={app} />
@@ -148,15 +142,17 @@ const AppDetailPage = () => {
           onDelete={handleDeleteReview}
           onEdit={handleEditReview}
           onLoginRequest={handleLoginRequest}
-          onSubmitNewReview={handleReviewSubmit} // Pass the submit handler
+          onSubmitNewReview={handleReviewSubmit}
         />
         {reviews.length > 0 && <Divider sx={{ my: 3 }} />}
-        {/* Remove the page-level ReviewForm and userAlreadyReviewed logic */}
         {authLoading ? (
           <Typography color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
             Loading user info...
           </Typography>
         ) : null}
+        {reviewError && (
+          <Alert severity="error" sx={{ mt: 2 }}>{reviewError}</Alert>
+        )}
       </Box>
     </Box>
   );
