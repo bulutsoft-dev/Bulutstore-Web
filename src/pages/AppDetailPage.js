@@ -119,47 +119,44 @@ const AppDetailPage = () => {
       ? reviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0) / reviews.length
       : 0;
 
-  if (loading) {
-    return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>;
-  }
-  if (error) {
-    return <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>;
-  }
-  if (!app) {
-    return null;
-  }
-
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
-      <AppHeader app={{ ...app, avgRating: averageRating }} />
-      <AppScreenshots screenshots={cachedScreenshots} />
-      <AppDescription shortDescription={app.shortDescription} description={app.description} />
-      <AppTags tags={app.tags} tagIds={app.tagIds} />
-
-      {/* Reviews Section */}
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>Yorumlar</Typography>
-        {reviews.length === 0 && (
-          <Typography color="text.secondary" sx={{ mb: 2 }}>No reviews yet.</Typography>
-        )}
-        <ReviewList
-          reviews={reviews}
-          currentUser={user}
-          onDelete={handleDeleteReview}
-          onEdit={handleEditReview}
-          onLoginRequest={handleLoginRequest}
-          onSubmitNewReview={handleReviewSubmit}
-        />
-        {reviews.length > 0 && <Divider sx={{ my: 3 }} />}
-        {authLoading ? (
-          <Typography color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
-            Loading user info...
-          </Typography>
-        ) : null}
-        {reviewError && (
-          <Alert severity="error" sx={{ mt: 2 }}>{reviewError}</Alert>
-        )}
-      </Box>
+      {loading ? (
+        <CircularProgress />
+      ) : error ? (
+        <Alert severity="error">{error}</Alert>
+      ) : app ? (
+        <>
+          <AppHeader app={{ ...app, downloadsCount: app.downloadsCount ?? app.downloadCount ?? 0, avgRating: averageRating }} />
+          <AppScreenshots screenshots={cachedScreenshots} />
+          <AppDescription shortDescription={app.shortDescription} description={app.description} />
+          <AppTags tags={app.tags} tagIds={app.tagIds} />
+          {/* Reviews Section */}
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>Yorumlar</Typography>
+            {reviews.length === 0 && (
+              <Typography color="text.secondary" sx={{ mb: 2 }}>Henüz yorum yok.</Typography>
+            )}
+            <ReviewList
+              reviews={reviews}
+              currentUser={user}
+              onDelete={handleDeleteReview}
+              onEdit={handleEditReview}
+              onLoginRequest={handleLoginRequest}
+              onSubmitNewReview={handleReviewSubmit}
+            />
+            {reviews.length > 0 && <Divider sx={{ my: 3 }} />}
+            {authLoading ? (
+              <Typography color="text.secondary" sx={{ mt: 3, textAlign: 'center' }}>
+                Kullanıcı bilgileri yükleniyor...
+              </Typography>
+            ) : null}
+            {reviewError && (
+              <Alert severity="error" sx={{ mt: 2 }}>{reviewError}</Alert>
+            )}
+          </Box>
+        </>
+      ) : null}
     </Box>
   );
 };

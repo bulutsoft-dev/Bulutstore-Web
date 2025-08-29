@@ -41,7 +41,7 @@ const AppsPage = () => {
           ) : (
             apps.map((app) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={app.id}>
-                <AppCard app={app} />
+                <AppCard app={{ ...app, downloadsCount: app.downloadsCount ?? app.downloadCount ?? 0 }} />
               </Grid>
             ))
           )}
