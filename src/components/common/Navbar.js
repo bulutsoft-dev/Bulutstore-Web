@@ -18,18 +18,19 @@ import {
     styled,
     useMediaQuery,
     useTheme,
+    alpha,
     Container
 } from '@mui/material';
 import {
-    Store,
     AccountCircle,
     Search,
     Menu as MenuIcon,
     Close
 } from '@mui/icons-material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import useApps from '../../hooks/useApps';
+import logo from '../../assets/storelogo.png';
 
 // Stil bileşenleri
 const SearchContainer = styled('div')(({ theme }) => ({
@@ -37,8 +38,11 @@ const SearchContainer = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     marginRight: theme.spacing(1),
+    flexGrow: 1,
+    maxWidth: 600,
     [theme.breakpoints.down('md')]: {
-        marginRight: 0
+        marginRight: 0,
+        maxWidth: '100%'
     }
 }));
 
@@ -64,7 +68,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
-        width: '100%'
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '100%'
+        }
     }
 }));
 
@@ -87,6 +94,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const location = useLocation();
 
     const { user, isAuthenticated, logout } = useAuthContext();
     const { apps } = useApps();
@@ -147,13 +155,6 @@ const Navbar = () => {
     const handleResultClick = (appId) => {
         navigate(`/apps/${appId}`);
         handleSearchClose();
-    };
-
-    // Arama dışına tıklandığında sonuçları kapat
-    const handleClickAway = () => {
-        if (showResults) {
-            setShowResults(false);
-        }
     };
 
     // ESC tuşu ile aramayı kapat
@@ -286,83 +287,6 @@ const Navbar = () => {
         </Menu>
     );
 
-    // Arama bileşeni
-    const renderSearchComponent = (isMobileView = false) => (
-        <ClickAwayListener onClickAway={handleClickAway}>
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    width: isSearchOpen ? (isMobileView ? '100%' : 250) : 40,
-                    transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1)',
-                    overflow: 'visible',
-                    bgcolor: isSearchOpen ? 'rgba(0,0,0,0.04)' : 'transparent',
-                    borderRadius: 2,
-                    pl: isSearchOpen ? 1 : 0,
-                    pr: 1,
-                    position: 'relative',
-                    ...(isMobileView && { mr: 1 }),
-                }}
-            >
-                {isSearchOpen ? (
-                    <>
-                        <StyledInputBase
-                            placeholder="Uygulama ara…"
-                            inputProps={{ 'aria-label': 'search' }}
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                            inputRef={el => {
-                                searchInputRef.current = el;
-                                if (el && isSearchOpen) el.focus();
-                            }}
-                            onFocus={() => setShowResults(!!searchQuery)}
-                            sx={{ width: '100%', minWidth: 0, background: 'none', border: 'none', boxShadow: 'none' }}
-                            autoFocus
-                        />
-                        <IconButton
-                            onClick={handleSearchClose}
-                            sx={{ color: 'text.secondary', ml: 1, p: 0.5 }}
-                            aria-label="Kapat"
-                        >
-                            <Close />
-                        </IconButton>
-                        {showResults && filteredApps.length > 0 && (
-                            <SearchResults sx={{ left: 0, right: 0, width: '100%' }}>
-                                {apps.length === 0 ? (
-                                    <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>Yükleniyor...</Box>
-                                ) : filteredApps.length === 0 ? (
-                                    <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>Sonuç bulunamadı</Box>
-                                ) : (
-                                    <List dense>
-                                        {filteredApps.map(app => (
-                                            <ListItem key={app.id} disablePadding>
-                                                <ListItemButton
-                                                    onClick={() => handleResultClick(app.id)}
-                                                    sx={{ py: 0.5 }}
-                                                >
-                                                    <ListItemText primary={app.name} />
-                                                </ListItemButton>
-                                            </ListItem>
-                                        ))}
-                                    </List>
-                                )}
-                            </SearchResults>
-                        )}
-                    </>
-                ) : (
-                    <IconButton
-                        onClick={handleSearchOpen}
-                        color="inherit"
-                        aria-label="Uygulama ara"
-                        sx={{ p: 0.5 }}
-                    >
-                        <Search />
-                    </IconButton>
-                )}
-            </Box>
-        </ClickAwayListener>
-    );
-
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar
@@ -370,139 +294,225 @@ const Navbar = () => {
                 sx={{
                     backgroundColor: 'white',
                     color: '#5f6368',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    minHeight: 80,
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                 }}
             >
-                <Toolbar
-                    sx={{
-                        minHeight: 80,
-                        height: 80,
-                        px: { xs: 1, sm: 2, md: 3 },
-                        flexWrap: 'wrap',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '100%',
-                    }}
-                >
-                    <Container maxWidth="lg" sx={{ p: 0, display: 'flex', flexDirection: 'column', minWidth: 0, justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                        {/* 1. Satır: Logo | Navigation | Profil */}
+                <Container maxWidth="lg" sx={{ px: { xs: 0.5, sm: 2 } }}>
+                    <Toolbar sx={{
+                        minHeight: 64,
+                        px: 0, // Remove horizontal padding, Container handles it
+                        flexWrap: 'nowrap'
+                    }}>
+                        {/* Left: Hamburger, Logo */}
                         <Box sx={{
                             display: 'flex',
-                            flexDirection: 'row',
                             alignItems: 'center',
-                            width: '100%',
+                            flexGrow: 0,
                             minWidth: 0,
+                            flexShrink: 1,
+                            mr: 2
                         }}>
-                            {/* Sol: Logo */}
-                            <Box sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                flex: '0 0 auto',
-                                minWidth: 0,
-                                flexShrink: 1,
-                                mr: { xs: 1, md: 2 },
-                                overflow: 'hidden',
-                            }}>
-                                <IconButton
-                                    size="large"
-                                    edge="start"
-                                    onClick={handleMobileMenuOpen}
+                            <IconButton
+                                size="large"
+                                edge="start"
+                                onClick={handleMobileMenuOpen}
+                                color="inherit"
+                                aria-label="open navigation menu"
+                                sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                            <img src={logo} alt="BulutStore" style={{ height: 28, width: 28, marginRight: 8, borderRadius: 6 }} />
+                            <Typography
+                                variant="h6"
+                                component={RouterLink}
+                                to="/"
+                                sx={{
+                                    fontWeight: 'bold',
+                                    textDecoration: 'none',
+                                    color: 'inherit',
+                                    fontSize: { xs: 18, sm: 22 },
+                                    '&:hover': { color: '#4285F4' },
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                }}
+                            >
+                                BulutStore
+                            </Typography>
+                        </Box>
+
+                        {/* Center: Navigation links (desktop/tablet) */}
+                        <Box sx={{
+                            display: { xs: 'none', md: 'flex' },
+                            justifyContent: 'center',
+                            flexGrow: 0,
+                            gap: 1,
+                            mx: 2
+                        }}>
+                            <Button
+                                color="inherit"
+                                component={RouterLink}
+                                to="/"
+                                sx={{
+                                    borderBottom: location.pathname === '/' ? '2px solid #4285F4' : '2px solid transparent',
+                                    borderRadius: 0,
+                                }}
+                            >
+                                Anasayfa
+                            </Button>
+                            <Button
+                                color="inherit"
+                                component={RouterLink}
+                                to="/apps"
+                                sx={{
+                                    borderBottom: location.pathname.startsWith('/apps') ? '2px solid #4285F4' : '2px solid transparent',
+                                    borderRadius: 0,
+                                }}
+                            >
+                                Uygulamalar
+                            </Button>
+                            {user?.role?.toUpperCase() === 'ADMIN' && (
+                                <Button
                                     color="inherit"
-                                    aria-label="open navigation menu"
-                                    sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
-                                >
-                                    <MenuIcon />
-                                </IconButton>
-                                <Store sx={{
-                                    color: '#4285F4',
-                                    mr: 1,
-                                    fontSize: { xs: 28, sm: 32 },
-                                    flexShrink: 0
-                                }} />
-                                <Typography
-                                    variant="h6"
                                     component={RouterLink}
-                                    to="/"
+                                    to="/admin"
                                     sx={{
-                                        fontWeight: 'bold',
-                                        textDecoration: 'none',
-                                        color: 'inherit',
-                                        fontSize: { xs: 18, sm: 22 },
-                                        '&:hover': { color: '#4285F4' },
-                                        whiteSpace: 'nowrap',
-                                        overflow: 'hidden',
-                                        textOverflow: 'ellipsis'
+                                        borderBottom: location.pathname.startsWith('/admin') ? '2px solid #4285F4' : '2px solid transparent',
+                                        borderRadius: 0,
                                     }}
                                 >
-                                    BulutStore
-                                </Typography>
-                            </Box>
-                            {/* Orta: Navigation */}
-                            <Box sx={{
-                                display: { xs: 'none', md: 'flex' },
-                                flex: 1,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                minWidth: 0,
-                                overflow: 'hidden',
-                                gap: 1,
-                                mx: 2,
-                            }}>
-                                <Button
-                                    color="inherit"
-                                    component={RouterLink}
-                                    to="/"
-                                    sx={{ borderRadius: 1 }}
-                                >
-                                    Anasayfa
+                                    Admin Panel
                                 </Button>
-                                <Button
-                                    color="inherit"
-                                    component={RouterLink}
-                                    to="/apps"
-                                    sx={{ borderRadius: 1 }}
-                                >
-                                    Uygulamalar
-                                </Button>
-                                {user?.role?.toUpperCase() === 'ADMIN' && (
-                                    <Button
+                            )}
+                        </Box>
+
+                        {/* Right: Search & User actions */}
+                        <Box sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'flex-end',
+                            flexGrow: 1,
+                            minWidth: 0,
+                            gap: 1
+                        }}>
+                            {/* Responsive Search */}
+                            <SearchContainer
+                                ref={searchContainerRef}
+                                sx={{
+                                    width: {
+                                        xs: isSearchOpen ? '100%' : 'auto',
+                                        md: isSearchOpen ? '100%' : 250
+                                    },
+                                    maxWidth: { md: isSearchOpen ? 400 : 250 },
+                                    position: { xs: isSearchOpen ? 'absolute' : 'relative', md: 'relative' },
+                                    left: { xs: isSearchOpen ? 0 : 'auto', md: 'auto' },
+                                    top: { xs: isSearchOpen ? 0 : 'auto', md: 'auto' },
+                                    zIndex: isSearchOpen ? (theme) => theme.zIndex.modal + 1 : 'auto',
+                                    background: { xs: isSearchOpen ? 'white' : 'none', md: 'none' },
+                                    margin: { xs: isSearchOpen ? 0 : '0 4px', md: '0 4px' },
+                                    height: { xs: isSearchOpen ? '100%' : 'auto', md: 'auto' },
+                                    transition: 'all 0.2s ease',
+                                }}
+                            >
+                                {isSearchOpen || !isMobile ? (
+                                    <ClickAwayListener onClickAway={isMobile ? handleSearchClose : () => {}}>
+                                        <Box sx={{
+                                            position: 'relative',
+                                            width: '100%',
+                                            display: 'flex',
+                                            alignItems: 'center'
+                                        }}>
+                                            <StyledInputBase
+                                                placeholder="Uygulama ara…"
+                                                inputProps={{ 'aria-label': 'search' }}
+                                                value={searchQuery}
+                                                onChange={handleSearchChange}
+                                                inputRef={searchInputRef}
+                                                onFocus={() => setShowResults(!!searchQuery)}
+                                                sx={{
+                                                    backgroundColor: 'rgba(0,0,0,0.04)',
+                                                    borderRadius: 2,
+                                                    pl: 4,
+                                                    pr: 2,
+                                                    py: 0.5,
+                                                    width: '100%',
+                                                    flexGrow: 1,
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(0,0,0,0.06)',
+                                                    },
+                                                }}
+                                                autoFocus={isMobile && isSearchOpen}
+                                            />
+                                            <Search
+                                                sx={{
+                                                    position: 'absolute',
+                                                    left: 8,
+                                                    top: '50%',
+                                                    transform: 'translateY(-50%)',
+                                                    color: 'text.secondary'
+                                                }}
+                                            />
+                                            {showResults && filteredApps.length > 0 && (
+                                                <SearchResults>
+                                                    <List dense>
+                                                        {filteredApps.map(app => (
+                                                            <ListItem key={app.id} disablePadding>
+                                                                <ListItemButton
+                                                                    onClick={() => handleResultClick(app.id)}
+                                                                    sx={{ py: 0.5 }}
+                                                                >
+                                                                    <ListItemText primary={app.name} />
+                                                                </ListItemButton>
+                                                            </ListItem>
+                                                        ))}
+                                                    </List>
+                                                </SearchResults>
+                                            )}
+                                            {/* Close button for mobile search */}
+                                            {isMobile && isSearchOpen && (
+                                                <IconButton
+                                                    onClick={handleSearchClose}
+                                                    sx={{
+                                                        color: 'text.secondary',
+                                                        ml: 1
+                                                    }}
+                                                    aria-label="Kapat"
+                                                >
+                                                    <Close />
+                                                </IconButton>
+                                            )}
+                                        </Box>
+                                    </ClickAwayListener>
+                                ) : (
+                                    <IconButton
+                                        onClick={handleSearchOpen}
                                         color="inherit"
-                                        component={RouterLink}
-                                        to="/admin"
-                                        sx={{ borderRadius: 1 }}
+                                        aria-label="Uygulama ara"
+                                        sx={{ ml: 1 }}
                                     >
-                                        Admin Panel
-                                    </Button>
+                                        <Search />
+                                    </IconButton>
                                 )}
-                            </Box>
-                            {/* Sağ: Profil ve arama (sadece md ve üstü) */}
+                            </SearchContainer>
+
+                            {/* User actions (desktop/tablet) */}
                             <Box sx={{
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'flex-end',
-                                flex: '0 0 auto',
-                                minWidth: 0,
-                                position: 'relative',
-                                width: { xs: 'auto', md: 'auto' },
-                                gap: { xs: 1, md: 0 },
-                                flexShrink: 1,
-                                overflow: 'hidden',
+                                flexShrink: 0,
+                                gap: { xs: 0, md: 1 }
                             }}>
-                                {/* Desktop/Tablet: Search */}
-                                <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-                                    {renderSearchComponent(false)}
-                                </Box>
-
                                 {isAuthenticated ? (
                                     <>
                                         <ActionButton
                                             color="inherit"
                                             component={RouterLink}
                                             to="/profile"
+                                            sx={{
+                                                borderBottom: location.pathname.startsWith('/profile') ? '2px solid #4285F4' : '2px solid transparent',
+                                                borderRadius: 0,
+                                            }}
                                         >
                                             Profil
                                         </ActionButton>
@@ -517,7 +527,7 @@ const Navbar = () => {
                                             onClick={handleProfileMenuOpen}
                                             color="inherit"
                                             aria-label="Kullanıcı menüsü"
-                                            sx={{ display: { xs: 'none', md: 'flex' } }}
+                                            sx={{ display: { xs: 'flex', md: 'none' } }}
                                         >
                                             <AccountCircle />
                                         </IconButton>
@@ -528,6 +538,7 @@ const Navbar = () => {
                                             color="inherit"
                                             component={RouterLink}
                                             to="/login"
+                                            sx={{ borderBottom: location.pathname === '/login' ? '2px solid #4285F4' : '2px solid transparent', borderRadius: 0 }}
                                         >
                                             Giriş Yap
                                         </ActionButton>
@@ -540,36 +551,28 @@ const Navbar = () => {
                                                 color: 'white',
                                                 '&:hover': {
                                                     backgroundColor: '#3367d6',
-                                                }
+                                                },
+                                                borderBottom: location.pathname === '/register' ? '2px solid #4285F4' : '2px solid transparent',
+                                                borderRadius: 0,
                                             }}
                                         >
                                             Kayıt Ol
                                         </ActionButton>
+                                        <IconButton
+                                            edge="end"
+                                            onClick={handleProfileMenuOpen}
+                                            color="inherit"
+                                            aria-label="Kullanıcı menüsü"
+                                            sx={{ display: { xs: 'flex', md: 'none' } }}
+                                        >
+                                            <AccountCircle />
+                                        </IconButton>
                                     </>
                                 )}
                             </Box>
                         </Box>
-                        {/* 2. Satır: Arama çubuğu (sadece küçük ekranlarda) ve profil ikonu */}
-                        <Box sx={{
-                            display: { xs: 'flex', md: 'none' },
-                            width: '100%',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            mt: 1,
-                        }}>
-                            {renderSearchComponent(true)}
-                            {/* Profile icon always visible on mobile, next to search */}
-                            <IconButton
-                                edge="end"
-                                onClick={handleProfileMenuOpen}
-                                color="inherit"
-                                aria-label="Kullanıcı menüsü"
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                        </Box>
-                    </Container>
-                </Toolbar>
+                    </Toolbar>
+                </Container>
             </AppBar>
 
             {renderProfileMenu}
