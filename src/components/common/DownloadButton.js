@@ -1,14 +1,18 @@
 import React from 'react';
 import { Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
-import axios from 'axios';
+import { createDownloadHistory } from '../../api/downloadHistoryApi';
 
 const DownloadButton = ({ fileUrl, appId, onDownloaded }) => {
   const handleDownload = async (e) => {
     if (!fileUrl || !appId) return;
     try {
-      await axios.post('/api/download-histories', { appId });
-      if (onDownloaded) onDownloaded();
+      const res = await createDownloadHistory({ appId });
+      if (onDownloaded && res?.data?.downloadCount !== undefined) {
+        onDownloaded(res.data.downloadCount);
+      } else if (onDownloaded) {
+        onDownloaded();
+      }
     } catch (err) {
       // Optionally handle error
     }

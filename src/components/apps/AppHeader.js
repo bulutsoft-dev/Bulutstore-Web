@@ -8,8 +8,13 @@ import DownloadButton from '../common/DownloadButton';
 const AppHeader = ({ app }) => {
   const [downloadsCount, setDownloadsCount] = useState(app.downloadsCount || 0);
 
-  const handleDownloaded = () => {
-    setDownloadsCount((prev) => prev + 1);
+  const handleDownloaded = (newCount) => {
+    console.log('handleDownloaded called with:', newCount);
+    if (typeof newCount === 'number') {
+      setDownloadsCount(newCount);
+    } else {
+      setDownloadsCount((prev) => prev + 1);
+    }
   };
 
   return (
