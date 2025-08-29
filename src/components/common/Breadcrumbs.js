@@ -41,19 +41,26 @@ const AppBreadcrumbs = ({ extraLabels = [] }) => {
     <Breadcrumbs
       aria-label="breadcrumb"
       sx={{
-        mb: 3,
+        mb: 2,
         fontSize: { xs: 13, sm: 15 },
         fontWeight: 500,
         letterSpacing: 0.1,
-        '.MuiBreadcrumbs-separator': { mx: 1, color: 'text.disabled' },
+        alignItems: 'center',
+        '.MuiBreadcrumbs-separator': {
+          mx: 0.5,
+          color: 'text.disabled',
+          fontSize: 18,
+          fontWeight: 700,
+          verticalAlign: 'middle',
+        },
       }}
-      separator={<span style={{ fontSize: 18, color: '#bdbdbd', fontWeight: 700, margin: '0 4px' }}>/</span>}
+      separator={<span style={{ fontSize: 18, color: '#bdbdbd', fontWeight: 700, margin: '0 2px', verticalAlign: 'middle' }}>/</span>}
     >
       {crumbs.map((crumb, idx) => {
         const isLast = idx === crumbs.length - 1;
         const label = crumb.name?.length > 22 ? crumb.name.slice(0, 20) + '…' : crumb.name;
         const content = idx === 0 ? (
-          <HomeIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: 'middle', color: isLast ? 'text.primary' : 'primary.main' }} />
+          <HomeIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: 'middle', mb: '2px', color: isLast ? 'text.primary' : 'primary.main' }} />
         ) : null;
         return isLast ? (
           <Tooltip title={crumb.name} key={crumb.to}>
@@ -65,9 +72,14 @@ const AppBreadcrumbs = ({ extraLabels = [] }) => {
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
                 verticalAlign: 'middle',
+                fontSize: { xs: 13, sm: 15 },
+                lineHeight: 1.7,
                 transition: 'color 0.2s',
+                px: 0.5,
+                py: 0.1,
               }}
             >
               {content}{label}
@@ -89,6 +101,10 @@ const AppBreadcrumbs = ({ extraLabels = [] }) => {
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 fontSize: { xs: 13, sm: 15 },
+                lineHeight: 1.7,
+                px: 0.5,
+                py: 0.1,
+                verticalAlign: 'middle',
                 transition: 'color 0.2s',
                 '&:hover': {
                   color: 'primary.main',
