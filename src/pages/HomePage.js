@@ -5,6 +5,7 @@ import CategoryShowcase from '../components/apps/CategoryShowcase';
 import HeroSection from '../components/home/HeroSection';
 import FeaturedAppsSection from '../components/home/FeaturedAppsSection';
 import { Box } from '@mui/material';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 const HomePage = () => {
   const [categories, setCategories] = useState([]);
@@ -26,6 +27,7 @@ const HomePage = () => {
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'transparent', minHeight: '100vh', pb: 0, px: 0 }}>
+      <AppBreadcrumbs />
       {/* Hero/Slider Section */}
       <HeroSection featuredApps={featuredApps} />
       {/* Categories - special showcase */}

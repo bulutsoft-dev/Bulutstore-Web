@@ -10,6 +10,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { approveDeveloper, rejectDeveloper } from '../api/userApi';
 import PendingAppsTable from '../components/admin/PendingAppsTable';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 const AdminPanelPage = () => {
   const { user, loading: authLoading } = useAuthContext();
@@ -59,7 +60,8 @@ const AdminPanelPage = () => {
   const handleSnackbarClose = () => setSnackbar((prev) => ({ ...prev, open: false }));
 
   return (
-    <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+    <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+      <AppBreadcrumbs extraLabels={[null, 'Admin Paneli']} />
       <Typography variant="h4" gutterBottom>Admin Panel</Typography>
       <Typography variant="h6" sx={{ mt: 3 }}>Onay Bekleyen Uygulamalar</Typography>
       <PendingAppsTable />

@@ -10,6 +10,7 @@ import useCategories from '../hooks/useCategories';
 import useApps from '../hooks/useApps';
 import CategoryTabs from '../features/categories/CategoryTabs';
 import AppCard from '../features/apps/AppCard';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 const AppsPage = () => {
   const { categories, loading: catLoading, error: catError } = useCategories();
@@ -19,6 +20,7 @@ const AppsPage = () => {
 
   return (
     <Box sx={{ width: '100%', py: { xs: 2, md: 4 }, px: { xs: 1, sm: 2, md: 0 }, mt: 0 }}>
+      <AppBreadcrumbs />
       <CategoryTabs
         categories={categories}
         loading={catLoading}

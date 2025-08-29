@@ -13,6 +13,7 @@ import { useAuthContext } from '../context/AuthContext';
 import { getAllReviews, createReview, updateReview, deleteReview } from '../api/reviewApi';
 import ReviewList from '../components/comment/ReviewList';
 import useApp from '../hooks/useApp';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 const AppDetailPage = () => {
   const { id } = useParams();
@@ -121,6 +122,7 @@ const AppDetailPage = () => {
 
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+      <AppBreadcrumbs extraLabels={[null, app ? app.name : '...']} />
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
           <CircularProgress />

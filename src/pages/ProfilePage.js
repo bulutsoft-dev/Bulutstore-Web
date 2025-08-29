@@ -10,6 +10,7 @@ import {
 import ProfileSidebar from '../components/users/ProfileSidebar';
 import ProfileEditForm from '../components/users/ProfileEditForm';
 import DeveloperApplicationForm from '../components/users/DeveloperApplicationForm';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 const ProfilePage = () => {
     const { user, setUser, loading } = useAuthContext();
@@ -121,6 +122,7 @@ const ProfilePage = () => {
 
     return (
         <Box sx={{ maxWidth: 900, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+            <AppBreadcrumbs extraLabels={[null, 'Profil']} />
             <Box
                 sx={{
                     display: 'grid',

@@ -5,6 +5,7 @@ import { getAppById, updateApp } from '../api/appApi';
 import useAppSubmission from '../hooks/useAppSubmission';
 import { CircularProgress, Box } from '@mui/material';
 import { useAuth } from '../hooks/useAuth';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 export default function AppEditPage() {
   const { id } = useParams();
@@ -14,6 +15,7 @@ export default function AppEditPage() {
   const [fetchError, setFetchError] = useState('');
   const [editSuccess, setEditSuccess] = useState(false);
   const [editError, setEditError] = useState('');
+  const [appName, setAppName] = useState('');
 
   const appSubmission = useAppSubmission(user, true); // true = edit mode
 
@@ -22,6 +24,7 @@ export default function AppEditPage() {
     getAppById(id)
       .then(res => {
         const app = res.data;
+        setAppName(app.name || '...');
         appSubmission.setForm({
           name: app.name || '',
           shortDescription: app.shortDescription || '',
@@ -88,13 +91,16 @@ export default function AppEditPage() {
   }
 
   return (
-    <Box sx={{ maxWidth: 600, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
-      <AppEditForm
-        {...appSubmission}
-        handleSubmit={handleSubmit}
-        success={editSuccess}
-        error={editError}
-      />
+    <Box sx={{ width: '100%' }}>
+      <AppBreadcrumbs extraLabels={[null, appName, 'Düzenle']} />
+      <Box sx={{ maxWidth: 600, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+        <AppEditForm
+          {...appSubmission}
+          handleSubmit={handleSubmit}
+          success={editSuccess}
+          error={editError}
+        />
+      </Box>
     </Box>
   );
 }

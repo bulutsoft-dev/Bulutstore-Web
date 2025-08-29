@@ -31,7 +31,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import useApps from '../../hooks/useApps';
 
-// Stil bileşenleri (değişmeden kaldı)
+// Stil bileşenleri
 const SearchContainer = styled('div')(({ theme }) => ({
     position: 'relative',
     display: 'flex',
@@ -169,7 +169,7 @@ const Navbar = () => {
         };
     }, [isSearchOpen, handleSearchClose]);
 
-    // Menü bileşenleri (değişmeden kaldı)
+    // Menü bileşenleri
     const renderProfileMenu = (
         <Menu
             anchorEl={profileAnchorEl}
@@ -284,6 +284,83 @@ const Navbar = () => {
                 ]
             )}
         </Menu>
+    );
+
+    // Arama bileşeni
+    const renderSearchComponent = (isMobileView = false) => (
+        <ClickAwayListener onClickAway={handleClickAway}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: isSearchOpen ? (isMobileView ? '100%' : 250) : 40,
+                    transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1)',
+                    overflow: 'visible',
+                    bgcolor: isSearchOpen ? 'rgba(0,0,0,0.04)' : 'transparent',
+                    borderRadius: 2,
+                    pl: isSearchOpen ? 1 : 0,
+                    pr: 1,
+                    position: 'relative',
+                    ...(isMobileView && { mr: 1 }),
+                }}
+            >
+                {isSearchOpen ? (
+                    <>
+                        <StyledInputBase
+                            placeholder="Uygulama ara…"
+                            inputProps={{ 'aria-label': 'search' }}
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            inputRef={el => {
+                                searchInputRef.current = el;
+                                if (el && isSearchOpen) el.focus();
+                            }}
+                            onFocus={() => setShowResults(!!searchQuery)}
+                            sx={{ width: '100%', minWidth: 0, background: 'none', border: 'none', boxShadow: 'none' }}
+                            autoFocus
+                        />
+                        <IconButton
+                            onClick={handleSearchClose}
+                            sx={{ color: 'text.secondary', ml: 1, p: 0.5 }}
+                            aria-label="Kapat"
+                        >
+                            <Close />
+                        </IconButton>
+                        {showResults && filteredApps.length > 0 && (
+                            <SearchResults sx={{ left: 0, right: 0, width: '100%' }}>
+                                {apps.length === 0 ? (
+                                    <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>Yükleniyor...</Box>
+                                ) : filteredApps.length === 0 ? (
+                                    <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>Sonuç bulunamadı</Box>
+                                ) : (
+                                    <List dense>
+                                        {filteredApps.map(app => (
+                                            <ListItem key={app.id} disablePadding>
+                                                <ListItemButton
+                                                    onClick={() => handleResultClick(app.id)}
+                                                    sx={{ py: 0.5 }}
+                                                >
+                                                    <ListItemText primary={app.name} />
+                                                </ListItemButton>
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                )}
+                            </SearchResults>
+                        )}
+                    </>
+                ) : (
+                    <IconButton
+                        onClick={handleSearchOpen}
+                        color="inherit"
+                        aria-label="Uygulama ara"
+                        sx={{ p: 0.5 }}
+                    >
+                        <Search />
+                    </IconButton>
+                )}
+            </Box>
+        </ClickAwayListener>
     );
 
     return (
@@ -415,80 +492,11 @@ const Navbar = () => {
                                 flexShrink: 1,
                                 overflow: 'hidden',
                             }}>
-                                {/* --- SEARCH ANIMATION BOX --- */}
-                                {/* Desktop/Tablet: Search & User actions */}
-                                <ClickAwayListener onClickAway={handleClickAway}>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            width: isSearchOpen ? 250 : 40,
-                                            transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1)',
-                                            overflow: 'visible',
-                                            bgcolor: isSearchOpen ? 'rgba(0,0,0,0.04)' : 'transparent',
-                                            borderRadius: 2,
-                                            pl: isSearchOpen ? 1 : 0,
-                                            pr: 1,
-                                            position: 'relative',
-                                        }}
-                                    >
-                                        {isSearchOpen ? (
-                                            <>
-                                                <StyledInputBase
-                                                    placeholder="Uygulama ara…"
-                                                    inputProps={{ 'aria-label': 'search' }}
-                                                    value={searchQuery}
-                                                    onChange={handleSearchChange}
-                                                    inputRef={el => {
-                                                        searchInputRef.current = el;
-                                                        if (el && isSearchOpen) el.focus();
-                                                    }}
-                                                    onFocus={() => setShowResults(!!searchQuery)}
-                                                    sx={{ width: '100%', minWidth: 0, background: 'none', border: 'none', boxShadow: 'none' }}
-                                                    autoFocus
-                                                />
-                                                <IconButton
-                                                    onClick={handleSearchClose}
-                                                    sx={{ color: 'text.secondary', ml: 1, p: 0.5 }}
-                                                    aria-label="Kapat"
-                                                >
-                                                    <Close />
-                                                </IconButton>
-                                                {showResults && filteredApps.length > 0 && (
-                                                    <SearchResults sx={{ left: 0, right: 0, width: '100%' }}>
-                                                        {apps.length === 0 ? (
-                                                            <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>Yükleniyor...</Box>
-                                                        ) : filteredApps.length === 0 ? (
-                                                            <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>Sonuç bulunamadı</Box>
-                                                        ) : (
-                                                            <List dense>
-                                                                {filteredApps.map(app => (
-                                                                    <ListItem key={app.id} disablePadding>
-                                                                        <ListItemButton
-                                                                            onClick={() => handleResultClick(app.id)}
-                                                                            sx={{ py: 0.5 }}
-                                                                        >
-                                                                            <ListItemText primary={app.name} />
-                                                                        </ListItemButton>
-                                                                    </ListItem>
-                                                                ))}
-                                                            </List>
-                                                        )}
-                                                    </SearchResults>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <IconButton
-                                                onClick={handleSearchOpen}
-                                                color="inherit"
-                                                aria-label="Uygulama ara"
-                                                sx={{ p: 0.5 }}
-                                            >
-                                                <Search />
-                                            </IconButton>
-                                        )}
-                                    </Box>
-                                </ClickAwayListener>
+                                {/* Desktop/Tablet: Search */}
+                                <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                                    {renderSearchComponent(false)}
+                                </Box>
+
                                 {isAuthenticated ? (
                                     <>
                                         <ActionButton
@@ -541,87 +549,15 @@ const Navbar = () => {
                                 )}
                             </Box>
                         </Box>
-                        {/* 2. Satır: Arama çubuğu (sadece küçük ekranlarda) */}
+                        {/* 2. Satır: Arama çubuğu (sadece küçük ekranlarda) ve profil ikonu */}
                         <Box sx={{
                             display: { xs: 'flex', md: 'none' },
                             width: '100%',
-                            justifyContent: 'center',
+                            justifyContent: 'space-between',
                             alignItems: 'center',
                             mt: 1,
                         }}>
-                            <ClickAwayListener onClickAway={handleClickAway}>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        width: isSearchOpen ? '100%' : 40,
-                                        transition: 'width 0.3s cubic-bezier(0.4,0,0.2,1)',
-                                        overflow: 'visible',
-                                        bgcolor: isSearchOpen ? 'rgba(0,0,0,0.04)' : 'transparent',
-                                        borderRadius: 2,
-                                        pl: isSearchOpen ? 1 : 0,
-                                        pr: 1,
-                                        position: 'relative',
-                                        mr: 1,
-                                    }}
-                                >
-                                    {isSearchOpen ? (
-                                        <>
-                                            <StyledInputBase
-                                                placeholder="Uygulama ara…"
-                                                inputProps={{ 'aria-label': 'search' }}
-                                                value={searchQuery}
-                                                onChange={handleSearchChange}
-                                                inputRef={el => {
-                                                    searchInputRef.current = el;
-                                                    if (el && isSearchOpen) el.focus();
-                                                }}
-                                                onFocus={() => setShowResults(!!searchQuery)}
-                                                sx={{ width: '100%', minWidth: 0, background: 'none', border: 'none', boxShadow: 'none' }}
-                                                autoFocus
-                                            />
-                                            <IconButton
-                                                onClick={handleSearchClose}
-                                                sx={{ color: 'text.secondary', ml: 1, p: 0.5 }}
-                                                aria-label="Kapat"
-                                            >
-                                                <Close />
-                                            </IconButton>
-                                            {showResults && filteredApps.length > 0 && (
-                                                <SearchResults sx={{ left: 0, right: 0, width: '100%' }}>
-                                                    {apps.length === 0 ? (
-                                                        <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>Yükleniyor...</Box>
-                                                    ) : filteredApps.length === 0 ? (
-                                                        <Box sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}>Sonuç bulunamadı</Box>
-                                                    ) : (
-                                                        <List dense>
-                                                            {filteredApps.map(app => (
-                                                                <ListItem key={app.id} disablePadding>
-                                                                    <ListItemButton
-                                                                        onClick={() => handleResultClick(app.id)}
-                                                                        sx={{ py: 0.5 }}
-                                                                    >
-                                                                        <ListItemText primary={app.name} />
-                                                                    </ListItemButton>
-                                                                </ListItem>
-                                                            ))}
-                                                        </List>
-                                                    )}
-                                                </SearchResults>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <IconButton
-                                            onClick={handleSearchOpen}
-                                            color="inherit"
-                                            aria-label="Uygulama ara"
-                                            sx={{ p: 0.5 }}
-                                        >
-                                            <Search />
-                                        </IconButton>
-                                    )}
-                                </Box>
-                            </ClickAwayListener>
+                            {renderSearchComponent(true)}
                             {/* Profile icon always visible on mobile, next to search */}
                             <IconButton
                                 edge="end"

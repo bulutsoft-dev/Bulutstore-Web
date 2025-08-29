@@ -8,6 +8,7 @@ import useCategories from '../hooks/useCategories';
 import MyAppsTable from '../components/apps/MyAppsTable';
 import DeleteDialog from '../components/common/DeleteDialog';
 import { useNotification } from '../context/NotificationContext';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 const MyAppsPage = () => {
     const { user } = useAuthContext();
@@ -90,7 +91,8 @@ const MyAppsPage = () => {
         return null;
     }
     return (
-        <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+        <Box sx={{ maxWidth: 1000, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+            <AppBreadcrumbs extraLabels={[null, 'Uygulamalarım']} />
             {/* Show alert if redirected or local */}
             {localAlert && (
                 <Alert severity="warning" onClose={() => setLocalAlert(null)} sx={{ mb: 2 }}>{localAlert}</Alert>

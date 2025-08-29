@@ -3,6 +3,7 @@ import { useUsers } from '../hooks/useUsers';
 import UserList from '../components/users/UserList';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 const UsersPage = () => {
   const { users, status, error } = useUsers();
@@ -12,6 +13,7 @@ const UsersPage = () => {
 
   return (
     <Box sx={{ maxWidth: 900, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+      <AppBreadcrumbs extraLabels={[null, 'Kullanıcılar']} />
       <Typography variant="h4" fontWeight={700} mb={3}>Kullanıcılar</Typography>
       <UserList users={users} />
     </Box>

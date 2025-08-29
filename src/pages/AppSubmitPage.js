@@ -10,6 +10,7 @@ import { useAuthContext } from '../context/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import AppAddForm from '../components/apps/AppAddForm';
 import useAppSubmission from '../hooks/useAppSubmission';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 const AppSubmitPage = () => {
   const { user } = useAuthContext();
@@ -48,6 +49,7 @@ const AppSubmitPage = () => {
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+      <AppBreadcrumbs extraLabels={[null, 'Uygulama Ekle']} />
       {/* Show alert if redirected or local */}
       {localAlert && (
         <Alert severity="warning" onClose={() => setLocalAlert(null)} sx={{ mb: 2 }}>{localAlert}</Alert>
