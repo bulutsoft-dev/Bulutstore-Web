@@ -84,15 +84,17 @@ export default function AppEditPage() {
     return <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh"><CircularProgress /></Box>;
   }
   if (fetchError) {
-    return <Box color="error.main" textAlign="center" mt={4}>{fetchError}</Box>;
+    return <Box color="error.main" textAlign="center" mt={6} px={{ xs: 2, sm: 4 }} fontSize={18}>{fetchError}</Box>;
   }
 
   return (
-    <AppEditForm
-      {...appSubmission}
-      handleSubmit={handleSubmit}
-      success={editSuccess}
-      error={editError}
-    />
+    <Box sx={{ maxWidth: 600, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
+      <AppEditForm
+        {...appSubmission}
+        handleSubmit={handleSubmit}
+        success={editSuccess}
+        error={editError}
+      />
+    </Box>
   );
 }

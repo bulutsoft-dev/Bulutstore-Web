@@ -15,12 +15,12 @@ const CategoryShowcase = ({ categories }) => {
 
   return (
     <Box sx={{ width: '100%', mb: 6 }}>
-      <Typography variant="h4" sx={{ mb: 3, fontWeight: 700 }}>
+      <Typography variant="h4" sx={{ mb: 3, fontWeight: 700, textAlign: 'center' }}>
         Kategoriler
       </Typography>
-      <Grid container spacing={3}>
+      <Grid container spacing={3} justifyContent="center">
         {categories.map((cat) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={cat.id}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={cat.id} display="flex" justifyContent="center">
             <Card
               sx={{
                 borderRadius: 3,
@@ -37,6 +37,9 @@ const CategoryShowcase = ({ categories }) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 p: 2,
+                width: '100%',
+                maxWidth: 260,
+                mx: 'auto',
               }}
               onClick={() => navigate(`/apps?category=${cat.slug || cat.id}`)}
             >
@@ -45,7 +48,7 @@ const CategoryShowcase = ({ categories }) => {
                   <Avatar sx={{ bgcolor: '#e3f0fd', width: 56, height: 56, mb: 1 }}>
                     {getCategoryIcon(cat)}
                   </Avatar>
-                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#222', mb: 0.5 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#222', mb: 0.5, textAlign: 'center' }}>
                     {cat.name}
                   </Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', fontSize: 13 }}>

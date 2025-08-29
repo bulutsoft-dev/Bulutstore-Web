@@ -4,7 +4,6 @@ import { useAuthContext } from '../context/AuthContext';
 import { updateUser, getCurrentUser, applyForDeveloper } from '../api/userApi';
 import {
     Box,
-    Container,
     CircularProgress,
     Alert
 } from '@mui/material';
@@ -121,12 +120,12 @@ const ProfilePage = () => {
     console.log('ProfilePage user:', user); // DEBUG: Log user object
 
     return (
-        <Container maxWidth="md">
+        <Box sx={{ maxWidth: 900, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
             <Box
                 sx={{
                     display: 'grid',
                     gridTemplateColumns: { xs: '1fr', md: '1fr 2fr' },
-                    gap: 4
+                    gap: { xs: 2, md: 4 }
                 }}
             >
                 <Box>
@@ -163,7 +162,7 @@ const ProfilePage = () => {
                     )}
                 </Box>
             </Box>
-        </Container>
+        </Box>
     );
 };
 

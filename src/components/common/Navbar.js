@@ -149,10 +149,10 @@ const Navbar = () => {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ backgroundColor: 'white', color: '#5f6368', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
-                <Toolbar sx={{ minHeight: '64px', justifyContent: 'space-between' }}>
+            <AppBar position="static" sx={{ backgroundColor: 'white', color: '#5f6368', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', minHeight: { xs: 56, sm: 64 } }}>
+                <Toolbar sx={{ minHeight: { xs: 56, sm: 64 }, px: { xs: 1, sm: 2 }, justifyContent: 'space-between' }}>
                     {/* Logo - Sol Tarafta */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
                         <IconButton
                             size="large"
                             edge="start"
@@ -165,7 +165,7 @@ const Navbar = () => {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <StoreIcon sx={{ color: '#4285F4', mr: 1, fontSize: 30 }} />
+                        <StoreIcon sx={{ color: '#4285F4', mr: 1, fontSize: { xs: 24, sm: 30 } }} />
                         <Typography
                             variant="h6"
                             component={RouterLink}
@@ -174,9 +174,14 @@ const Navbar = () => {
                                 fontWeight: 'bold',
                                 textDecoration: 'none',
                                 color: '#5f6368',
+                                fontSize: { xs: 18, sm: 22 },
                                 '&:hover': {
                                     color: '#4285F4'
                                 },
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: { xs: 120, sm: 200 }
                             }}
                         >
                             BulutStore
@@ -188,7 +193,8 @@ const Navbar = () => {
                         display: { xs: 'none', md: 'flex' },
                         justifyContent: 'center',
                         flex: 1,
-                        gap: 1
+                        gap: 1,
+                        minWidth: 0
                     }}>
                         <Button
                             color="inherit"
@@ -243,10 +249,11 @@ const Navbar = () => {
                         alignItems: 'center',
                         justifyContent: 'flex-end',
                         flex: 1,
-                        gap: 1
+                        gap: 1,
+                        minWidth: 0
                     }}>
                         {/* Arama Çubuğu */}
-                        <Search sx={{ display: { xs: 'none', sm: 'block' } }}>
+                        <Search sx={{ display: { xs: 'none', sm: 'block' }, maxWidth: { xs: 120, sm: 250 } }}>
                             <SearchIconWrapper>
                                 <SearchIcon />
                             </SearchIconWrapper>
@@ -255,8 +262,6 @@ const Navbar = () => {
                                 inputProps={{ 'aria-label': 'search' }}
                             />
                         </Search>
-
-
                         {/* Giriş/Kayıt veya Profil/Çıkış butonları */}
                         <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
                             {isAuthenticated ? (
@@ -298,9 +303,8 @@ const Navbar = () => {
                                 </>
                             )}
                         </Box>
-
                         {/* Mobilde gösterilecek arama ve profil ikonları */}
-                        <IconButton color="inherit" sx={{ display: { xs: 'flex', sm: 'none' } }}>
+                        <IconButton color="inherit" sx={{ display: { xs: 'flex', sm: 'none' }, ml: 0.5 }}>
                             <SearchIcon />
                         </IconButton>
                         <IconButton
@@ -311,7 +315,7 @@ const Navbar = () => {
                             aria-haspopup="true"
                             onClick={handleProfileMenuOpen}
                             color="inherit"
-                            sx={{ display: { xs: 'flex', sm: 'none' } }}
+                            sx={{ display: { xs: 'flex', sm: 'none' }, ml: 0.5 }}
                         >
                             <AccountCircle />
                         </IconButton>

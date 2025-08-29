@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDeveloperApplications } from '../hooks/useUsers';
 import { useAuthContext } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom';
-import Container from '@mui/material/Container';
+import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import DeveloperRequestsTable from '../components/admin/DeveloperRequestsTable';
@@ -22,7 +22,7 @@ const AdminPanelPage = () => {
     fetchApplications();
   }, [fetchApplications]);
 
-  if (authLoading) return <Container sx={{ mt: 4, textAlign: 'center' }}><CircularProgress /></Container>;
+  if (authLoading) return <Box sx={{ mt: 4, textAlign: 'center', minHeight: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress /></Box>;
   if (!user || String(user.role).toUpperCase() !== 'ADMIN') return <Navigate to="/" replace />;
 
 
@@ -59,7 +59,7 @@ const AdminPanelPage = () => {
   const handleSnackbarClose = () => setSnackbar((prev) => ({ ...prev, open: false }));
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
+    <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
       <Typography variant="h4" gutterBottom>Admin Panel</Typography>
       <Typography variant="h6" sx={{ mt: 3 }}>Onay Bekleyen Uygulamalar</Typography>
       <PendingAppsTable />
@@ -78,7 +78,7 @@ const AdminPanelPage = () => {
           {snackbar.message}
         </MuiAlert>
       </Snackbar>
-    </Container>
+    </Box>
   );
 };
 

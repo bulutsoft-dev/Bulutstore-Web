@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthContext } from '../context/AuthContext';
-import { Box, Container, Typography, CircularProgress, Alert, Button } from '@mui/material';
+import { Box, Typography, CircularProgress, Alert, Button } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useMyApps from '../hooks/useMyApps';
@@ -83,26 +83,26 @@ const MyAppsPage = () => {
         return <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh"><CircularProgress /></Box>;
     }
     if (error) {
-        return <Alert severity="error">{error}</Alert>;
+        return <Alert severity="error" sx={{ my: 4, mx: 'auto', maxWidth: 500, textAlign: 'center' }}>{error}</Alert>;
     }
     if (!user) {
         navigate('/login');
         return null;
     }
     return (
-        <Container maxWidth="lg">
+        <Box sx={{ maxWidth: 1100, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
             {/* Show alert if redirected or local */}
             {localAlert && (
                 <Alert severity="warning" onClose={() => setLocalAlert(null)} sx={{ mb: 2 }}>{localAlert}</Alert>
             )}
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+            <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} mb={3} gap={2}>
                 <Typography variant="h4" fontWeight={700}>Uygulamalarım</Typography>
                 <Box display="flex" gap={2}>
-                    <Button variant="outlined" color="secondary" onClick={handleRefresh} disabled={refreshing || loading}>
+                    <Button variant="outlined" color="secondary" onClick={handleRefresh} disabled={refreshing || loading} sx={{ minWidth: 100 }}>
                         {refreshing ? <CircularProgress size={20} /> : 'Yenile'}
                     </Button>
                     {isDeveloper && (
-                        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAdd}>
+                        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleAdd} sx={{ minWidth: 140 }}>
                             Uygulama Ekle
                         </Button>
                     )}
@@ -127,7 +127,7 @@ const MyAppsPage = () => {
                 loading={deleting}
                 appName={selectedApp?.name}
             />
-        </Container>
+        </Box>
     );
 };
 

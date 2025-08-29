@@ -47,13 +47,13 @@ const AppSubmitPage = () => {
   const canRenderForm = user && isDeveloper;
 
   return (
-    <Container maxWidth="md">
+    <Box sx={{ maxWidth: 600, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
       {/* Show alert if redirected or local */}
       {localAlert && (
         <Alert severity="warning" onClose={() => setLocalAlert(null)} sx={{ mb: 2 }}>{localAlert}</Alert>
       )}
       {canRenderForm && <AppAddForm {...appSubmission} />}
-    </Container>
+    </Box>
   );
 };
 

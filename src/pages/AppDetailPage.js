@@ -122,9 +122,11 @@ const AppDetailPage = () => {
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
       {loading ? (
-        <CircularProgress />
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+          <CircularProgress />
+        </Box>
       ) : error ? (
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error" sx={{ my: 3, textAlign: 'center' }}>{error}</Alert>
       ) : app ? (
         <>
           <AppHeader app={{ ...app, downloadsCount: app.downloadsCount ?? app.downloadCount ?? 0, avgRating: averageRating }} />
@@ -152,7 +154,7 @@ const AppDetailPage = () => {
               </Typography>
             ) : null}
             {reviewError && (
-              <Alert severity="error" sx={{ mt: 2 }}>{reviewError}</Alert>
+              <Alert severity="error" sx={{ mt: 2, textAlign: 'center' }}>{reviewError}</Alert>
             )}
           </Box>
         </>

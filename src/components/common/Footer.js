@@ -20,24 +20,26 @@ const Footer = () => {
         <Box
             component="footer"
             sx={{
-                py: { xs: 3, sm: 4 },
-                px: 2,
+
+                py: { xs: 2, sm: 4 },
+                px: { xs: 1, sm: 2 },
                 mt: 'auto',
                 borderTop: '1px solid #e0e0e0',
-                color: '#5f6368'
+                color: '#5f6368',
+                fontSize: { xs: 13, sm: 15 }
             }}
         >
-            <Container maxWidth="lg">
-                <Grid container spacing={{ xs: 3, md: 4 }} columns={12}>
+            <Container maxWidth="lg" sx={{ px: { xs: 0.5, sm: 2 } }}>
+                <Grid container spacing={{ xs: 2, md: 4 }} columns={12}>
                     {/* Şirket Bilgileri */}
-                    <Grid gridColumn={{ xs: 'span 12', md: 'span 4' }}>
-                        <Typography variant="h6" gutterBottom sx={{ color: '#4285F4', fontWeight: 'bold' }}>
+                    <Grid gridColumn={{ xs: 'span 12', md: 'span 4' }} sx={{ mb: { xs: 2, md: 0 } }}>
+                        <Typography variant="h6" gutterBottom sx={{ color: '#4285F4', fontWeight: 'bold', fontSize: { xs: 18, sm: 22 } }}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <StoreIcon sx={{ mr: 1, fontSize: 28 }} />
+                                <StoreIcon sx={{ mr: 1, fontSize: { xs: 22, sm: 28 } }} />
                                 BulutStore
                             </Box>
                         </Typography>
-                        <Typography variant="body2" sx={{ mb: 2 }}>
+                        <Typography variant="body2" sx={{ mb: 2, fontSize: { xs: 12, sm: 14 } }}>
                             Bulutsoft Dev organizasyonunun uygulama mağazası.
                         </Typography>
 
@@ -134,12 +136,13 @@ const Footer = () => {
                     flexDirection: { xs: 'column', sm: 'row' },
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    textAlign: { xs: 'center', sm: 'left' }
+                    textAlign: { xs: 'center', sm: 'left' },
+                    gap: { xs: 1, sm: 0 }
                 }}>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: 12, sm: 14 } }}>
                         © {new Date().getFullYear()} BulutStore. Tüm hakları saklıdır.
                     </Typography>
-                    <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Box sx={{ display: 'flex', gap: 2, mt: { xs: 1, sm: 0 } }}>
                         <Link href="#" color="inherit">
                             <FacebookIcon />
                         </Link>
@@ -151,23 +154,6 @@ const Footer = () => {
                         </Link>
                         <Link href="#" color="inherit">
                             <LinkedInIcon />
-                        </Link>
-                    </Box>
-                    <Box sx={{
-                        mt: { xs: 1, sm: 0 },
-                        display: 'flex',
-                        flexDirection: { xs: 'column', sm: 'row' },
-                        alignItems: { xs: 'center', sm: 'flex-start' }
-                    }}>
-                        <Link href="#" color="text.secondary" variant="body2" sx={{
-                            mr: { sm: 2, xs: 0 },
-                            mb: { xs: 1, sm: 0 },
-                            display: 'inline-block'
-                        }}>
-                            Kullanım Koşulları
-                        </Link>
-                        <Link href="#" color="text.secondary" variant="body2" sx={{ display: 'inline-block' }}>
-                            Gizlilik Politikası
                         </Link>
                     </Box>
                 </Box>
