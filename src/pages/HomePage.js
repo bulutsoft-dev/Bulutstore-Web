@@ -1,52 +1,66 @@
 import React, { useEffect, useState } from 'react';
 import { getAllCategories } from '../api/categoryApi';
-import { getAllTags } from '../api/tagApi';
-import { getAllReviews } from '../api/reviewApi';
 import { getAllApps } from '../api/appApi';
-import { getAllAppVersions } from '../api/appVersionApi';
-import { getAllDownloadHistories } from '../api/downloadHistoryApi';
-import { getUsers } from '../api/userApi';
+import CategoryTabs from '../components/apps/CategoryTabs';
+import AppCard from '../features/apps/AppCard';
+import { Box, Typography, Grid, Container, CircularProgress } from '@mui/material';
 
 const HomePage = () => {
-  const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useState([]);
-  const [reviews, setReviews] = useState([]);
   const [apps, setApps] = useState([]);
-  const [appVersions, setAppVersions] = useState([]);
-  const [downloadHistories, setDownloadHistories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    getUsers().then(data => setUsers(data)).catch(e => setError('User API'));
-    getAllCategories().then(r => setCategories(r.data)).catch(e => setError('Category API'));
-    getAllTags().then(r => setTags(r.data)).catch(e => setError('Tag API'));
-    getAllReviews().then(r => setReviews(r.data)).catch(e => setError('Review API'));
-    getAllApps().then(r => setApps(r.data)).catch(e => setError('App API'));
-    getAllAppVersions().then(r => setAppVersions(r.data)).catch(e => setError('AppVersion API'));
-    getAllDownloadHistories().then(r => setDownloadHistories(r.data)).catch(e => setError('DownloadHistory API'));
+    Promise.all([
+      getAllCategories().then(r => setCategories(r.data)),
+      getAllApps().then(r => setApps(r.data)),
+    ])
+      .catch(() => setError('Veriler yüklenirken hata oluştu.'))
+      .finally(() => setLoading(false));
   }, []);
 
+  // Select featured apps (first 6 for demo)
+  const featuredApps = apps.slice(0, 6);
+
   return (
-    <div>
-      <h1>Welcome to the Home Page</h1>
-      <p>This is the main landing page of the application.</p>
-      {error && <div style={{color:'red'}}>API Error: {error}</div>}
-      <h2>Users</h2>
-      <pre>{JSON.stringify(users.slice(0,2), null, 2)}</pre>
-      <h2>Categories</h2>
-      <pre>{JSON.stringify(categories.slice(0,2), null, 2)}</pre>
-      <h2>Tags</h2>
-      <pre>{JSON.stringify(tags.slice(0,2), null, 2)}</pre>
-      <h2>Reviews</h2>
-      <pre>{JSON.stringify(reviews.slice(0,2), null, 2)}</pre>
-      <h2>Apps</h2>
-      <pre>{JSON.stringify(apps.slice(0,2), null, 2)}</pre>
-      <h2>App Versions</h2>
-      <pre>{JSON.stringify(appVersions.slice(0,2), null, 2)}</pre>
-      <h2>Download Histories</h2>
-      <pre>{JSON.stringify(downloadHistories.slice(0,2), null, 2)}</pre>
-    </div>
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
+      {/* Hero Section */}
+      <Box sx={{ textAlign: 'center', mb: 6 }}>
+        <Typography variant="h2" component="h1" gutterBottom>
+          BulutStore'a Hoşgeldiniz
+        </Typography>
+        <Typography variant="h5" color="text.secondary">
+          En iyi uygulamaları keşfedin, kategorilere göz atın ve hemen indirin!
+        </Typography>
+      </Box>
+
+      {/* Categories */}
+      <Box sx={{ mb: 6 }}>
+        <Typography variant="h4" gutterBottom>Kategoriler</Typography>
+        <CategoryTabs categories={categories} />
+      </Box>
+
+      {/* Featured Apps */}
+      <Box>
+        <Typography variant="h4" gutterBottom>Öne Çıkan Uygulamalar</Typography>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Typography color="error">{error}</Typography>
+        ) : (
+          <Grid container spacing={3}>
+            {featuredApps.map(app => (
+              <Grid item xs={12} sm={6} md={4} key={app.id}>
+                <AppCard app={app} />
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Box>
+    </Container>
   );
 };
 

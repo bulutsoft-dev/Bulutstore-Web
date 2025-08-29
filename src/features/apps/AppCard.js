@@ -9,7 +9,7 @@ import AppCardDescription from './AppCardDescription';
 import AppCardMeta from './AppCardMeta';
 import AppCardActions from './AppCardActions';
 
-const AppCard = ({ app, onShare }) => {
+const AppCard = ({ app }) => {
     const navigate = useNavigate();
 
     return (
@@ -38,7 +38,7 @@ const AppCard = ({ app, onShare }) => {
         >
             <Box sx={{ p: 2, pb: 1.5, position: 'relative', background: '#fff' }}>
                 <Box sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2 }}>
-                  <AppCardActions onShare={() => onShare && onShare(app)} onNavigate={() => navigate(`/apps/${app.id}`)} />
+                  <AppCardActions onNavigate={() => navigate(`/apps/${app.id}`)} />
                 </Box>
                 <AppCardHeader app={app} />
                 <AppCardDescription shortDescription={app.shortDescription} description={app.description} />
