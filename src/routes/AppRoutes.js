@@ -11,6 +11,7 @@ import AdminPanelPage from '../pages/AdminPanelPage';
 import AppSubmitPage from '../pages/AppSubmitPage';
 import MyAppsPage from '../pages/MyAppsPage';
 import AppEditPage from '../pages/AppEditPage';
+import HelpPage from '../pages/HelpPage';
 
 const AppRoutes = () => (
   <Routes>
@@ -24,6 +25,7 @@ const AppRoutes = () => (
     <Route path="/apps/submit" element={<AppSubmitPage />} />
     <Route path="/my-apps" element={<MyAppsPage />} />
     <Route path="/apps/edit/:id" element={<AppEditPage />} />
+    <Route path="/help" element={<HelpPage />} />
     <Route path="*" element={<NotFoundPage />} />
   </Routes>
 );

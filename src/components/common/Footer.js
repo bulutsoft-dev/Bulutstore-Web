@@ -5,11 +5,9 @@ import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Divider from '@mui/material/Divider';
-import StoreIcon from '@mui/icons-material/Store';
-import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
-import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import logo from '../../assets/storelogo.png';
 
 /**
@@ -51,17 +49,11 @@ const Footer = () => {
                         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Mağaza
                         </Typography>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="/apps" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
                             Uygulamalar
                         </Link>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
-                            Oyunlar
-                        </Link>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="/categories" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
                             Kategoriler
-                        </Link>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
-                            En Çok İndirilenler
                         </Link>
                     </Grid>
 
@@ -70,14 +62,17 @@ const Footer = () => {
                         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Hesap
                         </Typography>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="/login" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
                             Giriş Yap
                         </Link>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="/register" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
                             Kayıt Ol
                         </Link>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="/profile" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
                             Hesabım
+                        </Link>
+                        <Link href="/my-apps" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                            Uygulamalarım
                         </Link>
                     </Grid>
 
@@ -86,16 +81,16 @@ const Footer = () => {
                         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Yardım
                         </Typography>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="/help" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
                             Sıkça Sorulan Sorular
                         </Link>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="/help" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
                             Müşteri Hizmetleri
                         </Link>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="/help" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
                             İade Politikası
                         </Link>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="/help" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
                             Gizlilik Politikası
                         </Link>
                     </Grid>
@@ -104,11 +99,17 @@ const Footer = () => {
                         <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Ürünlerimiz
                         </Typography>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
+                        <Link href="https://yurttaye.onrender.com/" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2" target="_blank" rel="noopener">
                             YurttaYe
                         </Link>
-                        <Link href="#" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2">
-                            IME
+                        <Link href="https://transmind.onrender.com/" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2" target="_blank" rel="noopener">
+                            TransMind
+                        </Link>
+                        <Link href="https://www.petsolive.com.tr/" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2" target="_blank" rel="noopener">
+                            PetSoLive
+                        </Link>
+                        <Link href="https://bulutstore.vercel.app/" color="inherit" display="block" sx={{ mb: 1, display: 'block' }} variant="body2" target="_blank" rel="noopener">
+                            BulutStore
                         </Link>
                     </Grid>
 
@@ -118,13 +119,10 @@ const Footer = () => {
                             İletişim
                         </Typography>
                         <Typography variant="body2" sx={{ mb: 1 }}>
-                            info@bulutstore.com
+                            bulutsoftdev@gmail.com
                         </Typography>
                         <Typography variant="body2" sx={{ mb: 1 }}>
-                            +90 212 345 67 89
-                        </Typography>
-                        <Typography variant="body2" sx={{ mb: 1 }}>
-                            İstanbul, Türkiye
+                            Türkiye
                         </Typography>
                     </Grid>
                 </Grid>
@@ -141,19 +139,16 @@ const Footer = () => {
                     gap: { xs: 1, sm: 0 }
                 }}>
                     <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: 12, sm: 14 } }}>
-                        © {new Date().getFullYear()} BulutStore. Tüm hakları saklıdır.
+                        © {new Date().getFullYear()} Bulutsoft. Tüm hakları saklıdır.
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 2, mt: { xs: 1, sm: 0 } }}>
-                        <Link href="#" color="inherit">
-                            <FacebookIcon />
-                        </Link>
-                        <Link href="#" color="inherit">
+                        <Link href="https://x.com/Bulutsoftdev" color="inherit" target="_blank" rel="noopener">
                             <TwitterIcon />
                         </Link>
-                        <Link href="#" color="inherit">
-                            <InstagramIcon />
+                        <Link href="https://github.com/bulutsoft-dev" color="inherit" target="_blank" rel="noopener">
+                            <GitHubIcon />
                         </Link>
-                        <Link href="#" color="inherit">
+                        <Link href="https://www.linkedin.com/company/bulutsoft-dev/" color="inherit" target="_blank" rel="noopener">
                             <LinkedInIcon />
                         </Link>
                     </Box>
