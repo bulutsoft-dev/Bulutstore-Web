@@ -207,6 +207,7 @@ const Navbar = () => {
                                     location={location}
                                     handleLogout={handleLogout}
                                     handleProfileMenuOpen={handleProfileMenuOpen}
+                                    user={user}
                                 />
                             </Box>
                         </Box>

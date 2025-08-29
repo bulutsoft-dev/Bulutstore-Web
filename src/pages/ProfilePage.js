@@ -122,7 +122,7 @@ const ProfilePage = () => {
 
     return (
         <Box sx={{ maxWidth: 900, mx: 'auto', px: { xs: 1, sm: 3 }, py: { xs: 2, sm: 4 }, width: '100%' }}>
-            <AppBreadcrumbs extraLabels={[null, 'Profil']} />
+            <AppBreadcrumbs extraLabels={[null, 'Profil']} user={user} />
             <Box
                 sx={{
                     display: 'grid',

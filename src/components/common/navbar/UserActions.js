@@ -5,6 +5,10 @@ import { AccountCircle } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
+import Tooltip from '@mui/material/Tooltip';
+import Avatar from '@mui/material/Avatar';
 
 const ActionButton = styled(Button)(({ theme }) => ({
     marginLeft: theme.spacing(1),
@@ -13,7 +17,7 @@ const ActionButton = styled(Button)(({ theme }) => ({
     }
 }));
 
-const UserActions = ({ isAuthenticated, location, handleLogout, handleProfileMenuOpen }) => (
+const UserActions = ({ isAuthenticated, location, handleLogout, handleProfileMenuOpen, user }) => (
     <>
         {isAuthenticated ? (
             <>
@@ -24,20 +28,47 @@ const UserActions = ({ isAuthenticated, location, handleLogout, handleProfileMen
                     sx={{
                         borderBottom: location.pathname.startsWith('/profile') ? '2px solid #4285F4' : '2px solid transparent',
                         borderRadius: 0,
+                        fontWeight: 500,
+                        fontSize: 15,
+                        letterSpacing: 0.2,
+                        textTransform: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0.7,
                     }}
                 >
-                    Profil
+                    <PersonIcon sx={{ fontSize: 18, mb: '2px', mr: 0.5 }} /> Profil
                 </ActionButton>
-                <ActionButton color="inherit" onClick={handleLogout}>Çıkış Yap</ActionButton>
-                <IconButton
-                    edge="end"
-                    onClick={handleProfileMenuOpen}
+                <ActionButton
                     color="inherit"
-                    aria-label="Kullanıcı menüsü"
-                    sx={{ display: { xs: 'flex', md: 'none' } }}
+                    onClick={handleLogout}
+                    sx={{
+                        fontWeight: 500,
+                        fontSize: 15,
+                        letterSpacing: 0.2,
+                        textTransform: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0.7,
+                    }}
                 >
-                    <AccountCircle />
-                </IconButton>
+                    <LogoutIcon sx={{ fontSize: 18, mb: '2px', mr: 0.5 }} /> Çıkış Yap
+                </ActionButton>
+                <Tooltip title="Profil Menüsü" arrow>
+                    <IconButton
+                        edge="end"
+                        onClick={handleProfileMenuOpen}
+                        color="inherit"
+                        aria-label="Kullanıcı menüsü"
+                        sx={{ display: { xs: 'flex', md: 'none' } }}
+                    >
+                        {user?.avatarUrl ? (
+                            <Avatar src={user.avatarUrl} alt={user.displayName || user.username} sx={{ width: 28, height: 28 }} />
+                        ) : (
+                            <AccountCircle />
+                        )}
+                    </IconButton>
+                </Tooltip>
             </>
         ) : (
             <>

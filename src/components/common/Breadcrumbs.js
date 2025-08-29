@@ -5,6 +5,11 @@ import Typography from '@mui/material/Typography';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import Tooltip from '@mui/material/Tooltip';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import AppsIcon from '@mui/icons-material/Apps';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import GroupIcon from '@mui/icons-material/Group';
 
 // Helper to map path segments to readable names
 const PATH_NAMES = {
@@ -17,6 +22,15 @@ const PATH_NAMES = {
   'users': 'Kullanıcılar',
   'submit': 'Uygulama Ekle',
   // Add more as needed
+};
+
+// Map path segments to icons
+const PATH_ICONS = {
+  '': <HomeIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: 'middle', mb: '2px', color: 'primary.main' }} />,
+  'apps': <AppsIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: 'middle', mb: '2px', color: 'primary.main' }} />,
+  'profile': <AccountCircleIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: 'middle', mb: '2px', color: 'primary.main' }} />,
+  'admin': <AdminPanelSettingsIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: 'middle', mb: '2px', color: 'primary.main' }} />,
+  'users': <GroupIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: 'middle', mb: '2px', color: 'primary.main' }} />,
 };
 
 function getBreadcrumbs(location, extra) {
@@ -34,7 +48,7 @@ function getBreadcrumbs(location, extra) {
   return crumbs;
 }
 
-const AppBreadcrumbs = ({ extraLabels = [] }) => {
+const AppBreadcrumbs = ({ extraLabels = [], user }) => {
   const location = useLocation();
   const crumbs = getBreadcrumbs(location, extraLabels);
   return (
@@ -46,6 +60,8 @@ const AppBreadcrumbs = ({ extraLabels = [] }) => {
         fontWeight: 500,
         letterSpacing: 0.1,
         alignItems: 'center',
+        overflowX: 'auto',
+        whiteSpace: 'nowrap',
         '.MuiBreadcrumbs-separator': {
           mx: 0.5,
           color: 'text.disabled',
@@ -54,20 +70,22 @@ const AppBreadcrumbs = ({ extraLabels = [] }) => {
           verticalAlign: 'middle',
         },
       }}
-      separator={<span style={{ fontSize: 18, color: '#bdbdbd', fontWeight: 700, margin: '0 2px', verticalAlign: 'middle' }}>/</span>}
+      separator={<ChevronRightIcon sx={{ fontSize: 18, color: '#bdbdbd', fontWeight: 700, verticalAlign: 'middle' }} />}
     >
       {crumbs.map((crumb, idx) => {
         const isLast = idx === crumbs.length - 1;
         const label = crumb.name?.length > 22 ? crumb.name.slice(0, 20) + '…' : crumb.name;
-        const content = idx === 0 ? (
-          <HomeIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: 'middle', mb: '2px', color: isLast ? 'text.primary' : 'primary.main' }} />
-        ) : null;
+        let icon = PATH_ICONS[crumb.to.split('/').pop()] || null;
+        // Show avatar if on profile page and user has avatar
+        if (crumb.to === '/profile' && user?.avatarUrl) {
+          icon = <img src={user.avatarUrl} alt="Profil" style={{ width: 22, height: 22, borderRadius: '50%', marginRight: 6, verticalAlign: 'middle', objectFit: 'cover', display: 'inline-block' }} />;
+        }
         return isLast ? (
           <Tooltip title={crumb.name} key={crumb.to}>
             <Typography
-              color="text.primary"
+              color="primary.main"
               sx={{
-                fontWeight: 600,
+                fontWeight: 700,
                 maxWidth: 160,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -81,8 +99,9 @@ const AppBreadcrumbs = ({ extraLabels = [] }) => {
                 px: 0.5,
                 py: 0.1,
               }}
+              aria-current="page"
             >
-              {content}{label}
+              {icon}{label}
             </Typography>
           </Tooltip>
         ) : (
@@ -112,7 +131,7 @@ const AppBreadcrumbs = ({ extraLabels = [] }) => {
                 },
               }}
             >
-              {content}{label}
+              {icon}{label}
             </Link>
           </Tooltip>
         );
