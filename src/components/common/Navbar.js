@@ -17,8 +17,7 @@ import {
     ClickAwayListener,
     styled,
     useMediaQuery,
-    useTheme,
-    alpha
+    useTheme
 } from '@mui/material';
 import {
     Store,
@@ -37,11 +36,8 @@ const SearchContainer = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     marginRight: theme.spacing(1),
-    flexGrow: 1,
-    maxWidth: 600,
     [theme.breakpoints.down('md')]: {
-        marginRight: 0,
-        maxWidth: '100%'
+        marginRight: 0
     }
 }));
 
@@ -67,10 +63,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
-        width: '100%',
-        [theme.breakpoints.up('md')]: {
-            width: '100%'
-        }
+        width: '100%'
     }
 }));
 
@@ -307,7 +300,7 @@ const Navbar = () => {
                         flexGrow: 0,
                         minWidth: 0,
                         flexShrink: 1,
-                        mr: 2
+                        mr: { xs: 1, md: 2 }
                     }}>
                         <IconButton
                             size="large"
@@ -344,11 +337,11 @@ const Navbar = () => {
                         </Typography>
                     </Box>
 
-                    {/* Center: Navigation links (desktop/tablet) */}
+                    {/* Center: Navigation links (desktop/tablet) - ORTADA */}
                     <Box sx={{
                         display: { xs: 'none', md: 'flex' },
                         justifyContent: 'center',
-                        flexGrow: 0,
+                        flexGrow: 1,
                         gap: 1,
                         mx: 2
                     }}>
@@ -385,36 +378,34 @@ const Navbar = () => {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'flex-end',
-                        flexGrow: 1,
+                        flexGrow: { xs: 1, md: 0 },
                         minWidth: 0,
-                        gap: 1
+                        position: 'relative',
+                        width: { xs: 'auto', md: 'auto' },
+                        gap: { xs: 1, md: 0 }
                     }}>
-                        {/* Responsive Search */}
-                        <SearchContainer
-                            ref={searchContainerRef}
+                        {/* Responsive Search & Profile Icon - MOBILE: yan yana */}
+                        <Box
                             sx={{
-                                width: {
-                                    xs: isSearchOpen ? '100%' : 'auto',
-                                    md: isSearchOpen ? '100%' : 250
-                                },
-                                maxWidth: { md: isSearchOpen ? 400 : 250 },
-                                position: { xs: isSearchOpen ? 'absolute' : 'relative', md: 'relative' },
-                                left: { xs: isSearchOpen ? 0 : 'auto', md: 'auto' },
-                                top: { xs: isSearchOpen ? 0 : 'auto', md: 'auto' },
-                                zIndex: isSearchOpen ? (theme) => theme.zIndex.modal + 1 : 'auto',
-                                background: { xs: isSearchOpen ? 'white' : 'none', md: 'none' },
-                                margin: { xs: isSearchOpen ? 0 : '0 4px', md: '0 4px' },
-                                height: { xs: isSearchOpen ? '100%' : 'auto', md: 'auto' },
-                                transition: 'all 0.2s ease',
+                                display: { xs: 'flex', md: 'none' },
+                                alignItems: 'center',
+                                justifyContent: 'flex-end', // right align on mobile
+                                width: 'auto',
+                                gap: 1,
+                                position: 'relative',
+                                flexGrow: 0, // do not expand
+                                flexShrink: 0,
+                                minWidth: 0,
                             }}
                         >
-                            {isSearchOpen || !isMobile ? (
-                                <ClickAwayListener onClickAway={isMobile ? handleSearchClose : () => {}}>
+                            {isSearchOpen ? (
+                                <ClickAwayListener onClickAway={handleSearchClose}>
                                     <Box sx={{
                                         position: 'relative',
-                                        width: '100%',
+                                        width: 'auto',
                                         display: 'flex',
-                                        alignItems: 'center'
+                                        alignItems: 'center',
+                                        flexGrow: 0,
                                     }}>
                                         <StyledInputBase
                                             placeholder="Uygulama ara…"
@@ -429,8 +420,9 @@ const Navbar = () => {
                                                 pl: 4,
                                                 pr: 2,
                                                 py: 0.5,
-                                                width: '100%',
-                                                flexGrow: 1,
+                                                width: 120,
+                                                minWidth: 0,
+                                                flexGrow: 0,
                                                 '&:hover': {
                                                     backgroundColor: 'rgba(0,0,0,0.06)',
                                                 },
@@ -463,18 +455,16 @@ const Navbar = () => {
                                             </SearchResults>
                                         )}
                                         {/* Close button for mobile search */}
-                                        {isMobile && isSearchOpen && (
-                                            <IconButton
-                                                onClick={handleSearchClose}
-                                                sx={{
-                                                    color: 'text.secondary',
-                                                    ml: 1
-                                                }}
-                                                aria-label="Kapat"
-                                            >
-                                                <Close />
-                                            </IconButton>
-                                        )}
+                                        <IconButton
+                                            onClick={handleSearchClose}
+                                            sx={{
+                                                color: 'text.secondary',
+                                                ml: 1
+                                            }}
+                                            aria-label="Kapat"
+                                        >
+                                            <Close />
+                                        </IconButton>
                                     </Box>
                                 </ClickAwayListener>
                             ) : (
@@ -482,20 +472,91 @@ const Navbar = () => {
                                     onClick={handleSearchOpen}
                                     color="inherit"
                                     aria-label="Uygulama ara"
-                                    sx={{ ml: 1 }}
                                 >
                                     <Search />
                                 </IconButton>
                             )}
-                        </SearchContainer>
+                            {/* Profile icon always visible on mobile, next to search */}
+                            <IconButton
+                                edge="end"
+                                onClick={handleProfileMenuOpen}
+                                color="inherit"
+                                aria-label="Kullanıcı menüsü"
+                            >
+                                <AccountCircle />
+                            </IconButton>
+                        </Box>
 
-                        {/* User actions (desktop/tablet) */}
+                        {/* Desktop/Tablet: Search & User actions */}
                         <Box sx={{
-                            display: 'flex',
+                            display: { xs: 'none', md: 'flex' },
                             alignItems: 'center',
                             flexShrink: 0,
-                            gap: { xs: 0, md: 1 }
+                            ml: 1
                         }}>
+                            <SearchContainer
+                                ref={searchContainerRef}
+                                sx={{
+                                    width: 250,
+                                    position: 'relative',
+                                    margin: '0 4px',
+                                }}
+                            >
+                                <ClickAwayListener onClickAway={() => {}}>
+                                    <Box sx={{
+                                        position: 'relative',
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}>
+                                        <StyledInputBase
+                                            placeholder="Uygulama ara…"
+                                            inputProps={{ 'aria-label': 'search' }}
+                                            value={searchQuery}
+                                            onChange={handleSearchChange}
+                                            inputRef={searchInputRef}
+                                            onFocus={() => setShowResults(!!searchQuery)}
+                                            sx={{
+                                                backgroundColor: 'rgba(0,0,0,0.04)',
+                                                borderRadius: 2,
+                                                pl: 4,
+                                                pr: 2,
+                                                py: 0.5,
+                                                width: '100%',
+                                                flexGrow: 1,
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(0,0,0,0.06)',
+                                                },
+                                            }}
+                                        />
+                                        <Search
+                                            sx={{
+                                                position: 'absolute',
+                                                left: 8,
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                color: 'text.secondary'
+                                            }}
+                                        />
+                                        {showResults && filteredApps.length > 0 && (
+                                            <SearchResults>
+                                                <List dense>
+                                                    {filteredApps.map(app => (
+                                                        <ListItem key={app.id} disablePadding>
+                                                            <ListItemButton
+                                                                onClick={() => handleResultClick(app.id)}
+                                                                sx={{ py: 0.5 }}
+                                                            >
+                                                                <ListItemText primary={app.name} />
+                                                            </ListItemButton>
+                                                        </ListItem>
+                                                    ))}
+                                                </List>
+                                            </SearchResults>
+                                        )}
+                                    </Box>
+                                </ClickAwayListener>
+                            </SearchContainer>
                             {isAuthenticated ? (
                                 <>
                                     <ActionButton
@@ -511,15 +572,6 @@ const Navbar = () => {
                                     >
                                         Çıkış Yap
                                     </ActionButton>
-                                    <IconButton
-                                        edge="end"
-                                        onClick={handleProfileMenuOpen}
-                                        color="inherit"
-                                        aria-label="Kullanıcı menüsü"
-                                        sx={{ display: { xs: 'flex', md: 'none' } }}
-                                    >
-                                        <AccountCircle />
-                                    </IconButton>
                                 </>
                             ) : (
                                 <>
@@ -544,15 +596,6 @@ const Navbar = () => {
                                     >
                                         Kayıt Ol
                                     </ActionButton>
-                                    <IconButton
-                                        edge="end"
-                                        onClick={handleProfileMenuOpen}
-                                        color="inherit"
-                                        aria-label="Kullanıcı menüsü"
-                                        sx={{ display: { xs: 'flex', md: 'none' } }}
-                                    >
-                                        <AccountCircle />
-                                    </IconButton>
                                 </>
                             )}
                         </Box>
