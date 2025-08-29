@@ -30,7 +30,6 @@ import {
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import useApps from '../../hooks/useApps';
-import logo from '../../assets/storelogo.png';
 
 // Stil bileşenleri
 const SearchContainer = styled('div')(({ theme }) => ({
@@ -322,7 +321,6 @@ const Navbar = () => {
                             >
                                 <MenuIcon />
                             </IconButton>
-                            <img src={logo} alt="BulutStore" style={{ height: 28, width: 28, marginRight: 8, borderRadius: 6 }} />
                             <Typography
                                 variant="h6"
                                 component={RouterLink}
@@ -330,12 +328,13 @@ const Navbar = () => {
                                 sx={{
                                     fontWeight: 'bold',
                                     textDecoration: 'none',
-                                    color: 'inherit',
+                                    color: '#4285F4', // Footer ile uyumlu renk
                                     fontSize: { xs: 18, sm: 22 },
-                                    '&:hover': { color: '#4285F4' },
+                                    '&:hover': { color: '#3367d6' },
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
-                                    textOverflow: 'ellipsis'
+                                    textOverflow: 'ellipsis',
+                                    letterSpacing: 0.5
                                 }}
                             >
                                 BulutStore
