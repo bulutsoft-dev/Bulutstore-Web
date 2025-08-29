@@ -13,6 +13,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import PolicyIcon from '@mui/icons-material/Policy';
 import ReplayIcon from '@mui/icons-material/Replay';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AppBreadcrumbs from '../components/common/Breadcrumbs';
 
 const faqs = [
   {
@@ -35,6 +36,7 @@ const faqs = [
 
 const HelpPage = () => (
   <Container maxWidth="md" sx={{ py: 6 }}>
+    <AppBreadcrumbs extraLabels={[null, 'Yardım']} />
     <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
       <HelpOutlineIcon sx={{ fontSize: 40, color: '#1976d2', mr: 2 }} />
       <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#1976d2' }}>
