@@ -3,6 +3,8 @@ import { Button, IconButton } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { AccountCircle } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
+import LoginIcon from '@mui/icons-material/Login';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 const ActionButton = styled(Button)(({ theme }) => ({
     marginLeft: theme.spacing(1),
@@ -43,9 +45,19 @@ const UserActions = ({ isAuthenticated, location, handleLogout, handleProfileMen
                     color="inherit"
                     component={RouterLink}
                     to="/login"
-                    sx={{ borderBottom: location.pathname === '/login' ? '2px solid #4285F4' : '2px solid transparent', borderRadius: 0 }}
+                    sx={{
+                        borderBottom: location.pathname === '/login' ? '2px solid #4285F4' : '2px solid transparent',
+                        borderRadius: 0,
+                        fontWeight: 500,
+                        fontSize: 15,
+                        letterSpacing: 0.2,
+                        textTransform: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0.7,
+                    }}
                 >
-                    Giriş Yap
+                    <LoginIcon sx={{ fontSize: 18, mb: '2px', mr: 0.5 }} /> Giriş Yap
                 </ActionButton>
                 <ActionButton
                     color="inherit"
@@ -57,9 +69,16 @@ const UserActions = ({ isAuthenticated, location, handleLogout, handleProfileMen
                         '&:hover': { backgroundColor: '#3367d6' },
                         borderBottom: location.pathname === '/register' ? '2px solid #4285F4' : '2px solid transparent',
                         borderRadius: 0,
+                        fontWeight: 500,
+                        fontSize: 15,
+                        letterSpacing: 0.2,
+                        textTransform: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 0.7,
                     }}
                 >
-                    Kayıt Ol
+                    <PersonAddAltIcon sx={{ fontSize: 18, mb: '2px', mr: 0.5 }} /> Kayıt Ol
                 </ActionButton>
                 <IconButton
                     edge="end"

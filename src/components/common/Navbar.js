@@ -13,6 +13,7 @@ import {
 import {
     Menu as MenuIcon
 } from '@mui/icons-material';
+import CloudQueueIcon from '@mui/icons-material/CloudQueue';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import useApps from '../../hooks/useApps';
@@ -111,57 +112,52 @@ const Navbar = () => {
     }, [isSearchOpen, handleSearchClose]);
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box sx={{ flexGrow: 1, fontFamily: 'inherit' }}>
             <AppBar
                 position="static"
                 sx={{
                     backgroundColor: 'white',
                     color: '#5f6368',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    fontFamily: 'inherit',
                 }}
             >
-                <Container maxWidth="lg" sx={{ px: { xs: 0.5, sm: 2 } }}>
+                <Container maxWidth="lg" sx={{ px: { xs: 0.5, sm: 2 }, fontFamily: 'inherit' }}>
                     <Toolbar sx={{
                         minHeight: 64,
                         px: 0,
-                        flexWrap: 'nowrap'
+                        flexWrap: 'nowrap',
+                        fontFamily: 'inherit',
                     }}>
                         {/* Left: Hamburger, Logo */}
                         <Box sx={{
                             display: 'flex',
                             alignItems: 'center',
+                            flexDirection: 'column',
                             flexGrow: 0,
                             minWidth: 0,
                             flexShrink: 1,
-                            mr: 2
+                            mr: 2,
+                            fontFamily: 'inherit',
                         }}>
-                            <IconButton
-                                size="large"
-                                edge="start"
-                                onClick={handleMobileMenuOpen}
-                                color="inherit"
-                                aria-label="open navigation menu"
-                                sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
-                            >
-                                <MenuIcon />
-                            </IconButton>
+                            <CloudQueueIcon sx={{ color: '#4285F4', fontSize: { xs: 32, sm: 36 }, mb: '-2px' }} />
                             <Typography
                                 variant="h6"
                                 component={RouterLink}
-                                to="/"
                                 sx={{
-                                    fontWeight: 'bold',
-                                    textDecoration: 'none',
                                     color: '#4285F4',
-                                    fontSize: { xs: 18, sm: 22 },
-                                    '&:hover': { color: '#3367d6' },
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    letterSpacing: 0.5
+                                    fontWeight: 700,
+                                    fontFamily: 'Inter, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
+                                    fontSize: { xs: 13, sm: 15 },
+                                    textDecoration: 'none',
+                                    letterSpacing: 1.1,
+                                    textTransform: 'uppercase',
+                                    lineHeight: 1.1,
+                                    mt: 0.2,
                                 }}
+                                to="/"
                             >
-                                BulutStore
+                                Bulut Store
                             </Typography>
                         </Box>
                         {/* Center: Navigation links (desktop/tablet) */}
@@ -170,7 +166,10 @@ const Navbar = () => {
                             justifyContent: 'center',
                             flexGrow: 0,
                             gap: 1,
-                            mx: 2
+                            mx: 2,
+                            fontFamily: 'Inter, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
+                            fontWeight: 500,
+                            letterSpacing: 0.5,
                         }}>
                             <NavLinks user={user} />
                         </Box>

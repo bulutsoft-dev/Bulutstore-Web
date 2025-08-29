@@ -3,6 +3,10 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Navbar from '../components/common/Navbar';
 import Footer from '../components/common/Footer';
+import '@fontsource/inter';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/700.css';
 
 /**
  * MainLayout: Tüm sayfalar için ortak layout.
@@ -17,6 +21,10 @@ const MainLayout = ({ children }) => {
         flexDirection: 'column',
         minHeight: '100vh',
         bgcolor: '#f7f9fb',
+        fontFamily: 'Inter, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif',
+        WebkitFontSmoothing: 'antialiased',
+        MozOsxFontSmoothing: 'grayscale',
+        letterSpacing: 0.01,
       }}
     >
       <Navbar />
