@@ -1,73 +1,113 @@
-import React, { useState } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import InputBase from '@mui/material/InputBase';
-import { styled, alpha } from '@mui/material/styles';
-import { Link as RouterLink } from 'react-router-dom';
-import StoreIcon from '@mui/icons-material/Store';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import SearchIcon from '@mui/icons-material/Search';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Divider from '@mui/material/Divider';
-import MenuIcon from '@mui/icons-material/Menu'; // Yeni import
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import {
+    AppBar,
+    Box,
+    Toolbar,
+    Typography,
+    Button,
+    IconButton,
+    InputBase,
+    Menu,
+    MenuItem,
+    Divider,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    ClickAwayListener,
+    styled,
+    useMediaQuery,
+    useTheme,
+    alpha
+} from '@mui/material';
+import {
+    Store,
+    AccountCircle,
+    Search,
+    Menu as MenuIcon,
+    Close
+} from '@mui/icons-material';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
+import useApps from '../../hooks/useApps';
 
-// Arama çubuğu için stil
-const Search = styled('div')(({ theme }) => ({
+// Stil bileşenleri
+const SearchContainer = styled('div')(({ theme }) => ({
     position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.black, 0.05),
-    '&:hover': {
-        backgroundColor: alpha(theme.palette.common.black, 0.1),
-    },
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(2),
-        width: 'auto',
-    },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
-    color: '#5f6368',
+    marginRight: theme.spacing(1),
+    flexGrow: 1,
+    maxWidth: 600,
+    [theme.breakpoints.down('md')]: {
+        marginRight: 0,
+        maxWidth: '100%'
+    }
+}));
+
+const SearchResults = styled(Box)(({ theme }) => ({
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: theme.palette.background.paper,
+    boxShadow: theme.shadows[3],
+    borderRadius: theme.shape.borderRadius,
+    zIndex: theme.zIndex.modal + 1,
+    maxHeight: 300,
+    overflowY: 'auto',
+    border: `1px solid ${theme.palette.divider}`,
+    marginTop: theme.spacing(0.5)
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: 'inherit',
+    width: '100%',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
         paddingLeft: `calc(1em + ${theme.spacing(4)})`,
         transition: theme.transitions.create('width'),
         width: '100%',
         [theme.breakpoints.up('md')]: {
-            width: '250px', // Daha kısa arama çubuğu
-        },
-    },
+            width: '100%'
+        }
+    }
 }));
 
-/**
- * Google Play benzeri navbar tasarımı
- * Logo solda, navigasyon tam ortada, kullanıcı işlemleri sağda
- */
+const ActionButton = styled(Button)(({ theme }) => ({
+    marginLeft: theme.spacing(1),
+    [theme.breakpoints.down('md')]: {
+        display: 'none'
+    }
+}));
+
 const Navbar = () => {
     const [profileAnchorEl, setProfileAnchorEl] = useState(null);
     const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [showResults, setShowResults] = useState(false);
+
+    const searchInputRef = useRef(null);
+    const searchContainerRef = useRef(null);
+    const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+    const { user, isAuthenticated, logout } = useAuthContext();
+    const { apps } = useApps();
+
     const isProfileMenuOpen = Boolean(profileAnchorEl);
     const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
-    const { user, isAuthenticated, logout } = useAuthContext();
 
+    // Arama sonuçlarını filtrele
+    const filteredApps = searchQuery
+        ? apps.filter(app =>
+            app.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        : [];
+
+    // Olay yöneticileri
     const handleProfileMenuOpen = (event) => {
         setProfileAnchorEl(event.currentTarget);
     };
@@ -87,29 +127,75 @@ const Navbar = () => {
     const handleLogout = () => {
         logout();
         handleProfileMenuClose();
+        handleMobileMenuClose();
     };
 
-    const profileMenuId = 'primary-search-account-menu';
-    const mobileMenuId = 'primary-mobile-menu';
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+        setShowResults(!!event.target.value);
+    };
 
+    const handleSearchOpen = () => {
+        setIsSearchOpen(true);
+        setTimeout(() => {
+            if (searchInputRef.current) {
+                searchInputRef.current.focus();
+            }
+        }, 100);
+    };
+
+    const handleSearchClose = useCallback(() => {
+        setIsSearchOpen(false);
+        setShowResults(false);
+        setSearchQuery('');
+    }, []);
+
+    const handleResultClick = (appId) => {
+        navigate(`/apps/${appId}`);
+        handleSearchClose();
+    };
+
+    // ESC tuşu ile aramayı kapat
+    useEffect(() => {
+        const handleEscKey = (event) => {
+            if (event.keyCode === 27 && isSearchOpen) {
+                handleSearchClose();
+            }
+        };
+        window.addEventListener('keydown', handleEscKey);
+        return () => {
+            window.removeEventListener('keydown', handleEscKey);
+        };
+    }, [isSearchOpen, handleSearchClose]);
+
+    // Menü bileşenleri
     const renderProfileMenu = (
         <Menu
             anchorEl={profileAnchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={profileMenuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
             open={isProfileMenuOpen}
             onClose={handleProfileMenuClose}
+            PaperProps={{
+                elevation: 3,
+                sx: {
+                    mt: 1.5,
+                    minWidth: 180
+                }
+            }}
         >
-            <MenuItem onClick={handleProfileMenuClose} component={RouterLink} to="/profile">Profil</MenuItem>
-            <MenuItem onClick={handleProfileMenuClose} component={RouterLink} to="/account">Hesabım</MenuItem>
+            <MenuItem
+                onClick={handleProfileMenuClose}
+                component={RouterLink}
+                to="/profile"
+            >
+                Profil
+            </MenuItem>
+            <MenuItem
+                onClick={handleProfileMenuClose}
+                component={RouterLink}
+                to="/account"
+            >
+                Hesabım
+            </MenuItem>
             <Divider />
             <MenuItem onClick={handleLogout}>Çıkış Yap</MenuItem>
         </Menu>
@@ -118,54 +204,127 @@ const Navbar = () => {
     const renderMobileMenu = (
         <Menu
             anchorEl={mobileMenuAnchorEl}
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-            }}
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
+            PaperProps={{
+                sx: {
+                    width: 250,
+                    maxWidth: '100%'
+                }
+            }}
         >
-            <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/">Anasayfa</MenuItem>
-            <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/apps">Uygulamalar</MenuItem>
-            {user && String(user.role).toUpperCase() === 'ADMIN' && (
-                <MenuItem onClick={handleMobileMenuClose} component={RouterLink} to="/admin">Admin Panel</MenuItem>
+            <MenuItem
+                onClick={handleMobileMenuClose}
+                component={RouterLink}
+                to="/"
+            >
+                Anasayfa
+            </MenuItem>
+            <MenuItem
+                onClick={handleMobileMenuClose}
+                component={RouterLink}
+                to="/apps"
+            >
+                Uygulamalar
+            </MenuItem>
+            {user?.role?.toUpperCase() === 'ADMIN' && (
+                <MenuItem
+                    onClick={handleMobileMenuClose}
+                    component={RouterLink}
+                    to="/admin"
+                >
+                    Admin Panel
+                </MenuItem>
             )}
             <Divider />
-            {user ? [
-                <MenuItem key="profile" onClick={handleMobileMenuClose} component={RouterLink} to="/profile">Profil</MenuItem>,
-                <MenuItem key="logout" onClick={() => { handleMobileMenuClose(); handleLogout(); }}>Çıkış Yap</MenuItem>
-            ] : [
-                <MenuItem key="login" onClick={handleMobileMenuClose} component={RouterLink} to="/login">Giriş Yap</MenuItem>,
-                <MenuItem key="register" onClick={handleMobileMenuClose} component={RouterLink} to="/register">Kayıt Ol</MenuItem>
-            ]}
+            {isAuthenticated ? (
+                [
+                    <MenuItem
+                        key="profile-mobile"
+                        onClick={handleMobileMenuClose}
+                        component={RouterLink}
+                        to="/profile"
+                    >
+                        Profil
+                    </MenuItem>,
+                    <MenuItem
+                        key="account-mobile"
+                        onClick={handleMobileMenuClose}
+                        component={RouterLink}
+                        to="/account"
+                    >
+                        Hesabım
+                    </MenuItem>,
+                    <MenuItem
+                        key="logout-mobile"
+                        onClick={handleLogout}
+                    >
+                        Çıkış Yap
+                    </MenuItem>
+                ]
+            ) : (
+                [
+                    <MenuItem
+                        key="login-mobile"
+                        onClick={handleMobileMenuClose}
+                        component={RouterLink}
+                        to="/login"
+                    >
+                        Giriş Yap
+                    </MenuItem>,
+                    <MenuItem
+                        key="register-mobile"
+                        onClick={handleMobileMenuClose}
+                        component={RouterLink}
+                        to="/register"
+                    >
+                        Kayıt Ol
+                    </MenuItem>
+                ]
+            )}
         </Menu>
     );
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" sx={{ backgroundColor: 'white', color: '#5f6368', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', minHeight: { xs: 56, sm: 64 } }}>
-                <Toolbar sx={{ minHeight: { xs: 56, sm: 64 }, px: { xs: 1, sm: 2 }, justifyContent: 'space-between' }}>
-                    {/* Logo - Sol Tarafta */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+            <AppBar
+                position="static"
+                sx={{
+                    backgroundColor: 'white',
+                    color: '#5f6368',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                }}
+            >
+                <Toolbar sx={{
+                    minHeight: 64,
+                    px: { xs: 1, sm: 2, md: 3 },
+                    flexWrap: 'nowrap'
+                }}>
+                    {/* Left: Hamburger, Logo */}
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        flexGrow: 0,
+                        minWidth: 0,
+                        flexShrink: 1,
+                        mr: 2
+                    }}>
                         <IconButton
                             size="large"
                             edge="start"
-                            aria-label="open menu"
-                            aria-controls={mobileMenuId}
-                            aria-haspopup="true"
                             onClick={handleMobileMenuOpen}
                             color="inherit"
-                            sx={{ display: { xs: 'block', md: 'none' }, mr: 1 }}
+                            aria-label="open navigation menu"
+                            sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}
                         >
                             <MenuIcon />
                         </IconButton>
-                        <StoreIcon sx={{ color: '#4285F4', mr: 1, fontSize: { xs: 24, sm: 30 } }} />
+                        <Store sx={{
+                            color: '#4285F4',
+                            mr: 1,
+                            fontSize: { xs: 28, sm: 32 },
+                            flexShrink: 0
+                        }} />
                         <Typography
                             variant="h6"
                             component={RouterLink}
@@ -173,155 +332,234 @@ const Navbar = () => {
                             sx={{
                                 fontWeight: 'bold',
                                 textDecoration: 'none',
-                                color: '#5f6368',
+                                color: 'inherit',
                                 fontSize: { xs: 18, sm: 22 },
-                                '&:hover': {
-                                    color: '#4285F4'
-                                },
+                                '&:hover': { color: '#4285F4' },
                                 whiteSpace: 'nowrap',
                                 overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                maxWidth: { xs: 120, sm: 200 }
+                                textOverflow: 'ellipsis'
                             }}
                         >
                             BulutStore
                         </Typography>
                     </Box>
 
-                    {/* Navigasyon Linkleri - Tam Ortada */}
+                    {/* Center: Navigation links (desktop/tablet) */}
                     <Box sx={{
                         display: { xs: 'none', md: 'flex' },
                         justifyContent: 'center',
-                        flex: 1,
+                        flexGrow: 0,
                         gap: 1,
-                        minWidth: 0
+                        mx: 2
                     }}>
                         <Button
                             color="inherit"
                             component={RouterLink}
                             to="/"
-                            sx={{
-                                borderRadius: '4px',
-                                '&:hover': {
-                                    backgroundColor: 'rgba(66, 133, 244, 0.08)',
-                                    color: '#4285F4'
-                                }
-                            }}
+                            sx={{ borderRadius: 1 }}
                         >
                             Anasayfa
                         </Button>
-
                         <Button
                             color="inherit"
                             component={RouterLink}
                             to="/apps"
-                            sx={{
-                                borderRadius: '4px',
-                                '&:hover': {
-                                    backgroundColor: 'rgba(66, 133, 244, 0.08)',
-                                    color: '#4285F4'
-                                }
-                            }}
+                            sx={{ borderRadius: 1 }}
                         >
                             Uygulamalar
                         </Button>
-                        {user && String(user.role).toUpperCase() === 'ADMIN' && (
+                        {user?.role?.toUpperCase() === 'ADMIN' && (
                             <Button
                                 color="inherit"
                                 component={RouterLink}
                                 to="/admin"
-                                sx={{
-                                    borderRadius: '4px',
-                                    '&:hover': {
-                                        backgroundColor: 'rgba(66, 133, 244, 0.08)',
-                                        color: '#4285F4'
-                                    }
-                                }}
+                                sx={{ borderRadius: 1 }}
                             >
                                 Admin Panel
                             </Button>
                         )}
                     </Box>
 
-                    {/* Sağ Bölüm - Arama ve Kullanıcı İşlemleri */}
+                    {/* Right: Search & User actions */}
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'flex-end',
-                        flex: 1,
-                        gap: 1,
-                        minWidth: 0
+                        flexGrow: 1,
+                        minWidth: 0,
+                        gap: 1
                     }}>
-                        {/* Arama Çubuğu */}
-                        <Search sx={{ display: { xs: 'none', sm: 'block' }, maxWidth: { xs: 120, sm: 250 } }}>
-                            <SearchIconWrapper>
-                                <SearchIcon />
-                            </SearchIconWrapper>
-                            <StyledInputBase
-                                placeholder="Ara..."
-                                inputProps={{ 'aria-label': 'search' }}
-                            />
-                        </Search>
-                        {/* Giriş/Kayıt veya Profil/Çıkış butonları */}
-                        <Box sx={{ display: { xs: 'none', sm: 'flex' } }}>
+                        {/* Responsive Search */}
+                        <SearchContainer
+                            ref={searchContainerRef}
+                            sx={{
+                                width: {
+                                    xs: isSearchOpen ? '100%' : 'auto',
+                                    md: isSearchOpen ? '100%' : 250
+                                },
+                                maxWidth: { md: isSearchOpen ? 400 : 250 },
+                                position: { xs: isSearchOpen ? 'absolute' : 'relative', md: 'relative' },
+                                left: { xs: isSearchOpen ? 0 : 'auto', md: 'auto' },
+                                top: { xs: isSearchOpen ? 0 : 'auto', md: 'auto' },
+                                zIndex: isSearchOpen ? (theme) => theme.zIndex.modal + 1 : 'auto',
+                                background: { xs: isSearchOpen ? 'white' : 'none', md: 'none' },
+                                margin: { xs: isSearchOpen ? 0 : '0 4px', md: '0 4px' },
+                                height: { xs: isSearchOpen ? '100%' : 'auto', md: 'auto' },
+                                transition: 'all 0.2s ease',
+                            }}
+                        >
+                            {isSearchOpen || !isMobile ? (
+                                <ClickAwayListener onClickAway={isMobile ? handleSearchClose : () => {}}>
+                                    <Box sx={{
+                                        position: 'relative',
+                                        width: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}>
+                                        <StyledInputBase
+                                            placeholder="Uygulama ara…"
+                                            inputProps={{ 'aria-label': 'search' }}
+                                            value={searchQuery}
+                                            onChange={handleSearchChange}
+                                            inputRef={searchInputRef}
+                                            onFocus={() => setShowResults(!!searchQuery)}
+                                            sx={{
+                                                backgroundColor: 'rgba(0,0,0,0.04)',
+                                                borderRadius: 2,
+                                                pl: 4,
+                                                pr: 2,
+                                                py: 0.5,
+                                                width: '100%',
+                                                flexGrow: 1,
+                                                '&:hover': {
+                                                    backgroundColor: 'rgba(0,0,0,0.06)',
+                                                },
+                                            }}
+                                            autoFocus={isMobile && isSearchOpen}
+                                        />
+                                        <Search
+                                            sx={{
+                                                position: 'absolute',
+                                                left: 8,
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                color: 'text.secondary'
+                                            }}
+                                        />
+                                        {showResults && filteredApps.length > 0 && (
+                                            <SearchResults>
+                                                <List dense>
+                                                    {filteredApps.map(app => (
+                                                        <ListItem key={app.id} disablePadding>
+                                                            <ListItemButton
+                                                                onClick={() => handleResultClick(app.id)}
+                                                                sx={{ py: 0.5 }}
+                                                            >
+                                                                <ListItemText primary={app.name} />
+                                                            </ListItemButton>
+                                                        </ListItem>
+                                                    ))}
+                                                </List>
+                                            </SearchResults>
+                                        )}
+                                        {/* Close button for mobile search */}
+                                        {isMobile && isSearchOpen && (
+                                            <IconButton
+                                                onClick={handleSearchClose}
+                                                sx={{
+                                                    color: 'text.secondary',
+                                                    ml: 1
+                                                }}
+                                                aria-label="Kapat"
+                                            >
+                                                <Close />
+                                            </IconButton>
+                                        )}
+                                    </Box>
+                                </ClickAwayListener>
+                            ) : (
+                                <IconButton
+                                    onClick={handleSearchOpen}
+                                    color="inherit"
+                                    aria-label="Uygulama ara"
+                                    sx={{ ml: 1 }}
+                                >
+                                    <Search />
+                                </IconButton>
+                            )}
+                        </SearchContainer>
+
+                        {/* User actions (desktop/tablet) */}
+                        <Box sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            flexShrink: 0,
+                            gap: { xs: 0, md: 1 }
+                        }}>
                             {isAuthenticated ? (
                                 <>
-                                    <Button
+                                    <ActionButton
                                         color="inherit"
                                         component={RouterLink}
                                         to="/profile"
-                                        sx={{ borderRadius: '4px', mr: 1 }}
                                     >
                                         Profil
-                                    </Button>
-                                    <Button
+                                    </ActionButton>
+                                    <ActionButton
                                         color="inherit"
                                         onClick={handleLogout}
-                                        sx={{ borderRadius: '4px' }}
                                     >
                                         Çıkış Yap
-                                    </Button>
+                                    </ActionButton>
+                                    <IconButton
+                                        edge="end"
+                                        onClick={handleProfileMenuOpen}
+                                        color="inherit"
+                                        aria-label="Kullanıcı menüsü"
+                                        sx={{ display: { xs: 'flex', md: 'none' } }}
+                                    >
+                                        <AccountCircle />
+                                    </IconButton>
                                 </>
                             ) : (
                                 <>
-                                    <Button
+                                    <ActionButton
                                         color="inherit"
                                         component={RouterLink}
                                         to="/login"
-                                        sx={{ borderRadius: '4px', mr: 1 }}
                                     >
                                         Giriş Yap
-                                    </Button>
-                                    <Button
+                                    </ActionButton>
+                                    <ActionButton
                                         color="inherit"
                                         component={RouterLink}
                                         to="/register"
-                                        sx={{ borderRadius: '4px' }}
+                                        sx={{
+                                            backgroundColor: '#4285F4',
+                                            color: 'white',
+                                            '&:hover': {
+                                                backgroundColor: '#3367d6',
+                                            }
+                                        }}
                                     >
                                         Kayıt Ol
-                                    </Button>
+                                    </ActionButton>
+                                    <IconButton
+                                        edge="end"
+                                        onClick={handleProfileMenuOpen}
+                                        color="inherit"
+                                        aria-label="Kullanıcı menüsü"
+                                        sx={{ display: { xs: 'flex', md: 'none' } }}
+                                    >
+                                        <AccountCircle />
+                                    </IconButton>
                                 </>
                             )}
                         </Box>
-                        {/* Mobilde gösterilecek arama ve profil ikonları */}
-                        <IconButton color="inherit" sx={{ display: { xs: 'flex', sm: 'none' }, ml: 0.5 }}>
-                            <SearchIcon />
-                        </IconButton>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={profileMenuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                            sx={{ display: { xs: 'flex', sm: 'none' }, ml: 0.5 }}
-                        >
-                            <AccountCircle />
-                        </IconButton>
                     </Box>
                 </Toolbar>
             </AppBar>
+
             {renderProfileMenu}
             {renderMobileMenu}
         </Box>
