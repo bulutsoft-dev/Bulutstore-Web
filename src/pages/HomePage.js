@@ -14,16 +14,22 @@ const HomePage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
     Promise.all([
-      getAllCategories().then(r => setCategories(r.data)),
-      getAllApps().then(r => setApps(r.data)),
+      getAllCategories().then(r => { console.log('Categories:', r); setCategories(r.data); }),
+      getAllApps().then(r => { console.log('Apps:', r); setApps(r.data); })
     ])
-      .catch(() => setError('Veriler yüklenirken hata oluştu.'))
+      .catch((err) => {
+        console.error('Data fetch error:', err);
+        setError('Veriler yüklenirken hata oluştu.');
+      })
       .finally(() => setLoading(false));
   }, []);
 
   // Select featured apps (first 6 for demo)
-  const featuredApps = apps.slice(0, 6);
+  const featuredApps = Array.isArray(apps)
+    ? apps.slice(0, 6).map(app => ({ ...app, downloadsCount: app.downloadCount }))
+    : [];
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'transparent', minHeight: '100vh', pb: 0, px: 0 }}>

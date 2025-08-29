@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const baseURL = process.env.NODE_ENV === 'production'
   ? 'https://bulutstore-api.onrender.com/api'
-  : 'http://localhost:8080/api';
+  : 'https://bulutstore-api.onrender.com/api';
 
 const axiosInstance = axios.create({
    baseURL,
