@@ -10,6 +10,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import logo from '../../assets/storelogo.png';
 
 /**
  * Navbar tasarımına uyumlu responsive footer bileşeni
@@ -33,12 +34,12 @@ const Footer = () => {
                 <Grid container spacing={{ xs: 2, md: 4 }} columns={12}>
                     {/* Şirket Bilgileri */}
                     <Grid gridColumn={{ xs: 'span 12', md: 'span 4' }} sx={{ mb: { xs: 2, md: 0 } }}>
-                        <Typography variant="h6" gutterBottom sx={{ color: '#4285F4', fontWeight: 'bold', fontSize: { xs: 18, sm: 22 } }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <StoreIcon sx={{ mr: 1, fontSize: { xs: 22, sm: 28 } }} />
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <img src={logo} alt="BulutStore" style={{ height: 28, width: 28, marginRight: 8, borderRadius: 6 }} />
+                            <Typography variant="h6" gutterBottom sx={{ color: '#4285F4', fontWeight: 'bold', fontSize: { xs: 18, sm: 22 } }}>
                                 BulutStore
-                            </Box>
-                        </Typography>
+                            </Typography>
+                        </Box>
                         <Typography variant="body2" sx={{ mb: 2, fontSize: { xs: 12, sm: 14 } }}>
                             Bulutsoft Dev organizasyonunun uygulama mağazası.
                         </Typography>
